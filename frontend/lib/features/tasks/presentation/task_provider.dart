@@ -1,43 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../database/database.dart';
-import 'package:drift/drift.dart' as drift;
+import '../../database/database.dart';
+import '../data/repository/task_repository.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
-  try {
-    final db = AppDatabase();
-    ref.onDispose(() => db.close());
-    return db;
-  } catch (e, st) {
-    print('🔥 DB Init Error: $e\n$st');
-    rethrow;
-  }
+  final db = AppDatabase();
+  ref.onDispose(() => db.close());
+  return db;
 });
 
 final tasksStreamProvider = StreamProvider<List<Task>>((ref) {
-  try {
-    final db = ref.watch(databaseProvider);
-    return db.watchAllTasks();
-  } catch (e, st) {
-    print('🔥 StreamProvider Error: $e\n$st');
-    rethrow;
-  }
+  final repo = ref.watch(taskRepositoryProvider);
+  return repo.watchTasks();
 });
 
-class TaskNotifier extends Notifier<AsyncValue<void>> {
-  AppDatabase get db => ref.read(databaseProvider);
+class TaskNotifier extends StateNotifier<AsyncValue<void>> {
+  final TaskRepository repository;
 
-  @override
-  AsyncValue<void> build() {
-    return const AsyncData(null);
+  TaskNotifier(this.repository) : super(const AsyncData(null)) {
+    // Attempt initial sync on load
+    repository.fetchRemoteTasksAndMerge();
   }
 
   Future<void> addTask(String title, {String? description}) async {
     state = const AsyncLoading();
     try {
-      await db.insertTask(TasksCompanion(
-        title: drift.Value(title),
-        description: drift.Value.absentIfNull(description),
-      ));
+      await repository.addTask(title, description: description);
       state = const AsyncData(null);
     } catch (e, st) {
       state = AsyncError(e, st);
@@ -45,18 +32,22 @@ class TaskNotifier extends Notifier<AsyncValue<void>> {
   }
 
   Future<void> toggleTaskCompletion(Task task) async {
-    await db.updateTask(task.copyWith(
-      isCompleted: !task.isCompleted,
-      syncStatus: 'pending_update',
-      updatedAt: DateTime.now().toUtc(),
-    ));
+    try {
+      await repository.toggleTaskCompletion(task);
+    } catch (e) {
+      print('Toggle failed: $e');
+    }
   }
 
   Future<void> deleteTask(String id) async {
-    await db.softDeleteTask(id);
+    try {
+      await repository.deleteTask(id);
+    } catch (e) {
+      print('Delete failed: $e');
+    }
   }
 }
 
-final taskNotifierProvider = NotifierProvider<TaskNotifier, AsyncValue<void>>(() {
-  return TaskNotifier();
+final taskNotifierProvider = StateNotifierProvider<TaskNotifier, AsyncValue<void>>((ref) {
+  return TaskNotifier(ref.watch(taskRepositoryProvider));
 });

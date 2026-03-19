@@ -21,6 +21,15 @@ def create_task():
         description=data.get('description', ''),
         is_completed=data.get('is_completed', False)
     )
+
+    # If the client (offline-first) provides its own UUID, use it to maintain sync parity.
+    if 'id' in data and data['id']:
+        # Check if it already exists to prevent duplicate inserts from retry logic
+        existing_task = Task.query.get(data['id'])
+        if existing_task:
+            return jsonify(existing_task.to_dict()), 200
+        new_task.id = data['id']
+
     db.session.add(new_task)
     db.session.commit()
     return jsonify(new_task.to_dict()), 201

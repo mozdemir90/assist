@@ -6,18 +6,7 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Tasks])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(driftDatabase(
-    name: 'task_sync_db',
-    web: DriftWebOptions(
-      sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-      driftWorker: Uri.parse('drift_worker.js'),
-      onResult: (result) {
-        if (result.missingFeatures.isNotEmpty) {
-          print('Using fallback database due to missing features: ${result.missingFeatures}');
-        }
-      },
-    ),
-  ));
+  AppDatabase() : super(driftDatabase(name: 'task_sync_db'));
 
   @override
   int get schemaVersion => 1;
