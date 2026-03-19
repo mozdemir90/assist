@@ -1,24 +1,56 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter/foundation.dart';
 
-final apiClientProvider = Provider<Dio>((ref) {
-  // Use 10.0.2.2 for Android emulator to access local host, localhost for iOS/Web.
-  // For production, this should be replaced with environment variables.
-  const String baseUrl = 'http://127.0.0.1:5001/api';
+part 'api_client.g.dart';
 
-  final dio = Dio(BaseOptions(
-    baseUrl: baseUrl,
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  ));
+class ApiClient {
+  final Dio _dio;
+  final FlutterSecureStorage _storage;
 
-  dio.interceptors.add(LogInterceptor(
-    requestBody: true,
-    responseBody: true,
-  ));
+  ApiClient({required Dio dio, required FlutterSecureStorage storage})
+      : _dio = dio,
+        _storage = storage {
+    _dio.options.baseUrl = _getBaseUrl();
+    _dio.options.connectTimeout = const Duration(seconds: 10);
+    _dio.options.receiveTimeout = const Duration(seconds: 10);
 
-  return dio;
-});
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await _storage.read(key: 'jwt_token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          options.headers['Content-Type'] = 'application/json';
+          return handler.next(options);
+        },
+      ),
+    );
+  }
+
+  String _getBaseUrl() {
+    // For local development on emulator/simulator
+    if (kIsWeb) return 'http://127.0.0.1:5000/api';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:5000/api'; // Android Emulator alias for localhost
+    }
+    return 'http://127.0.0.1:5000/api'; // iOS Simulator / Desktop
+  }
+
+  Dio get dio => _dio;
+}
+
+@riverpod
+FlutterSecureStorage secureStorage(SecureStorageRef ref) {
+  return const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+}
+
+@riverpod
+ApiClient apiClient(ApiClientRef ref) {
+  final storage = ref.watch(secureStorageProvider);
+  return ApiClient(dio: Dio(), storage: storage);
+}
