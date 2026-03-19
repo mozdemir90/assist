@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../database/database.dart';
+import 'package:frontend/database/database.dart';
 import '../data/repository/task_repository.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
@@ -13,12 +13,13 @@ final tasksStreamProvider = StreamProvider<List<Task>>((ref) {
   return repo.watchTasks();
 });
 
-class TaskNotifier extends StateNotifier<AsyncValue<void>> {
-  final TaskRepository repository;
+class TaskNotifier extends Notifier<AsyncValue<void>> {
+  TaskRepository get repository => ref.read(taskRepositoryProvider);
 
-  TaskNotifier(this.repository) : super(const AsyncData(null)) {
-    // Attempt initial sync on load
-    repository.fetchRemoteTasksAndMerge();
+  @override
+  AsyncValue<void> build() {
+    Future.microtask(() => repository.fetchRemoteTasksAndMerge());
+    return const AsyncData(null);
   }
 
   Future<void> addTask(String title, {String? description}) async {
@@ -48,6 +49,6 @@ class TaskNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final taskNotifierProvider = StateNotifierProvider<TaskNotifier, AsyncValue<void>>((ref) {
-  return TaskNotifier(ref.watch(taskRepositoryProvider));
+final taskNotifierProvider = NotifierProvider<TaskNotifier, AsyncValue<void>>(() {
+  return TaskNotifier();
 });

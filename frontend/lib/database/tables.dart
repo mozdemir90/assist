@@ -1,8 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
+const uuid = Uuid();
 
 class Tasks extends Table {
-  TextColumn get id => text().clientDefault(() => const Uuid().v4())();
+  TextColumn get id => text().clientDefault(() => uuid.v4())();
   TextColumn get title => text().withLength(min: 1, max: 255)();
   TextColumn get description => text().nullable()();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final apiClientProvider = Provider<Dio>((ref) {
   // Use 10.0.2.2 for Android emulator to access local host, localhost for iOS/Web.
   // For production, this should be replaced with environment variables.
-  const String baseUrl = 'http://127.0.0.1:5000/api';
+  const String baseUrl = 'http://127.0.0.1:5001/api';
 
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,

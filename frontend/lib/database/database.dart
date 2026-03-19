@@ -6,7 +6,13 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [Tasks])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(driftDatabase(name: 'task_sync_db'));
+  AppDatabase() : super(driftDatabase(
+    name: 'task_sync_db',
+    web: DriftWebOptions(
+      sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+      driftWorker: Uri.parse('drift_worker.js'),
+    ),
+  ));
 
   @override
   int get schemaVersion => 1;

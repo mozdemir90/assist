@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../database/database.dart';
+import 'package:frontend/database/database.dart';
 import '../remote/task_remote_data_source.dart';
+import '../../presentation/task_provider.dart';
 import 'package:drift/drift.dart' as drift;
 
 final taskRepositoryProvider = Provider<TaskRepository>((ref) {
