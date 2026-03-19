@@ -1,18 +1,39 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class User {
+  final String id;
+  final String username;
+  final String email;
+  final bool isActive;
+  final String? createdAt;
+  final String? updatedAt;
 
-part 'user_model.freezed.dart';
-part 'user_model.g.dart';
+  const User({
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.isActive,
+    this.createdAt,
+    this.updatedAt,
+  });
 
-@freezed
-class User with _$User {
-  const factory User({
-    required String id,
-    required String username,
-    required String email,
-    required bool isActive,
-    @JsonKey(name: 'created_at') String? createdAt,
-    @JsonKey(name: 'updated_at') String? updatedAt,
-  }) = _User;
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] as String,
+      username: json['username'] as String,
+      email: json['email'] as String,
+      isActive: json['isActive'] as bool? ?? true,
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
+    );
+  }
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'isActive': isActive,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
+  }
 }

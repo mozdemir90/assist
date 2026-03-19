@@ -32,25 +32,25 @@ class ApiClient {
 
   String _getBaseUrl() {
     // For local development on emulator/simulator
-    if (kIsWeb) return 'http://127.0.0.1:5000/api';
+    if (kIsWeb) return 'http://127.0.0.1:5001/api';
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5000/api'; // Android Emulator alias for localhost
+      return 'http://10.0.2.2:5001/api'; // Android Emulator alias for localhost
     }
-    return 'http://127.0.0.1:5000/api'; // iOS Simulator / Desktop
+    return 'http://127.0.0.1:5001/api'; // iOS Simulator / Desktop
   }
 
   Dio get dio => _dio;
 }
 
 @riverpod
-FlutterSecureStorage secureStorage(SecureStorageRef ref) {
+FlutterSecureStorage secureStorage(Ref ref) {
   return const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 }
 
 @riverpod
-ApiClient apiClient(ApiClientRef ref) {
+ApiClient apiClient(Ref ref) {
   final storage = ref.watch(secureStorageProvider);
   return ApiClient(dio: Dio(), storage: storage);
 }
