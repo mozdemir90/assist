@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'task_provider.dart';
 
 class TaskListScreen extends ConsumerWidget {
@@ -36,11 +37,25 @@ class TaskListScreen extends ConsumerWidget {
                     ref.read(taskNotifierProvider.notifier).toggleTaskCompletion(task);
                   },
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.play_circle_outline, color: Colors.blue),
+                      onPressed: () {
+                        context.push('/timer', extra: {
+                          'taskId': task.id,
+                          'taskTitle': task.title,
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
+                      },
+                    ),
+                  ],
                 ),
               );
             },

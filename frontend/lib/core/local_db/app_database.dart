@@ -69,6 +69,19 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  // --- Activities ---
+  Future<int> insertActivity(ActivitiesCompanion activity) {
+    return into(activities).insert(activity);
+  }
+
+  Future<bool> updateActivity(ActivityEntity activity) {
+    return update(activities).replace(activity);
+  }
+
+  Stream<List<ActivityEntity>> watchAllActivities() {
+    return select(activities).watch();
+  }
+
   static QueryExecutor _openConnection() {
     return driftDatabase(
       name: 'offline_first_db',
