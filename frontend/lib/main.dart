@@ -19,7 +19,7 @@ class MyApp extends ConsumerWidget {
     final goRouter = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Task & Activity Tracker',
+      title: 'ODAK',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

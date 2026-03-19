@@ -87,10 +87,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Logo Placeholder for ODAK
                 const Icon(
-                  Icons.person_add_alt_1_outlined,
+                  Icons.filter_center_focus,
                   size: 80,
                   color: Colors.blueAccent,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'ODAK',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                        color: Colors.blueAccent,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'Create an Account',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.grey,
+                      ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 TextFormField(
