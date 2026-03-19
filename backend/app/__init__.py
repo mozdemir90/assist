@@ -12,6 +12,11 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Import models so SQLAlchemy creates tables
+    with app.app_context():
+        from .modules.tasks import models as task_models
+        from .modules.auth import models as auth_models
+
     # Register Blueprints
     from .modules.auth.routes import auth_bp
     from .modules.tasks.routes import tasks_bp
