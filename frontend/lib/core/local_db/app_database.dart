@@ -70,11 +70,22 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'offline_first_db');
+    return driftDatabase(
+      name: 'offline_first_db',
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.js'),
+        onResult: (result) {
+          if (result.missingFeatures.isNotEmpty) {
+            print('Missing browser features: \${result.missingFeatures}');
+          }
+        },
+      ),
+    );
   }
 }
 
 @riverpod
-AppDatabase appDatabase(AppDatabaseRef ref) {
+AppDatabase appDatabase(Ref ref) {
   return AppDatabase();
 }
