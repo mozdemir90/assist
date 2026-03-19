@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:frontend/features/tasks/presentation/task_list_screen.dart';
 
 part 'app_router.g.dart';
 
 @riverpod
-GoRouter appRouter(AppRouterRef ref) {
+GoRouter appRouter(Ref ref) {
   return GoRouter(
     initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
         name: 'home',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Home Dashboard')),
-        ),
+        builder: (context, state) => const TaskListScreen(),
       ),
       GoRoute(
         path: '/login',
