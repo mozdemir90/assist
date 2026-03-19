@@ -18,6 +18,10 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
 
+    tasks = db.relationship('Task', backref='user', lazy=True, cascade="all, delete-orphan")
+    activities = db.relationship('Activity', backref='user', lazy=True, cascade="all, delete-orphan")
+    reminders = db.relationship('Reminder', backref='user', lazy=True, cascade="all, delete-orphan")
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
