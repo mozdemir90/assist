@@ -38,7 +38,6 @@ class TaskListScreen extends ConsumerWidget {
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  onFocusChange: (v) {},
                   onPressed: () {
                     ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
                   },

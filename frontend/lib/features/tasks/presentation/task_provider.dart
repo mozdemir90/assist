@@ -1,22 +1,35 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../database/database.dart';
+import '../../../database/database.dart';
 import 'package:drift/drift.dart' as drift;
 
 final databaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase();
-  ref.onDispose(() => db.close());
-  return db;
+  try {
+    final db = AppDatabase();
+    ref.onDispose(() => db.close());
+    return db;
+  } catch (e, st) {
+    print('🔥 DB Init Error: $e\n$st');
+    rethrow;
+  }
 });
 
 final tasksStreamProvider = StreamProvider<List<Task>>((ref) {
-  final db = ref.watch(databaseProvider);
-  return db.watchAllTasks();
+  try {
+    final db = ref.watch(databaseProvider);
+    return db.watchAllTasks();
+  } catch (e, st) {
+    print('🔥 StreamProvider Error: $e\n$st');
+    rethrow;
+  }
 });
 
-class TaskNotifier extends StateNotifier<AsyncValue<void>> {
-  final AppDatabase db;
+class TaskNotifier extends Notifier<AsyncValue<void>> {
+  AppDatabase get db => ref.read(databaseProvider);
 
-  TaskNotifier(this.db) : super(const AsyncData(null));
+  @override
+  AsyncValue<void> build() {
+    return const AsyncData(null);
+  }
 
   Future<void> addTask(String title, {String? description}) async {
     state = const AsyncLoading();
@@ -44,6 +57,6 @@ class TaskNotifier extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final taskNotifierProvider = StateNotifierProvider<TaskNotifier, AsyncValue<void>>((ref) {
-  return TaskNotifier(ref.watch(databaseProvider));
+final taskNotifierProvider = NotifierProvider<TaskNotifier, AsyncValue<void>>(() {
+  return TaskNotifier();
 });
