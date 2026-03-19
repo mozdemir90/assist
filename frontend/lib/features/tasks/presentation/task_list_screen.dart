@@ -1,46 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'task_provider.dart';
+import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
+import 'providers/task_notifier.dart';
 
 class TaskListScreen extends ConsumerWidget {
   const TaskListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasksAsyncValue = ref.watch(tasksStreamProvider);
+    final tasksAsyncValue = ref.watch(taskListProvider);
+    final actions = ref.watch(taskNotifierActionsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tasks (Offline First)'),
+        title: const Text('ODAK Tasks'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              ref.read(authNotifierProvider.notifier).logout();
+            },
+          )
+        ],
       ),
       body: tasksAsyncValue.when(
         data: (tasks) {
           if (tasks.isEmpty) {
-            return const Center(child: Text('No tasks yet. Add one!'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.task_alt, size: 80, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No tasks yet. Stay focused!',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 18),
+                  ),
+                ],
+              ),
+            );
           }
           return ListView.builder(
             itemCount: tasks.length,
+            padding: const EdgeInsets.symmetric(vertical: 8),
             itemBuilder: (context, index) {
               final task = tasks[index];
-              return ListTile(
-                title: Text(
-                  task.title,
-                  style: TextStyle(
-                    decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+              return Dismissible(
+                key: Key(task.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (_) {
+                  actions.deleteTask(task.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Task deleted'),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  elevation: 1,
+                  child: CheckboxListTile(
+                    title: Text(
+                      task.title,
+                      style: TextStyle(
+                        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                        color: task.isCompleted ? Colors.grey : null,
+                      ),
+                    ),
+                    subtitle: task.description.isNotEmpty
+                        ? Text(task.description)
+                        : null,
+                    value: task.isCompleted,
+                    onChanged: (_) {
+                      actions.toggleTaskCompletion(task);
+                    },
                   ),
-                ),
-                subtitle: task.description != null ? Text(task.description!) : null,
-                leading: Checkbox(
-                  value: task.isCompleted,
-                  onChanged: (_) {
-                    ref.read(taskNotifierProvider.notifier).toggleTaskCompletion(task);
-                  },
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    ref.read(taskNotifierProvider.notifier).deleteTask(task.id);
-                  },
                 ),
               );
             },
@@ -50,54 +92,77 @@ class TaskListScreen extends ConsumerWidget {
         error: (e, st) => Center(child: Text('Error: $e')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTaskDialog(context, ref),
+        onPressed: () => _showAddTaskDialog(context, ref, actions),
         child: const Icon(Icons.add),
+        tooltip: 'Add Task',
       ),
     );
   }
 
-  void _showAddTaskDialog(BuildContext context, WidgetRef ref) {
+  void _showAddTaskDialog(BuildContext context, WidgetRef ref, TaskNotifierActions actions) {
     final titleController = TextEditingController();
     final descriptionController = TextEditingController();
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) {
-        return AlertDialog(
-          title: const Text('New Task'),
-          content: Column(
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 24,
+          ),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                'New Task',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(
+                  labelText: 'What needs to be done?',
+                  border: OutlineInputBorder(),
+                ),
                 autofocus: true,
               ),
+              const SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: 'Description (optional)'),
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
               ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  final title = titleController.text.trim();
+                  if (title.isNotEmpty) {
+                    actions.addTask(
+                      title,
+                      description: descriptionController.text.trim(),
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Add Task', style: TextStyle(fontSize: 16)),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final title = titleController.text.trim();
-                if (title.isNotEmpty) {
-                  ref.read(taskNotifierProvider.notifier).addTask(
-                        title,
-                        description: descriptionController.text.trim().isEmpty ? null : descriptionController.text.trim(),
-                      );
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
         );
       },
     );
