@@ -5,29 +5,29 @@ from datetime import datetime, timezone
 def generate_uuid():
     return str(uuid.uuid4())
 
-class Task(db.Model):
-    __tablename__ = 'tasks'
+class List(db.Model):
+    __tablename__ = 'lists'
 
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    is_completed = db.Column(db.Boolean, default=False)
+    name = db.Column(db.String(255), nullable=False)
+    color = db.Column(db.String(7), nullable=True) # Hex color code
 
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
-    list_id = db.Column(db.String(36), db.ForeignKey('lists.id'), nullable=True)
 
     # Offline sync requirements
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     is_deleted = db.Column(db.Boolean, default=False)
+
+    tasks = db.relationship('Task', backref='list', lazy=True)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'title': self.title,
-            'description': self.description,
-            'is_completed': self.is_completed,
+            'name': self.name,
+            'color': self.color,
             'user_id': self.user_id,
-            'list_id': self.list_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_deleted': self.is_deleted
         }

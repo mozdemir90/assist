@@ -11,6 +11,7 @@ class TaskModel with _$TaskModel {
     @Default('') String description,
     @JsonKey(name: 'is_completed') @Default(false) bool isCompleted,
     @JsonKey(name: 'user_id') String? userId,
+    @JsonKey(name: 'list_id') String? listId,
     @JsonKey(name: 'updated_at') String? updatedAt,
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _TaskModel;

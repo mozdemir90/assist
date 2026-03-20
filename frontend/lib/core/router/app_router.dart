@@ -6,6 +6,7 @@ import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
+import '../../features/lists/presentation/screens/lists_screen.dart';
 import 'main_shell_screen.dart';
 
 part 'app_router.g.dart';
@@ -74,6 +75,15 @@ GoRouter appRouter(Ref ref) {
                 path: '/',
                 name: 'tasks',
                 builder: (context, state) => const TaskListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/lists',
+                name: 'lists',
+                builder: (context, state) => const ListsScreen(),
               ),
             ],
           ),

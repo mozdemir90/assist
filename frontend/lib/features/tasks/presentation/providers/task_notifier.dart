@@ -14,11 +14,12 @@ class TaskNotifierActions {
 
   TaskNotifierActions(this.repo);
 
-  Future<void> addTask(String title, {String description = ''}) async {
+  Future<void> addTask(String title, {String description = '', String? listId}) async {
     final task = TaskModel(
       id: const Uuid().v4(),
       title: title,
       description: description,
+      listId: listId,
     );
     await repo.createTask(task);
   }

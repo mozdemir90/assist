@@ -30,6 +30,11 @@ class MainShellScreen extends StatelessWidget {
             label: 'Tasks',
           ),
           NavigationDestination(
+            icon: Icon(Icons.list_outlined),
+            selectedIcon: Icon(Icons.list),
+            label: 'Lists',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.directions_run_outlined),
             selectedIcon: Icon(Icons.directions_run),
             label: 'Activities',

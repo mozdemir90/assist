@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TaskModel {
 
- String get id; String get title; String get description;@JsonKey(name: 'is_completed') bool get isCompleted;@JsonKey(name: 'user_id') String? get userId;@JsonKey(name: 'updated_at') String? get updatedAt;@JsonKey(name: 'is_deleted') bool get isDeleted;
+ String get id; String get title; String get description;@JsonKey(name: 'is_completed') bool get isCompleted;@JsonKey(name: 'user_id') String? get userId;@JsonKey(name: 'list_id') String? get listId;@JsonKey(name: 'updated_at') String? get updatedAt;@JsonKey(name: 'is_deleted') bool get isDeleted;
 /// Create a copy of TaskModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $TaskModelCopyWith<TaskModel> get copyWith => _$TaskModelCopyWithImpl<TaskModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.listId, listId) || other.listId == listId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,isCompleted,userId,updatedAt,isDeleted);
+int get hashCode => Object.hash(runtimeType,id,title,description,isCompleted,userId,listId,updatedAt,isDeleted);
 
 @override
 String toString() {
-  return 'TaskModel(id: $id, title: $title, description: $description, isCompleted: $isCompleted, userId: $userId, updatedAt: $updatedAt, isDeleted: $isDeleted)';
+  return 'TaskModel(id: $id, title: $title, description: $description, isCompleted: $isCompleted, userId: $userId, listId: $listId, updatedAt: $updatedAt, isDeleted: $isDeleted)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TaskModelCopyWith<$Res>  {
   factory $TaskModelCopyWith(TaskModel value, $Res Function(TaskModel) _then) = _$TaskModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description,@JsonKey(name: 'is_completed') bool isCompleted,@JsonKey(name: 'user_id') String? userId,@JsonKey(name: 'updated_at') String? updatedAt,@JsonKey(name: 'is_deleted') bool isDeleted
+ String id, String title, String description,@JsonKey(name: 'is_completed') bool isCompleted,@JsonKey(name: 'user_id') String? userId,@JsonKey(name: 'list_id') String? listId,@JsonKey(name: 'updated_at') String? updatedAt,@JsonKey(name: 'is_deleted') bool isDeleted
 });
 
 
@@ -65,13 +65,14 @@ class _$TaskModelCopyWithImpl<$Res>
 
 /// Create a copy of TaskModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? isCompleted = null,Object? userId = freezed,Object? updatedAt = freezed,Object? isDeleted = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? isCompleted = null,Object? userId = freezed,Object? listId = freezed,Object? updatedAt = freezed,Object? isDeleted = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
 as bool,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,listId: freezed == listId ? _self.listId : listId // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'list_id')  String? listId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TaskModel() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.updatedAt,_that.isDeleted);case _:
+return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.listId,_that.updatedAt,_that.isDeleted);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.u
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'list_id')  String? listId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)  $default,) {final _that = this;
 switch (_that) {
 case _TaskModel():
-return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.updatedAt,_that.isDeleted);case _:
+return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.listId,_that.updatedAt,_that.isDeleted);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.u
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description, @JsonKey(name: 'is_completed')  bool isCompleted, @JsonKey(name: 'user_id')  String? userId, @JsonKey(name: 'list_id')  String? listId, @JsonKey(name: 'updated_at')  String? updatedAt, @JsonKey(name: 'is_deleted')  bool isDeleted)?  $default,) {final _that = this;
 switch (_that) {
 case _TaskModel() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.updatedAt,_that.isDeleted);case _:
+return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.userId,_that.listId,_that.updatedAt,_that.isDeleted);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return $default(_that.id,_that.title,_that.description,_that.isCompleted,_that.u
 @JsonSerializable()
 
 class _TaskModel implements TaskModel {
-  const _TaskModel({required this.id, required this.title, this.description = '', @JsonKey(name: 'is_completed') this.isCompleted = false, @JsonKey(name: 'user_id') this.userId, @JsonKey(name: 'updated_at') this.updatedAt, @JsonKey(name: 'is_deleted') this.isDeleted = false});
+  const _TaskModel({required this.id, required this.title, this.description = '', @JsonKey(name: 'is_completed') this.isCompleted = false, @JsonKey(name: 'user_id') this.userId, @JsonKey(name: 'list_id') this.listId, @JsonKey(name: 'updated_at') this.updatedAt, @JsonKey(name: 'is_deleted') this.isDeleted = false});
   factory _TaskModel.fromJson(Map<String, dynamic> json) => _$TaskModelFromJson(json);
 
 @override final  String id;
@@ -223,6 +224,7 @@ class _TaskModel implements TaskModel {
 @override@JsonKey() final  String description;
 @override@JsonKey(name: 'is_completed') final  bool isCompleted;
 @override@JsonKey(name: 'user_id') final  String? userId;
+@override@JsonKey(name: 'list_id') final  String? listId;
 @override@JsonKey(name: 'updated_at') final  String? updatedAt;
 @override@JsonKey(name: 'is_deleted') final  bool isDeleted;
 
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.listId, listId) || other.listId == listId)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,isCompleted,userId,updatedAt,isDeleted);
+int get hashCode => Object.hash(runtimeType,id,title,description,isCompleted,userId,listId,updatedAt,isDeleted);
 
 @override
 String toString() {
-  return 'TaskModel(id: $id, title: $title, description: $description, isCompleted: $isCompleted, userId: $userId, updatedAt: $updatedAt, isDeleted: $isDeleted)';
+  return 'TaskModel(id: $id, title: $title, description: $description, isCompleted: $isCompleted, userId: $userId, listId: $listId, updatedAt: $updatedAt, isDeleted: $isDeleted)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$TaskModelCopyWith<$Res> implements $TaskModelCopyWith<$Re
   factory _$TaskModelCopyWith(_TaskModel value, $Res Function(_TaskModel) _then) = __$TaskModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description,@JsonKey(name: 'is_completed') bool isCompleted,@JsonKey(name: 'user_id') String? userId,@JsonKey(name: 'updated_at') String? updatedAt,@JsonKey(name: 'is_deleted') bool isDeleted
+ String id, String title, String description,@JsonKey(name: 'is_completed') bool isCompleted,@JsonKey(name: 'user_id') String? userId,@JsonKey(name: 'list_id') String? listId,@JsonKey(name: 'updated_at') String? updatedAt,@JsonKey(name: 'is_deleted') bool isDeleted
 });
 
 
@@ -276,13 +278,14 @@ class __$TaskModelCopyWithImpl<$Res>
 
 /// Create a copy of TaskModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? isCompleted = null,Object? userId = freezed,Object? updatedAt = freezed,Object? isDeleted = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? isCompleted = null,Object? userId = freezed,Object? listId = freezed,Object? updatedAt = freezed,Object? isDeleted = null,}) {
   return _then(_TaskModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
 as bool,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,listId: freezed == listId ? _self.listId : listId // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,isDeleted: null == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
 as bool,

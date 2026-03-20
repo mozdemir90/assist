@@ -12,6 +12,7 @@ _TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => _TaskModel(
   description: json['description'] as String? ?? '',
   isCompleted: json['is_completed'] as bool? ?? false,
   userId: json['user_id'] as String?,
+  listId: json['list_id'] as String?,
   updatedAt: json['updated_at'] as String?,
   isDeleted: json['is_deleted'] as bool? ?? false,
 );
@@ -23,6 +24,7 @@ Map<String, dynamic> _$TaskModelToJson(_TaskModel instance) =>
       'description': instance.description,
       'is_completed': instance.isCompleted,
       'user_id': instance.userId,
+      'list_id': instance.listId,
       'updated_at': instance.updatedAt,
       'is_deleted': instance.isDeleted,
     };

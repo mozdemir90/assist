@@ -23,6 +23,7 @@ class TaskRepository {
                 description: e.description ?? '',
                 isCompleted: e.isCompleted,
                 userId: e.userId,
+                listId: e.listId,
                 updatedAt: e.updatedAt?.toIso8601String(),
                 isDeleted: e.isDeleted,
               ))
@@ -41,6 +42,7 @@ class TaskRepository {
           description: task.description,
           isCompleted: task.isCompleted,
           userId: task.userId ?? '',
+          listId: task.listId,
           updatedAt: task.updatedAt != null ? DateTime.parse(task.updatedAt!) : null,
           isDeleted: task.isDeleted,
         ));
@@ -60,6 +62,7 @@ class TaskRepository {
       description: task.description,
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
+      listId: task.listId,
       updatedAt: DateTime.now().toUtc(),
       isDeleted: false,
     );
@@ -75,6 +78,7 @@ class TaskRepository {
           description: createdRemote.description,
           isCompleted: createdRemote.isCompleted,
           userId: createdRemote.userId ?? '',
+          listId: createdRemote.listId,
           updatedAt: createdRemote.updatedAt != null ? DateTime.parse(createdRemote.updatedAt!) : null,
           isDeleted: createdRemote.isDeleted,
         ));
@@ -91,6 +95,7 @@ class TaskRepository {
       description: task.description,
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
+      listId: task.listId,
       updatedAt: DateTime.now().toUtc(),
       isDeleted: task.isDeleted,
     );

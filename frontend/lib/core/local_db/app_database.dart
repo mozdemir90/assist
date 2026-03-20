@@ -3,8 +3,26 @@ import 'package:drift_flutter/drift_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'daos/tasks_dao.dart';
 import 'daos/activities_dao.dart';
+import 'daos/lists_dao.dart';
 
 part 'app_database.g.dart';
+
+// Lists Table
+@DataClassName('ListEntity')
+class Lists extends Table {
+  TextColumn get id => text()(); // UUID
+  TextColumn get name => text().withLength(min: 1, max: 255)();
+  TextColumn get color => text().nullable()();
+  TextColumn get userId => text()();
+
+  // Sync
+  DateTimeColumn get createdAt => dateTime().nullable()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
 
 // Tasks Table
 @DataClassName('TaskEntity')
@@ -14,6 +32,7 @@ class Tasks extends Table {
   TextColumn get description => text().nullable()();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   TextColumn get userId => text()();
+  TextColumn get listId => text().nullable()();
 
   // Sync
   DateTimeColumn get updatedAt => dateTime().nullable()();
@@ -64,12 +83,30 @@ class Reminders extends Table {
 }
 
 
-@DriftDatabase(tables: [Tasks, Activities, Reminders], daos: [TasksDao, ActivitiesDao])
+@DriftDatabase(tables: [Lists, Tasks, Activities, Reminders], daos: [ListsDao, TasksDao, ActivitiesDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from == 1) {
+          await m.createTable(lists);
+          await m.addColumn(tasks, tasks.listId);
+        }
+      },
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
