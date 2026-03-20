@@ -5,6 +5,8 @@ import 'package:frontend/features/tasks/presentation/task_list_screen.dart';
 import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/activities/presentation/screens/activity_list_screen.dart';
+import 'main_shell_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -61,10 +63,30 @@ GoRouter appRouter(Ref ref) {
         name: 'splash',
         builder: (context, state) => const SplashLoader(),
       ),
-      GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const TaskListScreen(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                name: 'tasks',
+                builder: (context, state) => const TaskListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/activities',
+                name: 'activities',
+                builder: (context, state) => const ActivityListScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/login',
