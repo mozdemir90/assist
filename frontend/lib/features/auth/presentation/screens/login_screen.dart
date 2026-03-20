@@ -69,17 +69,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Logo Placeholder
-                const Icon(
-                  Icons.check_circle_outline,
-                  size: 80,
-                  color: Colors.blueAccent,
+                // App Logo
+                Center(
+                  child: Image.asset(
+                    'assets/images/odak_logo.png',
+                    height: 120,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Welcome Back',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  'ODAK',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        letterSpacing: 2,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Hoş Geldiniz',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
                       ),
                   textAlign: TextAlign.center,
                 ),

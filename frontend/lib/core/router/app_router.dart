@@ -6,6 +6,7 @@ import '../../features/activities/presentation/activity_timer_screen.dart';
 import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -56,6 +57,11 @@ GoRouter appRouter(Ref ref) {
       );
     },
     routes: [
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
       GoRoute(
         path: '/timer',
         name: 'timer',

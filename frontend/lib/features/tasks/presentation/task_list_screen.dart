@@ -13,6 +13,12 @@ class TaskListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tasks (Offline First)'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => context.push('/profile'),
+          ),
+        ],
       ),
       body: tasksAsyncValue.when(
         data: (tasks) {
