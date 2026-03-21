@@ -55,4 +55,4 @@ final class ReminderApiServiceProvider
 }
 
 String _$reminderApiServiceHash() =>
-    r'a29728c519d6bc93577429e6433635c247e0b627';
+    r'00e5a9ee2c2521742494a83a19dde3b4bc9e773a';

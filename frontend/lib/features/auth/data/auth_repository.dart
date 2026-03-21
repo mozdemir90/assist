@@ -23,12 +23,24 @@ class AuthRepository {
       if (response.statusCode == 200) {
         final token = response.data['token'];
         final userData = response.data['user'];
+        print("LOGIN SUCCESS: user=${userData['username']}, token=${token.substring(0, 10)}...");
 
         await _storage.write(key: 'jwt_token', value: token);
-        return User.fromJson(userData);
+        print('userData keys: ${userData.keys}');
+        print("is_active value: ${userData['is_active']} (type: ${userData['is_active'].runtimeType})");
+        try {
+          final user = User.fromJson(userData);
+          print('User.fromJson successful: ${user.username}');
+          return user;
+        } catch (e) {
+          print('User.fromJson FAILED: $e');
+          rethrow;
+        }
       }
+      print('LOGIN FAILED: Unknown reason');
       return null;
     } on DioException catch (e) {
+      print('LOGIN ERROR (Dio): ${e.response?.statusCode} - ${e.response?.data}');
       if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout) {
          throw Exception('İnternet bağlantısı yok, çevrimdışı çalışılıyor');
       }
@@ -37,6 +49,7 @@ class AuthRepository {
       }
       throw Exception(e.response?.data['message'] ?? 'Giriş işlemi başarısız oldu.');
     } catch (e) {
+      print('LOGIN ERROR (Unexpected): $e');
       throw Exception('Beklenmedik bir hata oluştu.');
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/theme_provider.dart';
+import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
 
 class ProfileScreen extends ConsumerWidget {

@@ -29,11 +29,21 @@ class SplashLoader extends StatelessWidget {
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  final authState = ref.watch(authProvider);
+  final authNotifier = ValueNotifier<AuthState>(ref.read(authProvider));
+  
+  ref.listen<AuthState>(
+    authProvider,
+    (_, next) {
+      authNotifier.value = next;
+    },
+  );
 
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: authNotifier,
     redirect: (context, state) {
+      final authState = ref.read(authProvider);
+      print('ROUTER REDIRECT: location=${state.matchedLocation}, state=$authState');
       return authState.maybeWhen(
         initial: () => '/splash',
         loading: () {

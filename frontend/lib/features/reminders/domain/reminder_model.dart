@@ -4,7 +4,7 @@ part 'reminder_model.freezed.dart';
 part 'reminder_model.g.dart';
 
 @freezed
-class ReminderModel with _$ReminderModel {
+abstract class ReminderModel with _$ReminderModel {
   const factory ReminderModel({
     required String id,
     required String title,

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/network/api_client.dart';
-import '../domain/reminder_model.dart';
+import '../../domain/reminder_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reminder_api_service.g.dart';
@@ -33,6 +33,6 @@ class ReminderApiService {
 
 @riverpod
 ReminderApiService reminderApiService(Ref ref) {
-  final dio = ref.watch(dioProvider);
+  final dio = ref.watch(apiClientProvider).dio;
   return ReminderApiService(dio);
 }

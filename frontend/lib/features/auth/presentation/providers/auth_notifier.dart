@@ -34,18 +34,22 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> login(String username, String password) async {
+    print('AuthNotifier.login: attempting for username=\$username');
     state = AuthState.loading();
     try {
       final repo = ref.read(authRepositoryProvider);
       final user = await repo.login(username, password);
+      print('AuthNotifier.login: Success with user \${user?.username}');
       if (user != null) {
         state = AuthState.authenticated(user);
         // Trigger background sync
         ref.read(syncProvider).syncAll();
       } else {
+        print('AuthNotifier.login: User is null');
         state = AuthState.error('Bilinmeyen bir hata oluştu.');
       }
     } catch (e) {
+      print('AuthNotifier.login ERROR: \$e');
       state = AuthState.error(e.toString().replaceAll('Exception: ', ''));
     }
   }

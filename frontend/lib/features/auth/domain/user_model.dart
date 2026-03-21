@@ -9,7 +9,7 @@ abstract class User with _$User {
     required String id,
     required String username,
     required String email,
-    required bool isActive,
+    @JsonKey(name: 'is_active') required bool isActive,
     @JsonKey(name: 'created_at') String? createdAt,
     @JsonKey(name: 'updated_at') String? updatedAt,
   }) = _User;
