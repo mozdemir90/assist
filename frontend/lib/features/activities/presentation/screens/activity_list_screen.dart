@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
-import 'providers/activity_notifier.dart';
+import '../providers/activity_notifier.dart';
 
 class ActivityListScreen extends ConsumerWidget {
   const ActivityListScreen({super.key});
@@ -18,7 +18,7 @@ class ActivityListScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ref.read(authNotifierProvider.notifier).logout();
+              ref.read(authProvider.notifier).logout();
             },
           )
         ],

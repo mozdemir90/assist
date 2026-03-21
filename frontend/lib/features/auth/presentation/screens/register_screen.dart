@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/auth_state.dart';
 import '../providers/auth_notifier.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -19,7 +20,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authNotifierProvider.notifier).register(
+      ref.read(authProvider.notifier).register(
             _usernameController.text.trim(),
             _emailController.text.trim(),
             _passwordController.text,
@@ -50,7 +51,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(authNotifierProvider, (previous, next) {
+    ref.listen(authProvider, (previous, next) {
       next.maybeWhen(
         error: (message) {
           final isOffline = message.contains('çevrimdışı');
@@ -68,7 +69,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
     });
 
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(authProvider);
     final isLoading = authState.maybeWhen(
       loading: () => true,
       orElse: () => false,

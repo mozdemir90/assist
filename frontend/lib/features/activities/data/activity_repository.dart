@@ -110,7 +110,7 @@ class ActivityRepository {
 }
 
 @riverpod
-ActivityRepository activityRepository(ActivityRepositoryRef ref) {
+ActivityRepository activityRepository(Ref ref) {
   final db = ref.watch(appDatabaseProvider);
   final api = ref.watch(activityApiServiceProvider);
   return ActivityRepository(db.activitiesDao, api);

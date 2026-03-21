@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../providers/auth_state.dart';
 import '../providers/auth_notifier.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -18,7 +19,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authNotifierProvider.notifier).login(
+      ref.read(authProvider.notifier).login(
             _usernameController.text.trim(),
             _passwordController.text,
           );
@@ -35,7 +36,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // Listen to state changes to show SnackBar on Error
-    ref.listen(authNotifierProvider, (previous, next) {
+    ref.listen(authProvider, (previous, next) {
       next.maybeWhen(
         error: (message) {
           final isOffline = message.contains('çevrimdışı');
@@ -53,7 +54,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
     });
 
-    final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(authProvider);
     final isLoading = authState.maybeWhen(
       loading: () => true,
       orElse: () => false,

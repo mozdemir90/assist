@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/local_db/app_database.dart';
 import '../../../core/local_db/daos/tasks_dao.dart';
@@ -117,7 +118,7 @@ class TaskRepository {
 }
 
 @riverpod
-TaskRepository taskRepository(TaskRepositoryRef ref) {
+TaskRepository taskRepository(Ref ref) {
   final db = ref.watch(appDatabaseProvider);
   final api = ref.watch(taskApiServiceProvider);
   return TaskRepository(db.tasksDao, api);

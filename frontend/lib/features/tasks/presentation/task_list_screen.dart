@@ -18,7 +18,7 @@ class TaskListScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ref.read(authNotifierProvider.notifier).logout();
+              ref.read(authProvider.notifier).logout();
             },
           )
         ],

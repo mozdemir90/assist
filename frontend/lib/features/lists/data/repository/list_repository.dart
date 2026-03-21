@@ -1,22 +1,20 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../../../core/network/dio_client.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../core/local_db/app_database.dart';
 import '../model/list_model.dart';
-import 'package:drift/drift.dart';
 
 final listRepositoryProvider = Provider<ListRepository>((ref) {
-  final dio = ref.watch(dioClientProvider);
+  final apiClient = ref.watch(apiClientProvider);
   final db = ref.watch(appDatabaseProvider);
-  return ListRepository(dio, db);
+  return ListRepository(apiClient, db);
 });
 
 class ListRepository {
-  final Dio _dio;
+  final ApiClient _apiClient;
   final AppDatabase _db;
 
-  ListRepository(this._dio, this._db);
+  ListRepository(this._apiClient, this._db);
 
   Stream<List<ListEntity>> watchLists() {
     return _db.listsDao.watchAllLists();
@@ -24,7 +22,7 @@ class ListRepository {
 
   Future<void> syncLists() async {
     try {
-      final response = await _dio.get('/lists/');
+      final response = await _apiClient.dio.get('/lists/');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         for (var item in data) {
@@ -34,6 +32,7 @@ class ListRepository {
               name: listModel.name,
               color: listModel.color,
               userId: '', // Ideally retrieved from auth or backend
+              isDeleted: false,
             ),
           );
         }
@@ -54,7 +53,7 @@ class ListRepository {
     );
     await _db.listsDao.insertList(companion);
     try {
-      await _dio.post('/lists/', data: {
+      await _apiClient.dio.post('/lists/', data: {
         'id': uuid,
         'name': name,
         'color': color,
@@ -67,7 +66,7 @@ class ListRepository {
   Future<void> deleteList(String id) async {
     await _db.listsDao.softDeleteList(id);
     try {
-      await _dio.delete('/lists/$id');
+      await _apiClient.dio.delete('/lists/$id');
     } catch (e) {
       // Saved locally, will sync later
     }

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:frontend/features/tasks/presentation/task_list_screen.dart';
 import '../../features/auth/presentation/providers/auth_notifier.dart';
+import '../../features/auth/presentation/providers/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
@@ -26,7 +27,7 @@ class SplashLoader extends StatelessWidget {
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  final authState = ref.watch(authNotifierProvider);
+  final authState = ref.watch(authProvider);
 
   return GoRouter(
     initialLocation: '/',

@@ -4,7 +4,7 @@ part 'list_model.freezed.dart';
 part 'list_model.g.dart';
 
 @freezed
-class ListModel with _$ListModel {
+abstract class ListModel with _$ListModel {
   const factory ListModel({
     required String id,
     required String name,
