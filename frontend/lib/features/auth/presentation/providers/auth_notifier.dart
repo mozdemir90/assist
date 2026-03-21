@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/auth_repository.dart';
-import 'auth_state.dart';
 import '../../domain/user_model.dart';
+import 'auth_state.dart';
 import '../../../sync/presentation/providers/sync_provider.dart';
 
 part 'auth_notifier.g.dart';
@@ -11,11 +11,11 @@ class AuthNotifier extends _$AuthNotifier {
   @override
   AuthState build() {
     _checkInitialAuth();
-    return const AuthState.initial();
+    return AuthState.initial();
   }
 
   Future<void> _checkInitialAuth() async {
-    state = const AuthState.loading();
+    state = AuthState.loading();
     final repo = ref.read(authRepositoryProvider);
     try {
       final isAuth = await repo.isAuthenticated();
@@ -26,15 +26,15 @@ class AuthNotifier extends _$AuthNotifier {
         // Trigger background sync
         ref.read(syncProvider).syncAll();
       } else {
-        state = const AuthState.unauthenticated();
+        state = AuthState.unauthenticated();
       }
     } catch (e) {
-      state = const AuthState.unauthenticated();
+      state = AuthState.unauthenticated();
     }
   }
 
   Future<void> login(String username, String password) async {
-    state = const AuthState.loading();
+    state = AuthState.loading();
     try {
       final repo = ref.read(authRepositoryProvider);
       final user = await repo.login(username, password);
@@ -43,7 +43,7 @@ class AuthNotifier extends _$AuthNotifier {
         // Trigger background sync
         ref.read(syncProvider).syncAll();
       } else {
-        state = const AuthState.error('Bilinmeyen bir hata oluştu.');
+        state = AuthState.error('Bilinmeyen bir hata oluştu.');
       }
     } catch (e) {
       state = AuthState.error(e.toString().replaceAll('Exception: ', ''));
@@ -51,7 +51,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> register(String username, String email, String password) async {
-    state = const AuthState.loading();
+    state = AuthState.loading();
     try {
       final repo = ref.read(authRepositoryProvider);
       final user = await repo.register(username, email, password);
@@ -60,7 +60,7 @@ class AuthNotifier extends _$AuthNotifier {
         // Trigger background sync
         ref.read(syncProvider).syncAll();
       } else {
-        state = const AuthState.error('Bilinmeyen bir hata oluştu.');
+        state = AuthState.error('Bilinmeyen bir hata oluştu.');
       }
     } catch (e) {
       state = AuthState.error(e.toString().replaceAll('Exception: ', ''));
@@ -68,9 +68,9 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> logout() async {
-    state = const AuthState.loading();
+    state = AuthState.loading();
     final repo = ref.read(authRepositoryProvider);
     await repo.logout();
-    state = const AuthState.unauthenticated();
+    state = AuthState.unauthenticated();
   }
 }

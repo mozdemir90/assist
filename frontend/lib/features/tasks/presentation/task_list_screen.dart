@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import 'providers/task_notifier.dart';
 
@@ -16,11 +17,15 @@ class TaskListScreen extends ConsumerWidget {
         title: const Text('ODAK Tasks'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => context.push('/profile'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               ref.read(authProvider.notifier).logout();
             },
-          )
+          ),
         ],
       ),
       body: tasksAsyncValue.when(
@@ -57,10 +62,10 @@ class TaskListScreen extends ConsumerWidget {
                 onDismissed: (_) {
                   actions.deleteTask(task.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Task deleted'),
                       behavior: SnackBarBehavior.floating,
-                      duration: const Duration(seconds: 2),
+                      duration: Duration(seconds: 2),
                     ),
                   );
                 },
@@ -78,6 +83,20 @@ class TaskListScreen extends ConsumerWidget {
                     subtitle: task.description.isNotEmpty
                         ? Text(task.description)
                         : null,
+                    secondary: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.play_circle_outline, color: Colors.blue),
+                          onPressed: () {
+                            context.push('/timer', extra: {
+                              'taskId': task.id,
+                              'taskTitle': task.title,
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                     value: task.isCompleted,
                     onChanged: (_) {
                       actions.toggleTaskCompletion(task);

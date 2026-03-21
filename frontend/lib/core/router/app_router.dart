@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:frontend/features/tasks/presentation/task_list_screen.dart';
+import '../../features/activities/presentation/activity_timer_screen.dart';
 import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/providers/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
 import '../../features/lists/presentation/screens/lists_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 import 'main_shell_screen.dart';
 
 part 'app_router.g.dart';
@@ -60,6 +62,22 @@ GoRouter appRouter(Ref ref) {
       );
     },
     routes: [
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/timer',
+        name: 'timer',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, String?>?;
+          return ActivityTimerScreen(
+            taskId: extra?['taskId'],
+            taskTitle: extra?['taskTitle'],
+          );
+        },
+      ),
       GoRoute(
         path: '/splash',
         name: 'splash',

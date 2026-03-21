@@ -48,4 +48,8 @@ final class AppRouterProvider
   }
 }
 
+<<<<<<< HEAD
 String _$appRouterHash() => r'f894063e61e4cdb51f965be48ff93f25054bbbfd';
+=======
+String _$appRouterHash() => r'137013f3e950424e73238baaff5ec9f1a6e6b75c';
+>>>>>>> jules-anti-birlesim
