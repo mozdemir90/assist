@@ -4,7 +4,7 @@ part 'activity_model.freezed.dart';
 part 'activity_model.g.dart';
 
 @freezed
-abstract class ActivityModel with _$ActivityModel {
+class ActivityModel with _$ActivityModel {
   const factory ActivityModel({
     required String id,
     required String title,

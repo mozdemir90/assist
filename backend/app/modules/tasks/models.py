@@ -16,6 +16,10 @@ class Task(db.Model):
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     list_id = db.Column(db.String(36), db.ForeignKey('lists.id'), nullable=True)
 
+    # Notification & Deadline features
+    deadline = db.Column(db.DateTime, nullable=True)
+    remind_via_email = db.Column(db.Boolean, default=False)
+
     # Offline sync requirements
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     is_deleted = db.Column(db.Boolean, default=False)
@@ -28,6 +32,8 @@ class Task(db.Model):
             'is_completed': self.is_completed,
             'user_id': self.user_id,
             'list_id': self.list_id,
+            'deadline': self.deadline.isoformat() if self.deadline else None,
+            'remind_via_email': self.remind_via_email,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_deleted': self.is_deleted
         }

@@ -1,6 +1,6 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import 'providers/task_notifier.dart';
 
@@ -14,18 +14,15 @@ class TaskListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ODAK Tasks'),
+        title: Text('tasks'.tr()),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline),
-            onPressed: () => context.push('/profile'),
-          ),
-          IconButton(
             icon: const Icon(Icons.logout),
+            tooltip: 'logout'.tr(),
             onPressed: () {
-              ref.read(authProvider.notifier).logout();
+              ref.read(authNotifierProvider.notifier).logout();
             },
-          ),
+          )
         ],
       ),
       body: tasksAsyncValue.when(
@@ -38,7 +35,7 @@ class TaskListScreen extends ConsumerWidget {
                   Icon(Icons.task_alt, size: 80, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
-                    'No tasks yet. Stay focused!',
+                    'no_tasks'.tr(),
                     style: TextStyle(color: Colors.grey[600], fontSize: 18),
                   ),
                 ],
@@ -62,10 +59,10 @@ class TaskListScreen extends ConsumerWidget {
                 onDismissed: (_) {
                   actions.deleteTask(task.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Task deleted'),
+                    SnackBar(
+                      content: Text('task_deleted'.tr()),
                       behavior: SnackBarBehavior.floating,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
@@ -83,20 +80,6 @@ class TaskListScreen extends ConsumerWidget {
                     subtitle: task.description.isNotEmpty
                         ? Text(task.description)
                         : null,
-                    secondary: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.play_circle_outline, color: Colors.blue),
-                          onPressed: () {
-                            context.push('/timer', extra: {
-                              'taskId': task.id,
-                              'taskTitle': task.title,
-                            });
-                          },
-                        ),
-                      ],
-                    ),
                     value: task.isCompleted,
                     onChanged: (_) {
                       actions.toggleTaskCompletion(task);
@@ -113,7 +96,7 @@ class TaskListScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTaskDialog(context, ref, actions),
         child: const Icon(Icons.add),
-        tooltip: 'Add Task',
+        tooltip: 'add_task'.tr(),
       ),
     );
   }
@@ -141,24 +124,24 @@ class TaskListScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'New Task',
+                'new_task'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'What needs to be done?',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: 'task_title_hint'.tr(),
+                  border: const OutlineInputBorder(),
                 ),
                 autofocus: true,
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: 'description_optional'.tr(),
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
@@ -177,7 +160,7 @@ class TaskListScreen extends ConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('Add Task', style: TextStyle(fontSize: 16)),
+                child: Text('add_task'.tr(), style: const TextStyle(fontSize: 16)),
               ),
               const SizedBox(height: 24),
             ],

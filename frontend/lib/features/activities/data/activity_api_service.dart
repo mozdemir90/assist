@@ -31,6 +31,6 @@ class ActivityApiService {
 }
 
 @riverpod
-ActivityApiService activityApiService(Ref ref) {
+ActivityApiService activityApiService(ActivityApiServiceRef ref) {
   return ActivityApiService(ref.watch(apiClientProvider));
 }

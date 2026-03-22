@@ -25,7 +25,11 @@ class ListsDao extends DatabaseAccessor<AppDatabase> with _$ListsDaoMixin {
     return (update(lists)..where((l) => l.id.equals(id)))
         .write(ListsCompanion(
           isDeleted: const Value(true),
+          syncStatus: const Value('pending_delete'),
           updatedAt: Value(DateTime.now().toUtc()),
         ));
   }
+
+  Future<List<ListEntity>> getPendingLists() =>
+      (select(lists)..where((l) => l.syncStatus.isNotIn(['synced']))).get();
 }

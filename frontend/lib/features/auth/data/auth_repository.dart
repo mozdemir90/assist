@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_client.dart';
+import '../../../core/logger/app_logger.dart';
+import '../../../core/error/exceptions.dart';
 import '../domain/user_model.dart';
 
 part 'auth_repository.g.dart';
@@ -22,35 +23,30 @@ class AuthRepository {
 
       if (response.statusCode == 200) {
         final token = response.data['token'];
+        final refreshToken = response.data['refresh_token'];
         final userData = response.data['user'];
-        print("LOGIN SUCCESS: user=${userData['username']}, token=${token.substring(0, 10)}...");
 
         await _storage.write(key: 'jwt_token', value: token);
-        print('userData keys: ${userData.keys}');
-        print("is_active value: ${userData['is_active']} (type: ${userData['is_active'].runtimeType})");
-        try {
-          final user = User.fromJson(userData);
-          print('User.fromJson successful: ${user.username}');
-          return user;
-        } catch (e) {
-          print('User.fromJson FAILED: $e');
-          rethrow;
+        if (refreshToken != null) {
+          await _storage.write(key: 'refresh_token', value: refreshToken);
         }
+        return User.fromJson(userData);
       }
-      print('LOGIN FAILED: Unknown reason');
       return null;
     } on DioException catch (e) {
-      print('LOGIN ERROR (Dio): ${e.response?.statusCode} - ${e.response?.data}');
       if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout) {
-         throw Exception('İnternet bağlantısı yok, çevrimdışı çalışılıyor');
+         appLogger.w('Login connection error: \${e.message}');
+         throw NetworkException('İnternet bağlantısı yok, çevrimdışı çalışılıyor');
       }
       if (e.response?.statusCode == 401 || e.response?.statusCode == 404) {
-         throw Exception('Hatalı e-posta veya şifre');
+         appLogger.w('Login auth error: \${e.response?.statusCode}');
+         throw AuthException('Hatalı e-posta veya şifre');
       }
-      throw Exception(e.response?.data['message'] ?? 'Giriş işlemi başarısız oldu.');
-    } catch (e) {
-      print('LOGIN ERROR (Unexpected): $e');
-      throw Exception('Beklenmedik bir hata oluştu.');
+      appLogger.e('Login failed with dio exception: \${e.message}');
+      throw CustomAppException(e.response?.data['message'] ?? 'Giriş işlemi başarısız oldu.');
+    } catch (e, st) {
+      appLogger.e('Unexpected login error', error: e, stackTrace: st);
+      throw CustomAppException('Beklenmedik bir hata oluştu.');
     }
   }
 
@@ -69,29 +65,55 @@ class AuthRepository {
       return null;
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout) {
-         throw Exception('İnternet bağlantısı yok, çevrimdışı çalışılıyor');
+         appLogger.w('Register connection error: \${e.message}');
+         throw NetworkException('İnternet bağlantısı yok, çevrimdışı çalışılıyor');
       }
       if (e.response?.statusCode == 400) {
-         throw Exception(e.response?.data['message'] ?? 'Kayıt bilgileri geçersiz.');
+         appLogger.w('Register validation error: \${e.response?.data}');
+         throw AuthException(e.response?.data['message'] ?? 'Kayıt bilgileri geçersiz.');
       }
-      throw Exception('Kayıt işlemi başarısız oldu.');
-    } catch (e) {
-      throw Exception('Kayıt işlemi sırasında beklenmedik bir hata oluştu.');
+      appLogger.e('Register failed with dio exception: \${e.message}');
+      throw CustomAppException('Kayıt işlemi başarısız oldu.');
+    } catch (e, st) {
+      appLogger.e('Unexpected register error', error: e, stackTrace: st);
+      throw CustomAppException('Kayıt işlemi sırasında beklenmedik bir hata oluştu.');
     }
   }
 
   Future<void> logout() async {
     await _storage.delete(key: 'jwt_token');
+    await _storage.delete(key: 'refresh_token');
   }
 
-  Future<bool> isAuthenticated() async {
+  Future<User?> checkAuth() async {
     final token = await _storage.read(key: 'jwt_token');
-    return token != null && token.isNotEmpty;
+    if (token == null || token.isEmpty) return null;
+
+    try {
+      final response = await _apiClient.dio.get('/auth/me');
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data);
+      }
+      return null;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.connectionTimeout) {
+         appLogger.w('Initial auth check offline - allowing local cached auth');
+         // Offline fallback: if token exists, we allow them in. Full verification will happen when online
+         return const User(id: 'offline_user', username: 'Offline User', email: '', isActive: true);
+      }
+      // Token is invalid/expired and refresh failed (handled by interceptor)
+      appLogger.i('Token invalid/expired during checkAuth');
+      await logout();
+      return null;
+    } catch (e) {
+      appLogger.e('Unexpected error during checkAuth', error: e);
+      return null;
+    }
   }
 }
 
 @riverpod
-AuthRepository authRepository(Ref ref) {
+AuthRepository authRepository(AuthRepositoryRef ref) {
   final apiClient = ref.watch(apiClientProvider);
   final storage = ref.watch(secureStorageProvider);
   return AuthRepository(apiClient, storage);

@@ -1,9 +1,13 @@
 from flask import Flask
 from .core.config import Config
 from .core.database import db
+from .core.mail import mail
 from flask_migrate import Migrate
+from apscheduler.schedulers.background import BackgroundScheduler
+import logging
 
 migrate = Migrate()
+scheduler = BackgroundScheduler()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -11,9 +15,13 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
-    
-    from flask_cors import CORS
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    mail.init_app(app)
+
+    # Initialize Scheduler
+    if not scheduler.running:
+        from .core.scheduler import setup_jobs
+        setup_jobs(scheduler, app)
+        scheduler.start()
 
     # Import models so SQLAlchemy creates tables
     with app.app_context():

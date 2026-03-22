@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import '../../data/task_repository.dart';
-import '../../domain/task_model.dart';
+import '../data/task_repository.dart';
+import '../domain/task_model.dart';
 
 final taskListProvider = StreamProvider<List<TaskModel>>((ref) {
   final repo = ref.watch(taskRepositoryProvider);

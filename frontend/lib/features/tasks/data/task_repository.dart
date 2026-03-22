@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/local_db/app_database.dart';
 import '../../../core/local_db/daos/tasks_dao.dart';
+import '../../../core/logger/app_logger.dart';
+import '../../../core/error/exceptions.dart';
 import '../domain/task_model.dart';
 import 'task_api_service.dart';
 
@@ -25,6 +26,8 @@ class TaskRepository {
                 isCompleted: e.isCompleted,
                 userId: e.userId,
                 listId: e.listId,
+                deadline: e.deadline?.toIso8601String(),
+                remindViaEmail: e.remindViaEmail,
                 updatedAt: e.updatedAt?.toIso8601String(),
                 isDeleted: e.isDeleted,
               ))
@@ -34,6 +37,8 @@ class TaskRepository {
 
   // Sync: Fetch from API and update local DB
   Future<void> fetchAndSyncTasks() async {
+    await _pushPendingChanges();
+
     try {
       final remoteTasks = await _apiService.getTasks();
       for (final task in remoteTasks) {
@@ -44,13 +49,51 @@ class TaskRepository {
           isCompleted: task.isCompleted,
           userId: task.userId ?? '',
           listId: task.listId,
+          deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+          remindViaEmail: task.remindViaEmail,
+          syncStatus: 'synced',
           updatedAt: task.updatedAt != null ? DateTime.parse(task.updatedAt!) : null,
           isDeleted: task.isDeleted,
         ));
       }
     } on DioException catch (e) {
-      // Ignore network errors, allow app to function offline
-      print('Network sync failed: \${e.message}');
+      appLogger.w('Network sync failed for tasks: \${e.message}');
+    } catch (e, st) {
+      appLogger.e('Unexpected error during task sync', error: e, stackTrace: st);
+    }
+  }
+
+  Future<void> _pushPendingChanges() async {
+    final pendingTasks = await _localDb.getPendingTasks();
+
+    for (final taskEntity in pendingTasks) {
+      final taskModel = TaskModel(
+        id: taskEntity.id,
+        title: taskEntity.title,
+        description: taskEntity.description ?? '',
+        isCompleted: taskEntity.isCompleted,
+        userId: taskEntity.userId,
+        listId: taskEntity.listId,
+        deadline: taskEntity.deadline?.toIso8601String(),
+        remindViaEmail: taskEntity.remindViaEmail,
+        isDeleted: taskEntity.isDeleted,
+      );
+
+      try {
+        if (taskEntity.syncStatus == 'pending_insert') {
+          await _apiService.createTask(taskModel);
+        } else if (taskEntity.syncStatus == 'pending_update') {
+          await _apiService.updateTask(taskModel);
+        } else if (taskEntity.syncStatus == 'pending_delete') {
+          await _apiService.deleteTask(taskEntity.id);
+        }
+
+        await _localDb.updateTask(taskEntity.copyWith(syncStatus: 'synced'));
+      } on DioException catch (_) {
+        // Skip and retry later
+      } catch (e, st) {
+        appLogger.e('Failed to push pending task change', error: e, stackTrace: st);
+      }
     }
   }
 
@@ -64,28 +107,14 @@ class TaskRepository {
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
+      deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+      remindViaEmail: task.remindViaEmail,
+      syncStatus: 'pending_insert',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: false,
     );
     await _localDb.insertTask(localTask);
-
-    // 2. Try to sync to backend
-    try {
-      final createdRemote = await _apiService.createTask(task);
-      // Update local with any remote-generated fields (like real userId)
-       await _localDb.insertTask(TaskEntity(
-          id: createdRemote.id,
-          title: createdRemote.title,
-          description: createdRemote.description,
-          isCompleted: createdRemote.isCompleted,
-          userId: createdRemote.userId ?? '',
-          listId: createdRemote.listId,
-          updatedAt: createdRemote.updatedAt != null ? DateTime.parse(createdRemote.updatedAt!) : null,
-          isDeleted: createdRemote.isDeleted,
-        ));
-    } on DioException catch (_) {
-       // Silently fail if offline. Next fetchAndSyncTasks or a dedicated SyncWorker will catch it.
-    }
+    fetchAndSyncTasks();
   }
 
   // Update
@@ -97,28 +126,25 @@ class TaskRepository {
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
+      deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+      remindViaEmail: task.remindViaEmail,
+      syncStatus: 'pending_update',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: task.isDeleted,
     );
     await _localDb.updateTask(localTask);
-
-    try {
-      await _apiService.updateTask(task);
-    } on DioException catch (_) {}
+    fetchAndSyncTasks();
   }
 
   // Delete (Soft Delete for sync)
   Future<void> deleteTask(String id) async {
     await _localDb.softDeleteTask(id);
-
-    try {
-      await _apiService.deleteTask(id);
-    } on DioException catch (_) {}
+    fetchAndSyncTasks();
   }
 }
 
 @riverpod
-TaskRepository taskRepository(Ref ref) {
+TaskRepository taskRepository(TaskRepositoryRef ref) {
   final db = ref.watch(appDatabaseProvider);
   final api = ref.watch(taskApiServiceProvider);
   return TaskRepository(db.tasksDao, api);

@@ -26,7 +26,11 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     return (update(tasks)..where((t) => t.id.equals(id)))
         .write(TasksCompanion(
           isDeleted: const Value(true),
+          syncStatus: const Value('pending_delete'),
           updatedAt: Value(DateTime.now().toUtc()),
         ));
   }
+
+  Future<List<TaskEntity>> getPendingTasks() =>
+      (select(tasks)..where((t) => t.syncStatus.isNotIn(['synced']))).get();
 }

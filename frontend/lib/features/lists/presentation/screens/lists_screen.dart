@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/list_provider.dart';
@@ -12,12 +13,12 @@ class ListsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ODAK Lists'),
+        title: Text('lists'.tr()),
       ),
       body: listsAsync.when(
         data: (lists) {
           if (lists.isEmpty) {
-            return const Center(child: Text('No lists yet. Create one!'));
+            return Center(child: Text('no_lists'.tr()));
           }
           return ListView.builder(
             itemCount: lists.length,
@@ -67,15 +68,15 @@ class ListsScreen extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('New List'),
+          title: Text('new_list'.tr()),
           content: TextField(
             controller: nameController,
-            decoration: const InputDecoration(labelText: 'List Name'),
+            decoration: InputDecoration(labelText: 'list_name'.tr()),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -85,7 +86,7 @@ class ListsScreen extends ConsumerWidget {
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: Text('add'.tr()),
             ),
           ],
         );

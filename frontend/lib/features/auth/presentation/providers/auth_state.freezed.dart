@@ -200,7 +200,7 @@ return error(_that.message);case _:
 
 class _Initial implements AuthState {
   const _Initial();
-  
+
 
 
 
@@ -232,7 +232,7 @@ String toString() {
 
 class _Loading implements AuthState {
   const _Loading();
-  
+
 
 
 
@@ -264,7 +264,7 @@ String toString() {
 
 class _Authenticated implements AuthState {
   const _Authenticated(this.user);
-  
+
 
  final  User user;
 
@@ -327,7 +327,7 @@ as User,
 @override
 @pragma('vm:prefer-inline')
 $UserCopyWith<$Res> get user {
-  
+
   return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
   });
@@ -339,7 +339,7 @@ $UserCopyWith<$Res> get user {
 
 class _Unauthenticated implements AuthState {
   const _Unauthenticated();
-  
+
 
 
 
@@ -371,7 +371,7 @@ String toString() {
 
 class _Error implements AuthState {
   const _Error(this.message);
-  
+
 
  final  String message;
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_client.dart';
 
 final taskRemoteDataSourceProvider = Provider<TaskRemoteDataSource>((ref) {
-  return TaskRemoteDataSource(ref.watch(apiClientProvider).dio);
+  return TaskRemoteDataSource(ref.watch(apiClientProvider));
 });
 
 class TaskRemoteDataSource {

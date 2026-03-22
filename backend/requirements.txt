@@ -16,4 +16,6 @@ PyJWT
 SQLAlchemy
 typing_extensions
 Werkzeug
-Flask-Cors
+Flask-Mail
+APScheduler
+python-dateutil

@@ -55,4 +55,4 @@ final class ActivityApiServiceProvider
 }
 
 String _$activityApiServiceHash() =>
-    r'cb2b8b8ad4aa587a691a60c0894f125cb4d1aa02';
+    r'2f8484fb7f7c19f1c947ceb8e4152e78c72d66c1';

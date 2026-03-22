@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'daos/tasks_dao.dart';
 import 'daos/activities_dao.dart';
 import 'daos/lists_dao.dart';
+import '../logger/app_logger.dart';
 
 part 'app_database.g.dart';
 
@@ -16,6 +17,7 @@ class Lists extends Table {
   TextColumn get userId => text()();
 
   // Sync
+  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get createdAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
@@ -34,7 +36,12 @@ class Tasks extends Table {
   TextColumn get userId => text()();
   TextColumn get listId => text().nullable()();
 
+  // Notification & Deadline
+  DateTimeColumn get deadline => dateTime().nullable()();
+  BoolColumn get remindViaEmail => boolean().withDefault(const Constant(false))();
+
   // Sync
+  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -54,6 +61,7 @@ class Activities extends Table {
   TextColumn get userId => text()();
 
   // Sync
+  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -75,6 +83,7 @@ class Reminders extends Table {
   TextColumn get userId => text()();
 
   // Sync
+  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -88,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -101,24 +110,21 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(lists);
           await m.addColumn(tasks, tasks.listId);
         }
+        if (from < 3) {
+          await m.addColumn(tasks, tasks.deadline);
+          await m.addColumn(tasks, tasks.remindViaEmail);
+        }
+        if (from < 4) {
+          await m.addColumn(tasks, tasks.syncStatus);
+          await m.addColumn(lists, lists.syncStatus);
+          await m.addColumn(activities, activities.syncStatus);
+          await m.addColumn(reminders, reminders.syncStatus);
+        }
       },
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },
     );
-  }
-
-  // --- Activities ---
-  Future<int> insertActivity(ActivitiesCompanion activity) {
-    return into(activities).insert(activity);
-  }
-
-  Future<bool> updateActivity(ActivityEntity activity) {
-    return update(activities).replace(activity);
-  }
-
-  Stream<List<ActivityEntity>> watchAllActivities() {
-    return select(activities).watch();
   }
 
   static QueryExecutor _openConnection() {
@@ -129,7 +135,7 @@ class AppDatabase extends _$AppDatabase {
         driftWorker: Uri.parse('drift_worker.js'),
         onResult: (result) {
           if (result.missingFeatures.isNotEmpty) {
-            print('Missing browser features: \${result.missingFeatures}');
+            appLogger.w('Missing browser features: ${result.missingFeatures}');
           }
         },
       ),

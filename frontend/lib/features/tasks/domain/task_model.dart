@@ -4,7 +4,7 @@ part 'task_model.freezed.dart';
 part 'task_model.g.dart';
 
 @freezed
-abstract class TaskModel with _$TaskModel {
+class TaskModel with _$TaskModel {
   const factory TaskModel({
     required String id,
     required String title,
@@ -12,6 +12,8 @@ abstract class TaskModel with _$TaskModel {
     @JsonKey(name: 'is_completed') @Default(false) bool isCompleted,
     @JsonKey(name: 'user_id') String? userId,
     @JsonKey(name: 'list_id') String? listId,
+    String? deadline,
+    @JsonKey(name: 'remind_via_email') @Default(false) bool remindViaEmail,
     @JsonKey(name: 'updated_at') String? updatedAt,
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _TaskModel;

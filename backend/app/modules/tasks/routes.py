@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from .models import Task
 from app.core.database import db
 from app.core.auth import token_required
+from dateutil.parser import parse
 
 tasks_bp = Blueprint('tasks', __name__)
 
@@ -22,12 +23,21 @@ def create_task(current_user):
     if not data:
         return jsonify({'message': 'Missing JSON body'}), 400
 
+    deadline_val = None
+    if data.get('deadline'):
+        try:
+            deadline_val = parse(data.get('deadline'))
+        except ValueError:
+            deadline_val = None
+
     new_task = Task(
         title=data.get('title'),
         description=data.get('description', ''),
         is_completed=data.get('is_completed', False),
         user_id=current_user.id,
-        list_id=data.get('list_id')
+        list_id=data.get('list_id'),
+        deadline=deadline_val,
+        remind_via_email=data.get('remind_via_email', False)
     )
 
     # If the client (offline-first) provides its own UUID, use it to maintain sync parity.
@@ -61,6 +71,13 @@ def update_task(current_user, task_id):
         task.is_completed = data['is_completed']
     if 'list_id' in data:
         task.list_id = data['list_id']
+    if 'deadline' in data:
+        try:
+            task.deadline = parse(data['deadline']) if data['deadline'] else None
+        except ValueError:
+            pass
+    if 'remind_via_email' in data:
+        task.remind_via_email = data['remind_via_email']
     if 'is_deleted' in data:
         task.is_deleted = data['is_deleted']
 

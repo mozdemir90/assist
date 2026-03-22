@@ -32,7 +32,11 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase> with _$ActivitiesDaoMi
     return (update(activities)..where((a) => a.id.equals(id)))
         .write(ActivitiesCompanion(
           isDeleted: const Value(true),
+          syncStatus: const Value('pending_delete'),
           updatedAt: Value(DateTime.now().toUtc()),
         ));
   }
+
+  Future<List<ActivityEntity>> getPendingActivities() =>
+      (select(activities)..where((a) => a.syncStatus.isNotIn(['synced']))).get();
 }

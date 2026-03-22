@@ -31,6 +31,6 @@ class TaskApiService {
 }
 
 @riverpod
-TaskApiService taskApiService(Ref ref) {
+TaskApiService taskApiService(TaskApiServiceRef ref) {
   return TaskApiService(ref.watch(apiClientProvider));
 }
