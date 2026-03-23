@@ -13,8 +13,11 @@ _TaskModel _$TaskModelFromJson(Map<String, dynamic> json) => _TaskModel(
   isCompleted: json['is_completed'] as bool? ?? false,
   userId: json['user_id'] as String?,
   listId: json['list_id'] as String?,
+<<<<<<< Updated upstream
+=======
   deadline: json['deadline'] as String?,
   remindViaEmail: json['remind_via_email'] as bool? ?? false,
+>>>>>>> Stashed changes
   updatedAt: json['updated_at'] as String?,
   isDeleted: json['is_deleted'] as bool? ?? false,
 );
@@ -27,8 +30,11 @@ Map<String, dynamic> _$TaskModelToJson(_TaskModel instance) =>
       'is_completed': instance.isCompleted,
       'user_id': instance.userId,
       'list_id': instance.listId,
+<<<<<<< Updated upstream
+=======
       'deadline': instance.deadline,
       'remind_via_email': instance.remindViaEmail,
+>>>>>>> Stashed changes
       'updated_at': instance.updatedAt,
       'is_deleted': instance.isDeleted,
     };

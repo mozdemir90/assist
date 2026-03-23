@@ -4,7 +4,11 @@ part 'list_model.freezed.dart';
 part 'list_model.g.dart';
 
 @freezed
+<<<<<<< Updated upstream
+abstract class ListModel with _$ListModel {
+=======
 class ListModel with _$ListModel {
+>>>>>>> Stashed changes
   const factory ListModel({
     required String id,
     required String name,

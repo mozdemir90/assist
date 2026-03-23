@@ -16,6 +16,10 @@ PyJWT
 SQLAlchemy
 typing_extensions
 Werkzeug
+<<<<<<< Updated upstream
+Flask-Cors
+=======
 Flask-Mail
 APScheduler
 python-dateutil
+>>>>>>> Stashed changes

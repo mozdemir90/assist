@@ -48,4 +48,8 @@ final class TaskRepositoryProvider
   }
 }
 
+<<<<<<< Updated upstream
+String _$taskRepositoryHash() => r'24ec8edd7803bd4e5186f084ebece4614a6d8a3c';
+=======
 String _$taskRepositoryHash() => r'597bec337389967128b30ba199b6474b5d08e02d';
+>>>>>>> Stashed changes

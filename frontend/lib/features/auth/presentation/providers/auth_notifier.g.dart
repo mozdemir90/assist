@@ -41,7 +41,11 @@ final class AuthNotifierProvider
   }
 }
 
+<<<<<<< Updated upstream
+String _$authNotifierHash() => r'bcdc39fb20d2a0dfc6c9ea7df3b459edd47a3d68';
+=======
 String _$authNotifierHash() => r'd2b453ccd1ef9d9cac1fc63c54a72c2e5482ef3c';
+>>>>>>> Stashed changes
 
 abstract class _$AuthNotifier extends $Notifier<AuthState> {
   AuthState build();

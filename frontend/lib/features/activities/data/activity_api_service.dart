@@ -31,6 +31,10 @@ class ActivityApiService {
 }
 
 @riverpod
+<<<<<<< Updated upstream
+ActivityApiService activityApiService(Ref ref) {
+=======
 ActivityApiService activityApiService(ActivityApiServiceRef ref) {
+>>>>>>> Stashed changes
   return ActivityApiService(ref.watch(apiClientProvider));
 }

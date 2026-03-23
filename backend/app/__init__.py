@@ -15,6 +15,11 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+<<<<<<< Updated upstream
+
+    from flask_cors import CORS
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+=======
     mail.init_app(app)
 
     # Initialize Scheduler
@@ -22,6 +27,7 @@ def create_app(config_class=Config):
         from .core.scheduler import setup_jobs
         setup_jobs(scheduler, app)
         scheduler.start()
+>>>>>>> Stashed changes
 
     # Import models so SQLAlchemy creates tables
     with app.app_context():

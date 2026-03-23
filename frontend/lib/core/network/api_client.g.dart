@@ -54,7 +54,11 @@ final class SecureStorageProvider
   }
 }
 
+<<<<<<< Updated upstream
+String _$secureStorageHash() => r'39b6a2355a8398a2c25bb6e7dd3111ede1fc9c9b';
+=======
 String _$secureStorageHash() => r'3e5177aefc9c0d43d9cb4fdca3bdc2dfcb36f13e';
+>>>>>>> Stashed changes
 
 @ProviderFor(apiClient)
 final apiClientProvider = ApiClientProvider._();
@@ -95,4 +99,8 @@ final class ApiClientProvider
   }
 }
 
+<<<<<<< Updated upstream
+String _$apiClientHash() => r'5cbee974c1e3db6d6e5799a889f2f0f7e621b9a0';
+=======
 String _$apiClientHash() => r'1626b8c8a511aee92ac48b775304fc76ad0bf49b';
+>>>>>>> Stashed changes

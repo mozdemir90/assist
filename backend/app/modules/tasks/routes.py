@@ -35,9 +35,13 @@ def create_task(current_user):
         description=data.get('description', ''),
         is_completed=data.get('is_completed', False),
         user_id=current_user.id,
+<<<<<<< Updated upstream
+        list_id=data.get('list_id')
+=======
         list_id=data.get('list_id'),
         deadline=deadline_val,
         remind_via_email=data.get('remind_via_email', False)
+>>>>>>> Stashed changes
     )
 
     # If the client (offline-first) provides its own UUID, use it to maintain sync parity.
@@ -71,6 +75,8 @@ def update_task(current_user, task_id):
         task.is_completed = data['is_completed']
     if 'list_id' in data:
         task.list_id = data['list_id']
+<<<<<<< Updated upstream
+=======
     if 'deadline' in data:
         try:
             task.deadline = parse(data['deadline']) if data['deadline'] else None
@@ -78,6 +84,7 @@ def update_task(current_user, task_id):
             pass
     if 'remind_via_email' in data:
         task.remind_via_email = data['remind_via_email']
+>>>>>>> Stashed changes
     if 'is_deleted' in data:
         task.is_deleted = data['is_deleted']
 

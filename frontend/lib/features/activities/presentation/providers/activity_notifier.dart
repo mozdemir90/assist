@@ -1,7 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+<<<<<<< Updated upstream
+import '../../data/activity_repository.dart';
+import '../../domain/activity_model.dart';
+=======
 import '../data/activity_repository.dart';
 import '../domain/activity_model.dart';
+>>>>>>> Stashed changes
 
 final activityListProvider = StreamProvider<List<ActivityModel>>((ref) {
   final repo = ref.watch(activityRepositoryProvider);

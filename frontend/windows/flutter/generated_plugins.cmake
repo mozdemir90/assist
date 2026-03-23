@@ -3,7 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< Updated upstream
+=======
   connectivity_plus
+>>>>>>> Stashed changes
   flutter_secure_storage_windows
   sqlite3_flutter_libs
 )

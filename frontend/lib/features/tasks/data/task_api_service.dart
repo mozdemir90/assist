@@ -31,6 +31,10 @@ class TaskApiService {
 }
 
 @riverpod
+<<<<<<< Updated upstream
+TaskApiService taskApiService(Ref ref) {
+=======
 TaskApiService taskApiService(TaskApiServiceRef ref) {
+>>>>>>> Stashed changes
   return TaskApiService(ref.watch(apiClientProvider));
 }

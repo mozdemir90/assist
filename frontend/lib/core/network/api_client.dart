@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+<<<<<<< Updated upstream
+import 'package:riverpod/riverpod.dart';
+=======
+>>>>>>> Stashed changes
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,6 +30,8 @@ class ApiClient {
           options.headers['Content-Type'] = 'application/json';
           return handler.next(options);
         },
+<<<<<<< Updated upstream
+=======
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401 && e.response?.data?['code'] == 'token_expired') {
             final refreshToken = await _storage.read(key: 'refresh_token');
@@ -56,31 +62,48 @@ class ApiClient {
           }
           return handler.next(e);
         },
+>>>>>>> Stashed changes
       ),
     );
   }
 
   String _getBaseUrl() {
     // For local development on emulator/simulator
+<<<<<<< Updated upstream
+    if (kIsWeb) return 'http://127.0.0.1:5001/api';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:5001/api'; // Android Emulator alias for localhost
+    }
+    return 'http://127.0.0.1:5001/api'; // iOS Simulator / Desktop
+=======
     if (kIsWeb) return 'http://127.0.0.1:5000/api';
     if (defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:5000/api'; // Android Emulator alias for localhost
     }
     return 'http://127.0.0.1:5000/api'; // iOS Simulator / Desktop
+>>>>>>> Stashed changes
   }
 
   Dio get dio => _dio;
 }
 
 @riverpod
+<<<<<<< Updated upstream
+FlutterSecureStorage secureStorage(Ref ref) {
+=======
 FlutterSecureStorage secureStorage(SecureStorageRef ref) {
+>>>>>>> Stashed changes
   return const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 }
 
 @riverpod
+<<<<<<< Updated upstream
+ApiClient apiClient(Ref ref) {
+=======
 ApiClient apiClient(ApiClientRef ref) {
+>>>>>>> Stashed changes
   final storage = ref.watch(secureStorageProvider);
   return ApiClient(dio: Dio(), storage: storage);
 }

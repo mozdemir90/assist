@@ -26,6 +26,11 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     return (update(tasks)..where((t) => t.id.equals(id)))
         .write(TasksCompanion(
           isDeleted: const Value(true),
+<<<<<<< Updated upstream
+          updatedAt: Value(DateTime.now().toUtc()),
+        ));
+  }
+=======
           syncStatus: const Value('pending_delete'),
           updatedAt: Value(DateTime.now().toUtc()),
         ));
@@ -33,4 +38,5 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
 
   Future<List<TaskEntity>> getPendingTasks() =>
       (select(tasks)..where((t) => t.syncStatus.isNotIn(['synced']))).get();
+>>>>>>> Stashed changes
 }

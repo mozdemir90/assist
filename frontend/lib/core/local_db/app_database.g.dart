@@ -48,6 +48,8 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+<<<<<<< Updated upstream
+=======
   static const VerificationMeta _syncStatusMeta = const VerificationMeta(
     'syncStatus',
   );
@@ -60,6 +62,7 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
     requiredDuringInsert: false,
     defaultValue: const Constant('pending_insert'),
   );
+>>>>>>> Stashed changes
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -103,7 +106,10 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
     name,
     color,
     userId,
+<<<<<<< Updated upstream
+=======
     syncStatus,
+>>>>>>> Stashed changes
     createdAt,
     updatedAt,
     isDeleted,
@@ -147,12 +153,15 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
+<<<<<<< Updated upstream
+=======
     if (data.containsKey('sync_status')) {
       context.handle(
         _syncStatusMeta,
         syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
       );
     }
+>>>>>>> Stashed changes
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -196,10 +205,13 @@ class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
         DriftSqlType.string,
         data['${effectivePrefix}user_id'],
       )!,
+<<<<<<< Updated upstream
+=======
       syncStatus: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sync_status'],
       )!,
+>>>>>>> Stashed changes
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -226,7 +238,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
   final String name;
   final String? color;
   final String userId;
+<<<<<<< Updated upstream
+=======
   final String syncStatus;
+>>>>>>> Stashed changes
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final bool isDeleted;
@@ -235,7 +250,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
     required this.name,
     this.color,
     required this.userId,
+<<<<<<< Updated upstream
+=======
     required this.syncStatus,
+>>>>>>> Stashed changes
     this.createdAt,
     this.updatedAt,
     required this.isDeleted,
@@ -249,7 +267,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
       map['color'] = Variable<String>(color);
     }
     map['user_id'] = Variable<String>(userId);
+<<<<<<< Updated upstream
+=======
     map['sync_status'] = Variable<String>(syncStatus);
+>>>>>>> Stashed changes
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
     }
@@ -268,7 +289,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
           ? const Value.absent()
           : Value(color),
       userId: Value(userId),
+<<<<<<< Updated upstream
+=======
       syncStatus: Value(syncStatus),
+>>>>>>> Stashed changes
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
@@ -289,7 +313,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
       name: serializer.fromJson<String>(json['name']),
       color: serializer.fromJson<String?>(json['color']),
       userId: serializer.fromJson<String>(json['userId']),
+<<<<<<< Updated upstream
+=======
       syncStatus: serializer.fromJson<String>(json['syncStatus']),
+>>>>>>> Stashed changes
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
@@ -303,7 +330,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
       'name': serializer.toJson<String>(name),
       'color': serializer.toJson<String?>(color),
       'userId': serializer.toJson<String>(userId),
+<<<<<<< Updated upstream
+=======
       'syncStatus': serializer.toJson<String>(syncStatus),
+>>>>>>> Stashed changes
       'createdAt': serializer.toJson<DateTime?>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'isDeleted': serializer.toJson<bool>(isDeleted),
@@ -315,7 +345,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
     String? name,
     Value<String?> color = const Value.absent(),
     String? userId,
+<<<<<<< Updated upstream
+=======
     String? syncStatus,
+>>>>>>> Stashed changes
     Value<DateTime?> createdAt = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
     bool? isDeleted,
@@ -324,7 +357,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
     name: name ?? this.name,
     color: color.present ? color.value : this.color,
     userId: userId ?? this.userId,
+<<<<<<< Updated upstream
+=======
     syncStatus: syncStatus ?? this.syncStatus,
+>>>>>>> Stashed changes
     createdAt: createdAt.present ? createdAt.value : this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
     isDeleted: isDeleted ?? this.isDeleted,
@@ -335,9 +371,12 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
       name: data.name.present ? data.name.value : this.name,
       color: data.color.present ? data.color.value : this.color,
       userId: data.userId.present ? data.userId.value : this.userId,
+<<<<<<< Updated upstream
+=======
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
+>>>>>>> Stashed changes
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
@@ -351,7 +390,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('userId: $userId, ')
+<<<<<<< Updated upstream
+=======
           ..write('syncStatus: $syncStatus, ')
+>>>>>>> Stashed changes
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted')
@@ -360,6 +402,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
   }
 
   @override
+<<<<<<< Updated upstream
+  int get hashCode =>
+      Object.hash(id, name, color, userId, createdAt, updatedAt, isDeleted);
+=======
   int get hashCode => Object.hash(
     id,
     name,
@@ -370,6 +416,7 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
     updatedAt,
     isDeleted,
   );
+>>>>>>> Stashed changes
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -378,7 +425,10 @@ class ListEntity extends DataClass implements Insertable<ListEntity> {
           other.name == this.name &&
           other.color == this.color &&
           other.userId == this.userId &&
+<<<<<<< Updated upstream
+=======
           other.syncStatus == this.syncStatus &&
+>>>>>>> Stashed changes
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.isDeleted == this.isDeleted);
@@ -389,7 +439,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
   final Value<String> name;
   final Value<String?> color;
   final Value<String> userId;
+<<<<<<< Updated upstream
+=======
   final Value<String> syncStatus;
+>>>>>>> Stashed changes
   final Value<DateTime?> createdAt;
   final Value<DateTime?> updatedAt;
   final Value<bool> isDeleted;
@@ -399,7 +452,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
     this.name = const Value.absent(),
     this.color = const Value.absent(),
     this.userId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
     this.syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -410,7 +466,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
     required String name,
     this.color = const Value.absent(),
     required String userId,
+<<<<<<< Updated upstream
+=======
     this.syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -423,7 +482,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
     Expression<String>? name,
     Expression<String>? color,
     Expression<String>? userId,
+<<<<<<< Updated upstream
+=======
     Expression<String>? syncStatus,
+>>>>>>> Stashed changes
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<bool>? isDeleted,
@@ -434,7 +496,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
       if (name != null) 'name': name,
       if (color != null) 'color': color,
       if (userId != null) 'user_id': userId,
+<<<<<<< Updated upstream
+=======
       if (syncStatus != null) 'sync_status': syncStatus,
+>>>>>>> Stashed changes
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isDeleted != null) 'is_deleted': isDeleted,
@@ -447,7 +512,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
     Value<String>? name,
     Value<String?>? color,
     Value<String>? userId,
+<<<<<<< Updated upstream
+=======
     Value<String>? syncStatus,
+>>>>>>> Stashed changes
     Value<DateTime?>? createdAt,
     Value<DateTime?>? updatedAt,
     Value<bool>? isDeleted,
@@ -458,7 +526,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
       name: name ?? this.name,
       color: color ?? this.color,
       userId: userId ?? this.userId,
+<<<<<<< Updated upstream
+=======
       syncStatus: syncStatus ?? this.syncStatus,
+>>>>>>> Stashed changes
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -481,9 +552,12 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+<<<<<<< Updated upstream
+=======
     if (syncStatus.present) {
       map['sync_status'] = Variable<String>(syncStatus.value);
     }
+>>>>>>> Stashed changes
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -506,7 +580,10 @@ class ListsCompanion extends UpdateCompanion<ListEntity> {
           ..write('name: $name, ')
           ..write('color: $color, ')
           ..write('userId: $userId, ')
+<<<<<<< Updated upstream
+=======
           ..write('syncStatus: $syncStatus, ')
+>>>>>>> Stashed changes
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted, ')
@@ -587,6 +664,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+<<<<<<< Updated upstream
+=======
   static const VerificationMeta _deadlineMeta = const VerificationMeta(
     'deadline',
   );
@@ -625,6 +704,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     requiredDuringInsert: false,
     defaultValue: const Constant('pending_insert'),
   );
+>>>>>>> Stashed changes
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -659,9 +739,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     isCompleted,
     userId,
     listId,
+<<<<<<< Updated upstream
+=======
     deadline,
     remindViaEmail,
     syncStatus,
+>>>>>>> Stashed changes
     updatedAt,
     isDeleted,
   ];
@@ -722,6 +805,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
         listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta),
       );
     }
+<<<<<<< Updated upstream
+=======
     if (data.containsKey('deadline')) {
       context.handle(
         _deadlineMeta,
@@ -743,6 +828,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
         syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
       );
     }
+>>>>>>> Stashed changes
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
@@ -788,6 +874,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
         DriftSqlType.string,
         data['${effectivePrefix}list_id'],
       ),
+<<<<<<< Updated upstream
+=======
       deadline: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}deadline'],
@@ -800,6 +888,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
         DriftSqlType.string,
         data['${effectivePrefix}sync_status'],
       )!,
+>>>>>>> Stashed changes
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
@@ -824,9 +913,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
   final bool isCompleted;
   final String userId;
   final String? listId;
+<<<<<<< Updated upstream
+=======
   final DateTime? deadline;
   final bool remindViaEmail;
   final String syncStatus;
+>>>>>>> Stashed changes
   final DateTime? updatedAt;
   final bool isDeleted;
   const TaskEntity({
@@ -836,9 +928,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     required this.isCompleted,
     required this.userId,
     this.listId,
+<<<<<<< Updated upstream
+=======
     this.deadline,
     required this.remindViaEmail,
     required this.syncStatus,
+>>>>>>> Stashed changes
     this.updatedAt,
     required this.isDeleted,
   });
@@ -855,11 +950,14 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     if (!nullToAbsent || listId != null) {
       map['list_id'] = Variable<String>(listId);
     }
+<<<<<<< Updated upstream
+=======
     if (!nullToAbsent || deadline != null) {
       map['deadline'] = Variable<DateTime>(deadline);
     }
     map['remind_via_email'] = Variable<bool>(remindViaEmail);
     map['sync_status'] = Variable<String>(syncStatus);
+>>>>>>> Stashed changes
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
     }
@@ -879,11 +977,14 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       listId: listId == null && nullToAbsent
           ? const Value.absent()
           : Value(listId),
+<<<<<<< Updated upstream
+=======
       deadline: deadline == null && nullToAbsent
           ? const Value.absent()
           : Value(deadline),
       remindViaEmail: Value(remindViaEmail),
       syncStatus: Value(syncStatus),
+>>>>>>> Stashed changes
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAt),
@@ -903,9 +1004,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       userId: serializer.fromJson<String>(json['userId']),
       listId: serializer.fromJson<String?>(json['listId']),
+<<<<<<< Updated upstream
+=======
       deadline: serializer.fromJson<DateTime?>(json['deadline']),
       remindViaEmail: serializer.fromJson<bool>(json['remindViaEmail']),
       syncStatus: serializer.fromJson<String>(json['syncStatus']),
+>>>>>>> Stashed changes
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
     );
@@ -920,9 +1024,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       'isCompleted': serializer.toJson<bool>(isCompleted),
       'userId': serializer.toJson<String>(userId),
       'listId': serializer.toJson<String?>(listId),
+<<<<<<< Updated upstream
+=======
       'deadline': serializer.toJson<DateTime?>(deadline),
       'remindViaEmail': serializer.toJson<bool>(remindViaEmail),
       'syncStatus': serializer.toJson<String>(syncStatus),
+>>>>>>> Stashed changes
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'isDeleted': serializer.toJson<bool>(isDeleted),
     };
@@ -935,9 +1042,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     bool? isCompleted,
     String? userId,
     Value<String?> listId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
     Value<DateTime?> deadline = const Value.absent(),
     bool? remindViaEmail,
     String? syncStatus,
+>>>>>>> Stashed changes
     Value<DateTime?> updatedAt = const Value.absent(),
     bool? isDeleted,
   }) => TaskEntity(
@@ -947,9 +1057,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     isCompleted: isCompleted ?? this.isCompleted,
     userId: userId ?? this.userId,
     listId: listId.present ? listId.value : this.listId,
+<<<<<<< Updated upstream
+=======
     deadline: deadline.present ? deadline.value : this.deadline,
     remindViaEmail: remindViaEmail ?? this.remindViaEmail,
     syncStatus: syncStatus ?? this.syncStatus,
+>>>>>>> Stashed changes
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
     isDeleted: isDeleted ?? this.isDeleted,
   );
@@ -965,6 +1078,8 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           : this.isCompleted,
       userId: data.userId.present ? data.userId.value : this.userId,
       listId: data.listId.present ? data.listId.value : this.listId,
+<<<<<<< Updated upstream
+=======
       deadline: data.deadline.present ? data.deadline.value : this.deadline,
       remindViaEmail: data.remindViaEmail.present
           ? data.remindViaEmail.value
@@ -972,6 +1087,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
+>>>>>>> Stashed changes
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
     );
@@ -986,9 +1102,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           ..write('isCompleted: $isCompleted, ')
           ..write('userId: $userId, ')
           ..write('listId: $listId, ')
+<<<<<<< Updated upstream
+=======
           ..write('deadline: $deadline, ')
           ..write('remindViaEmail: $remindViaEmail, ')
           ..write('syncStatus: $syncStatus, ')
+>>>>>>> Stashed changes
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted')
           ..write(')'))
@@ -1003,9 +1122,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     isCompleted,
     userId,
     listId,
+<<<<<<< Updated upstream
+=======
     deadline,
     remindViaEmail,
     syncStatus,
+>>>>>>> Stashed changes
     updatedAt,
     isDeleted,
   );
@@ -1019,9 +1141,12 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           other.isCompleted == this.isCompleted &&
           other.userId == this.userId &&
           other.listId == this.listId &&
+<<<<<<< Updated upstream
+=======
           other.deadline == this.deadline &&
           other.remindViaEmail == this.remindViaEmail &&
           other.syncStatus == this.syncStatus &&
+>>>>>>> Stashed changes
           other.updatedAt == this.updatedAt &&
           other.isDeleted == this.isDeleted);
 }
@@ -1033,9 +1158,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
   final Value<bool> isCompleted;
   final Value<String> userId;
   final Value<String?> listId;
+<<<<<<< Updated upstream
+=======
   final Value<DateTime?> deadline;
   final Value<bool> remindViaEmail;
   final Value<String> syncStatus;
+>>>>>>> Stashed changes
   final Value<DateTime?> updatedAt;
   final Value<bool> isDeleted;
   final Value<int> rowid;
@@ -1046,9 +1174,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     this.isCompleted = const Value.absent(),
     this.userId = const Value.absent(),
     this.listId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
     this.deadline = const Value.absent(),
     this.remindViaEmail = const Value.absent(),
     this.syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1060,9 +1191,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     this.isCompleted = const Value.absent(),
     required String userId,
     this.listId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
     this.deadline = const Value.absent(),
     this.remindViaEmail = const Value.absent(),
     this.syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1076,9 +1210,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     Expression<bool>? isCompleted,
     Expression<String>? userId,
     Expression<String>? listId,
+<<<<<<< Updated upstream
+=======
     Expression<DateTime>? deadline,
     Expression<bool>? remindViaEmail,
     Expression<String>? syncStatus,
+>>>>>>> Stashed changes
     Expression<DateTime>? updatedAt,
     Expression<bool>? isDeleted,
     Expression<int>? rowid,
@@ -1090,9 +1227,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
       if (isCompleted != null) 'is_completed': isCompleted,
       if (userId != null) 'user_id': userId,
       if (listId != null) 'list_id': listId,
+<<<<<<< Updated upstream
+=======
       if (deadline != null) 'deadline': deadline,
       if (remindViaEmail != null) 'remind_via_email': remindViaEmail,
       if (syncStatus != null) 'sync_status': syncStatus,
+>>>>>>> Stashed changes
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (rowid != null) 'rowid': rowid,
@@ -1106,9 +1246,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     Value<bool>? isCompleted,
     Value<String>? userId,
     Value<String?>? listId,
+<<<<<<< Updated upstream
+=======
     Value<DateTime?>? deadline,
     Value<bool>? remindViaEmail,
     Value<String>? syncStatus,
+>>>>>>> Stashed changes
     Value<DateTime?>? updatedAt,
     Value<bool>? isDeleted,
     Value<int>? rowid,
@@ -1120,9 +1263,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
       isCompleted: isCompleted ?? this.isCompleted,
       userId: userId ?? this.userId,
       listId: listId ?? this.listId,
+<<<<<<< Updated upstream
+=======
       deadline: deadline ?? this.deadline,
       remindViaEmail: remindViaEmail ?? this.remindViaEmail,
       syncStatus: syncStatus ?? this.syncStatus,
+>>>>>>> Stashed changes
       updatedAt: updatedAt ?? this.updatedAt,
       isDeleted: isDeleted ?? this.isDeleted,
       rowid: rowid ?? this.rowid,
@@ -1150,6 +1296,8 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     if (listId.present) {
       map['list_id'] = Variable<String>(listId.value);
     }
+<<<<<<< Updated upstream
+=======
     if (deadline.present) {
       map['deadline'] = Variable<DateTime>(deadline.value);
     }
@@ -1159,6 +1307,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     if (syncStatus.present) {
       map['sync_status'] = Variable<String>(syncStatus.value);
     }
+>>>>>>> Stashed changes
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -1180,9 +1329,12 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
           ..write('isCompleted: $isCompleted, ')
           ..write('userId: $userId, ')
           ..write('listId: $listId, ')
+<<<<<<< Updated upstream
+=======
           ..write('deadline: $deadline, ')
           ..write('remindViaEmail: $remindViaEmail, ')
           ..write('syncStatus: $syncStatus, ')
+>>>>>>> Stashed changes
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('rowid: $rowid')
@@ -2503,7 +2655,10 @@ typedef $$ListsTableCreateCompanionBuilder =
       required String name,
       Value<String?> color,
       required String userId,
+<<<<<<< Updated upstream
+=======
       Value<String> syncStatus,
+>>>>>>> Stashed changes
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
@@ -2515,7 +2670,10 @@ typedef $$ListsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String?> color,
       Value<String> userId,
+<<<<<<< Updated upstream
+=======
       Value<String> syncStatus,
+>>>>>>> Stashed changes
       Value<DateTime?> createdAt,
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
@@ -2550,11 +2708,14 @@ class $$ListsTableFilterComposer extends Composer<_$AppDatabase, $ListsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+<<<<<<< Updated upstream
+=======
   ColumnFilters<String> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnFilters(column),
   );
 
+>>>>>>> Stashed changes
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -2600,11 +2761,14 @@ class $$ListsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+<<<<<<< Updated upstream
+=======
   ColumnOrderings<String> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
   );
 
+>>>>>>> Stashed changes
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2642,11 +2806,14 @@ class $$ListsTableAnnotationComposer
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
 
+<<<<<<< Updated upstream
+=======
   GeneratedColumn<String> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => column,
   );
 
+>>>>>>> Stashed changes
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -2689,7 +2856,10 @@ class $$ListsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String?> color = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
                 Value<String> syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -2699,7 +2869,10 @@ class $$ListsTableTableManager
                 name: name,
                 color: color,
                 userId: userId,
+<<<<<<< Updated upstream
+=======
                 syncStatus: syncStatus,
+>>>>>>> Stashed changes
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
@@ -2711,7 +2884,10 @@ class $$ListsTableTableManager
                 required String name,
                 Value<String?> color = const Value.absent(),
                 required String userId,
+<<<<<<< Updated upstream
+=======
                 Value<String> syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
                 Value<DateTime?> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -2721,7 +2897,10 @@ class $$ListsTableTableManager
                 name: name,
                 color: color,
                 userId: userId,
+<<<<<<< Updated upstream
+=======
                 syncStatus: syncStatus,
+>>>>>>> Stashed changes
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
@@ -2757,9 +2936,12 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<bool> isCompleted,
       required String userId,
       Value<String?> listId,
+<<<<<<< Updated upstream
+=======
       Value<DateTime?> deadline,
       Value<bool> remindViaEmail,
       Value<String> syncStatus,
+>>>>>>> Stashed changes
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
       Value<int> rowid,
@@ -2772,9 +2954,12 @@ typedef $$TasksTableUpdateCompanionBuilder =
       Value<bool> isCompleted,
       Value<String> userId,
       Value<String?> listId,
+<<<<<<< Updated upstream
+=======
       Value<DateTime?> deadline,
       Value<bool> remindViaEmail,
       Value<String> syncStatus,
+>>>>>>> Stashed changes
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
       Value<int> rowid,
@@ -2818,6 +3003,8 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+<<<<<<< Updated upstream
+=======
   ColumnFilters<DateTime> get deadline => $composableBuilder(
     column: $table.deadline,
     builder: (column) => ColumnFilters(column),
@@ -2833,6 +3020,7 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+>>>>>>> Stashed changes
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
@@ -2883,6 +3071,8 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+<<<<<<< Updated upstream
+=======
   ColumnOrderings<DateTime> get deadline => $composableBuilder(
     column: $table.deadline,
     builder: (column) => ColumnOrderings(column),
@@ -2898,6 +3088,7 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+>>>>>>> Stashed changes
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -2940,6 +3131,8 @@ class $$TasksTableAnnotationComposer
   GeneratedColumn<String> get listId =>
       $composableBuilder(column: $table.listId, builder: (column) => column);
 
+<<<<<<< Updated upstream
+=======
   GeneratedColumn<DateTime> get deadline =>
       $composableBuilder(column: $table.deadline, builder: (column) => column);
 
@@ -2953,6 +3146,7 @@ class $$TasksTableAnnotationComposer
     builder: (column) => column,
   );
 
+>>>>>>> Stashed changes
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
@@ -2994,9 +3188,12 @@ class $$TasksTableTableManager
                 Value<bool> isCompleted = const Value.absent(),
                 Value<String> userId = const Value.absent(),
                 Value<String?> listId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
                 Value<DateTime?> deadline = const Value.absent(),
                 Value<bool> remindViaEmail = const Value.absent(),
                 Value<String> syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3007,9 +3204,12 @@ class $$TasksTableTableManager
                 isCompleted: isCompleted,
                 userId: userId,
                 listId: listId,
+<<<<<<< Updated upstream
+=======
                 deadline: deadline,
                 remindViaEmail: remindViaEmail,
                 syncStatus: syncStatus,
+>>>>>>> Stashed changes
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 rowid: rowid,
@@ -3022,9 +3222,12 @@ class $$TasksTableTableManager
                 Value<bool> isCompleted = const Value.absent(),
                 required String userId,
                 Value<String?> listId = const Value.absent(),
+<<<<<<< Updated upstream
+=======
                 Value<DateTime?> deadline = const Value.absent(),
                 Value<bool> remindViaEmail = const Value.absent(),
                 Value<String> syncStatus = const Value.absent(),
+>>>>>>> Stashed changes
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3035,9 +3238,12 @@ class $$TasksTableTableManager
                 isCompleted: isCompleted,
                 userId: userId,
                 listId: listId,
+<<<<<<< Updated upstream
+=======
                 deadline: deadline,
                 remindViaEmail: remindViaEmail,
                 syncStatus: syncStatus,
+>>>>>>> Stashed changes
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 rowid: rowid,

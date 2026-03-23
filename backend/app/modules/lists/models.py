@@ -11,14 +11,24 @@ class List(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     name = db.Column(db.String(255), nullable=False)
     color = db.Column(db.String(7), nullable=True) # Hex color code
+<<<<<<< Updated upstream
 
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
+=======
+
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+>>>>>>> Stashed changes
     # Offline sync requirements
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     is_deleted = db.Column(db.Boolean, default=False)
+<<<<<<< Updated upstream
 
+=======
+
+>>>>>>> Stashed changes
     tasks = db.relationship('Task', backref='list', lazy=True)
 
     def to_dict(self):

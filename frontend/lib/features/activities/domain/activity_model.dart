@@ -4,7 +4,11 @@ part 'activity_model.freezed.dart';
 part 'activity_model.g.dart';
 
 @freezed
+<<<<<<< Updated upstream
+abstract class ActivityModel with _$ActivityModel {
+=======
 class ActivityModel with _$ActivityModel {
+>>>>>>> Stashed changes
   const factory ActivityModel({
     required String id,
     required String title,

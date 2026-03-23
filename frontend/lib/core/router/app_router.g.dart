@@ -48,4 +48,8 @@ final class AppRouterProvider
   }
 }
 
+<<<<<<< Updated upstream
+String _$appRouterHash() => r'fd6bbe44dcd5e8297090eab5a536cb060df9db54';
+=======
 String _$appRouterHash() => r'013f9353fda1ab3f8d4bc04b37e9e3fae7cf8f89';
+>>>>>>> Stashed changes

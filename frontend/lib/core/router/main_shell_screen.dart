@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+<<<<<<< Updated upstream
+=======
 import 'package:easy_localization/easy_localization.dart';
+>>>>>>> Stashed changes
 
 class MainShellScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -24,6 +27,23 @@ class MainShellScreen extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: _onTap,
+<<<<<<< Updated upstream
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.check_box_outlined),
+            selectedIcon: Icon(Icons.check_box),
+            label: 'Tasks',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.list_outlined),
+            selectedIcon: Icon(Icons.list),
+            label: 'Lists',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.directions_run_outlined),
+            selectedIcon: Icon(Icons.directions_run),
+            label: 'Activities',
+=======
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.check_box_outlined),
@@ -39,6 +59,7 @@ class MainShellScreen extends StatelessWidget {
             icon: const Icon(Icons.directions_run_outlined),
             selectedIcon: const Icon(Icons.directions_run),
             label: 'activities'.tr(),
+>>>>>>> Stashed changes
           ),
         ],
       ),
