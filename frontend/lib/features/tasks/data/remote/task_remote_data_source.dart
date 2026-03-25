@@ -29,7 +29,10 @@ class TaskRemoteDataSource {
     }
   }
 
-  Future<Map<String, dynamic>> updateTask(String id, Map<String, dynamic> taskData) async {
+  Future<Map<String, dynamic>> updateTask(
+    String id,
+    Map<String, dynamic> taskData,
+  ) async {
     try {
       final response = await _dio.put('/tasks/$id', data: taskData);
       return response.data;

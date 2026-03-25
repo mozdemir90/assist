@@ -18,24 +18,14 @@ class ListsDao extends DatabaseAccessor<AppDatabase> with _$ListsDaoMixin {
   Future<int> insertList(ListEntity list) =>
       into(lists).insert(list, mode: InsertMode.insertOrReplace);
 
-  Future<bool> updateList(ListEntity list) =>
-      update(lists).replace(list);
+  Future<bool> updateList(ListEntity list) => update(lists).replace(list);
 
   Future<int> softDeleteList(String id) {
-    return (update(lists)..where((l) => l.id.equals(id)))
-        .write(ListsCompanion(
-          isDeleted: const Value(true),
-<<<<<<< Updated upstream
-          updatedAt: Value(DateTime.now().toUtc()),
-        ));
+    return (update(lists)..where((l) => l.id.equals(id))).write(
+      ListsCompanion(
+        isDeleted: const Value(true),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
   }
-=======
-          syncStatus: const Value('pending_delete'),
-          updatedAt: Value(DateTime.now().toUtc()),
-        ));
-  }
-
-  Future<List<ListEntity>> getPendingLists() =>
-      (select(lists)..where((l) => l.syncStatus.isNotIn(['synced']))).get();
->>>>>>> Stashed changes
 }

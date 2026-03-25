@@ -18,5 +18,6 @@ abstract class ReminderModel with _$ReminderModel {
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _ReminderModel;
 
-  factory ReminderModel.fromJson(Map<String, dynamic> json) => _$ReminderModelFromJson(json);
+  factory ReminderModel.fromJson(Map<String, dynamic> json) =>
+      _$ReminderModelFromJson(json);
 }

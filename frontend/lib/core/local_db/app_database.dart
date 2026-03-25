@@ -4,10 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'daos/tasks_dao.dart';
 import 'daos/activities_dao.dart';
 import 'daos/lists_dao.dart';
-<<<<<<< Updated upstream
-=======
-import '../logger/app_logger.dart';
->>>>>>> Stashed changes
 
 part 'app_database.g.dart';
 
@@ -20,10 +16,6 @@ class Lists extends Table {
   TextColumn get userId => text()();
 
   // Sync
-<<<<<<< Updated upstream
-=======
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
->>>>>>> Stashed changes
   DateTimeColumn get createdAt => dateTime().nullable()();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
@@ -41,16 +33,8 @@ class Tasks extends Table {
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   TextColumn get userId => text()();
   TextColumn get listId => text().nullable()();
-<<<<<<< Updated upstream
-=======
-
-  // Notification & Deadline
-  DateTimeColumn get deadline => dateTime().nullable()();
-  BoolColumn get remindViaEmail => boolean().withDefault(const Constant(false))();
->>>>>>> Stashed changes
 
   // Sync
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -70,7 +54,6 @@ class Activities extends Table {
   TextColumn get userId => text()();
 
   // Sync
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -92,7 +75,6 @@ class Reminders extends Table {
   TextColumn get userId => text()();
 
   // Sync
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
   DateTimeColumn get updatedAt => dateTime().nullable()();
   BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 
@@ -100,17 +82,15 @@ class Reminders extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-
-@DriftDatabase(tables: [Lists, Tasks, Activities, Reminders], daos: [ListsDao, TasksDao, ActivitiesDao])
+@DriftDatabase(
+  tables: [Lists, Tasks, Activities, Reminders],
+  daos: [ListsDao, TasksDao, ActivitiesDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-<<<<<<< Updated upstream
   int get schemaVersion => 2;
-=======
-  int get schemaVersion => 4;
->>>>>>> Stashed changes
 
   @override
   MigrationStrategy get migration {
@@ -123,26 +103,12 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(lists);
           await m.addColumn(tasks, tasks.listId);
         }
-<<<<<<< Updated upstream
-=======
-        if (from < 3) {
-          await m.addColumn(tasks, tasks.deadline);
-          await m.addColumn(tasks, tasks.remindViaEmail);
-        }
-        if (from < 4) {
-          await m.addColumn(tasks, tasks.syncStatus);
-          await m.addColumn(lists, lists.syncStatus);
-          await m.addColumn(activities, activities.syncStatus);
-          await m.addColumn(reminders, reminders.syncStatus);
-        }
->>>>>>> Stashed changes
       },
       beforeOpen: (details) async {
         await customStatement('PRAGMA foreign_keys = ON');
       },
     );
   }
-<<<<<<< Updated upstream
 
   // --- Activities ---
   Future<int> insertActivity(ActivitiesCompanion activity) {
@@ -156,8 +122,6 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<ActivityEntity>> watchAllActivities() {
     return select(activities).watch();
   }
-=======
->>>>>>> Stashed changes
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
@@ -167,7 +131,7 @@ class AppDatabase extends _$AppDatabase {
         driftWorker: Uri.parse('drift_worker.js'),
         onResult: (result) {
           if (result.missingFeatures.isNotEmpty) {
-            appLogger.w('Missing browser features: ${result.missingFeatures}');
+            print('Missing browser features: \${result.missingFeatures}');
           }
         },
       ),

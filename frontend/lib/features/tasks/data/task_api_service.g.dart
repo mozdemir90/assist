@@ -48,8 +48,4 @@ final class TaskApiServiceProvider
   }
 }
 
-<<<<<<< Updated upstream
 String _$taskApiServiceHash() => r'71e2d76d47d149f0801842ff721d78757a85be4b';
-=======
-String _$taskApiServiceHash() => r'ec516734db8542ed77de733069410b57bbc4b954';
->>>>>>> Stashed changes

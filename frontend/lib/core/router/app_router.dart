@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:frontend/features/tasks/presentation/task_list_screen.dart';
-<<<<<<< Updated upstream
 import '../../features/activities/presentation/activity_timer_screen.dart';
 import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/providers/auth_state.dart';
@@ -11,14 +10,6 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
 import '../../features/lists/presentation/screens/lists_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
-=======
-import '../../features/auth/presentation/providers/auth_notifier.dart';
-import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../features/auth/presentation/screens/register_screen.dart';
-import '../../features/auth/presentation/screens/forgot_password_screen.dart';
-import '../../features/activities/presentation/screens/activity_list_screen.dart';
-import '../../features/lists/presentation/screens/lists_screen.dart';
->>>>>>> Stashed changes
 import 'main_shell_screen.dart';
 
 part 'app_router.g.dart';
@@ -28,55 +19,39 @@ class SplashLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-<<<<<<< Updated upstream
   final authNotifier = ValueNotifier<AuthState>(ref.read(authProvider));
 
-  ref.listen<AuthState>(
-    authProvider,
-    (_, next) {
-      authNotifier.value = next;
-    },
-  );
+  ref.listen<AuthState>(authProvider, (_, next) {
+    authNotifier.value = next;
+  });
 
   return GoRouter(
     initialLocation: '/',
     refreshListenable: authNotifier,
     redirect: (context, state) {
       final authState = ref.read(authProvider);
-      print('ROUTER REDIRECT: location=${state.matchedLocation}, state=$authState');
-=======
-  final authState = ref.watch(authNotifierProvider);
-
-  return GoRouter(
-    initialLocation: '/',
-    redirect: (context, state) {
->>>>>>> Stashed changes
+      print(
+        'ROUTER REDIRECT: location=${state.matchedLocation}, state=$authState',
+      );
       return authState.maybeWhen(
         initial: () => '/splash',
         loading: () {
-           // If we are navigating between login/register during loading, don't interrupt
-           if(state.matchedLocation == '/login' || state.matchedLocation == '/register') return null;
-           return '/splash';
+          // If we are navigating between login/register during loading, don't interrupt
+          if (state.matchedLocation == '/login' ||
+              state.matchedLocation == '/register')
+            return null;
+          return '/splash';
         },
         unauthenticated: () {
           final isLogin = state.matchedLocation == '/login';
           final isRegister = state.matchedLocation == '/register';
-<<<<<<< Updated upstream
           if (isLogin || isRegister) return null;
-=======
-          final isForgot = state.matchedLocation == '/forgot-password';
-          if (isLogin || isRegister || isForgot) return null;
->>>>>>> Stashed changes
           return '/login';
         },
         authenticated: (_) {
@@ -87,15 +62,16 @@ GoRouter appRouter(Ref ref) {
           return null;
         },
         error: (_) {
-           if(state.matchedLocation == '/login' || state.matchedLocation == '/register') return null;
-           return '/login';
+          if (state.matchedLocation == '/login' ||
+              state.matchedLocation == '/register')
+            return null;
+          return '/login';
         },
         orElse: () => null,
       );
     },
     routes: [
       GoRoute(
-<<<<<<< Updated upstream
         path: '/profile',
         name: 'profile',
         builder: (context, state) => const ProfileScreen(),
@@ -112,8 +88,6 @@ GoRouter appRouter(Ref ref) {
         },
       ),
       GoRoute(
-=======
->>>>>>> Stashed changes
         path: '/splash',
         name: 'splash',
         builder: (context, state) => const SplashLoader(),
@@ -161,14 +135,6 @@ GoRouter appRouter(Ref ref) {
         path: '/register',
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
-<<<<<<< Updated upstream
-=======
-      ),
-      GoRoute(
-        path: '/forgot-password',
-        name: 'forgot_password',
-        builder: (context, state) => const ForgotPasswordScreen(),
->>>>>>> Stashed changes
       ),
     ],
   );

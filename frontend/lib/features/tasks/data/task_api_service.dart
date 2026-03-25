@@ -12,7 +12,9 @@ class TaskApiService {
 
   Future<List<TaskModel>> getTasks() async {
     final response = await _apiClient.dio.get('/tasks/');
-    return (response.data as List).map((json) => TaskModel.fromJson(json)).toList();
+    return (response.data as List)
+        .map((json) => TaskModel.fromJson(json))
+        .toList();
   }
 
   Future<TaskModel> createTask(TaskModel task) async {
@@ -21,7 +23,10 @@ class TaskApiService {
   }
 
   Future<TaskModel> updateTask(TaskModel task) async {
-    final response = await _apiClient.dio.put('/tasks/\${task.id}', data: task.toJson());
+    final response = await _apiClient.dio.put(
+      '/tasks/\${task.id}',
+      data: task.toJson(),
+    );
     return TaskModel.fromJson(response.data);
   }
 
@@ -31,10 +36,6 @@ class TaskApiService {
 }
 
 @riverpod
-<<<<<<< Updated upstream
 TaskApiService taskApiService(Ref ref) {
-=======
-TaskApiService taskApiService(TaskApiServiceRef ref) {
->>>>>>> Stashed changes
   return TaskApiService(ref.watch(apiClientProvider));
 }

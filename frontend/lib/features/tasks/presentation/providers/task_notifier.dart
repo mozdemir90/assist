@@ -1,12 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-<<<<<<< Updated upstream
 import '../../data/task_repository.dart';
 import '../../domain/task_model.dart';
-=======
-import '../data/task_repository.dart';
-import '../domain/task_model.dart';
->>>>>>> Stashed changes
 
 final taskListProvider = StreamProvider<List<TaskModel>>((ref) {
   final repo = ref.watch(taskRepositoryProvider);
@@ -19,7 +14,11 @@ class TaskNotifierActions {
 
   TaskNotifierActions(this.repo);
 
-  Future<void> addTask(String title, {String description = '', String? listId}) async {
+  Future<void> addTask(
+    String title, {
+    String description = '',
+    String? listId,
+  }) async {
     final task = TaskModel(
       id: const Uuid().v4(),
       title: title,

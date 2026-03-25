@@ -26,10 +26,7 @@ class ProfileScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profil & Ayarlar'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Profil & Ayarlar'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -38,18 +35,19 @@ class ProfileScreen extends ConsumerWidget {
             CircleAvatar(
               radius: 50,
               backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
-              child: const Icon(Icons.person, size: 50, color: AppColors.primaryBlue),
+              child: const Icon(
+                Icons.person,
+                size: 50,
+                color: AppColors.primaryBlue,
+              ),
             ),
             const SizedBox(height: 16),
-            Text(
-              username,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text(username, style: Theme.of(context).textTheme.headlineMedium),
             Text(
               email,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondaryLight,
-                  ),
+                color: AppColors.textSecondaryLight,
+              ),
             ),
             const SizedBox(height: 32),
 
@@ -59,7 +57,9 @@ class ProfileScreen extends ConsumerWidget {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: AppColors.textSecondaryLight.withOpacity(0.2)),
+                side: BorderSide(
+                  color: AppColors.textSecondaryLight.withOpacity(0.2),
+                ),
               ),
               child: Column(
                 children: [
@@ -67,19 +67,22 @@ class ProfileScreen extends ConsumerWidget {
                     title: const Text('Sistem Teması'),
                     value: ThemeMode.system,
                     groupValue: themeMode,
-                    onChanged: (val) => ref.read(themeModeProvider.notifier).setTheme(val!),
+                    onChanged: (val) =>
+                        ref.read(themeModeProvider.notifier).setTheme(val!),
                   ),
                   RadioListTile<ThemeMode>(
                     title: const Text('Açık Tema (Light Mode)'),
                     value: ThemeMode.light,
                     groupValue: themeMode,
-                    onChanged: (val) => ref.read(themeModeProvider.notifier).setTheme(val!),
+                    onChanged: (val) =>
+                        ref.read(themeModeProvider.notifier).setTheme(val!),
                   ),
                   RadioListTile<ThemeMode>(
                     title: const Text('Koyu Tema (Dark Mode)'),
                     value: ThemeMode.dark,
                     groupValue: themeMode,
-                    onChanged: (val) => ref.read(themeModeProvider.notifier).setTheme(val!),
+                    onChanged: (val) =>
+                        ref.read(themeModeProvider.notifier).setTheme(val!),
                   ),
                 ],
               ),
@@ -91,7 +94,9 @@ class ProfileScreen extends ConsumerWidget {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: AppColors.textSecondaryLight.withOpacity(0.2)),
+                side: BorderSide(
+                  color: AppColors.textSecondaryLight.withOpacity(0.2),
+                ),
               ),
               child: ListTile(
                 leading: const Icon(Icons.lock_outline),
@@ -99,7 +104,9 @@ class ProfileScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Şifre değiştirme özelliği yakında!')),
+                    const SnackBar(
+                      content: Text('Şifre değiştirme özelliği yakında!'),
+                    ),
                   );
                 },
               ),
@@ -111,13 +118,21 @@ class ProfileScreen extends ConsumerWidget {
                 ref.read(authProvider.notifier).logout();
               },
               icon: const Icon(Icons.logout, color: AppColors.errorRed),
-              label: const Text('Oturumu Kapat', style: TextStyle(color: AppColors.errorRed)),
+              label: const Text(
+                'Oturumu Kapat',
+                style: TextStyle(color: AppColors.errorRed),
+              ),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.errorRed),
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -132,9 +147,9 @@ class ProfileScreen extends ConsumerWidget {
         child: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textSecondaryLight,
-              ),
+            fontWeight: FontWeight.bold,
+            color: AppColors.textSecondaryLight,
+          ),
         ),
       ),
     );

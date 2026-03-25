@@ -55,8 +55,4 @@ final class ActivityRepositoryProvider
 }
 
 String _$activityRepositoryHash() =>
-<<<<<<< Updated upstream
     r'f0a12a5e7dce9e95e3d684139a5ed3eb85d722f6';
-=======
-    r'345a9955ae2f6867833a38b039fb0ff631509691';
->>>>>>> Stashed changes

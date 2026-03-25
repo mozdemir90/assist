@@ -4,7 +4,8 @@ import '../app_database.dart';
 part 'activities_dao.g.dart';
 
 @DriftAccessor(tables: [Activities])
-class ActivitiesDao extends DatabaseAccessor<AppDatabase> with _$ActivitiesDaoMixin {
+class ActivitiesDao extends DatabaseAccessor<AppDatabase>
+    with _$ActivitiesDaoMixin {
   final AppDatabase db;
 
   ActivitiesDao(this.db) : super(db);
@@ -16,7 +17,8 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase> with _$ActivitiesDaoMi
     return (select(activities)
           ..where((a) => a.isDeleted.equals(false))
           ..orderBy([
-            (a) => OrderingTerm(expression: a.startTime, mode: OrderingMode.desc)
+            (a) =>
+                OrderingTerm(expression: a.startTime, mode: OrderingMode.desc),
           ]))
         .watch();
   }
@@ -29,20 +31,11 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase> with _$ActivitiesDaoMi
 
   // Soft delete logic for sync purposes
   Future<int> softDeleteActivity(String id) {
-    return (update(activities)..where((a) => a.id.equals(id)))
-        .write(ActivitiesCompanion(
-          isDeleted: const Value(true),
-<<<<<<< Updated upstream
-          updatedAt: Value(DateTime.now().toUtc()),
-        ));
+    return (update(activities)..where((a) => a.id.equals(id))).write(
+      ActivitiesCompanion(
+        isDeleted: const Value(true),
+        updatedAt: Value(DateTime.now().toUtc()),
+      ),
+    );
   }
-=======
-          syncStatus: const Value('pending_delete'),
-          updatedAt: Value(DateTime.now().toUtc()),
-        ));
-  }
-
-  Future<List<ActivityEntity>> getPendingActivities() =>
-      (select(activities)..where((a) => a.syncStatus.isNotIn(['synced']))).get();
->>>>>>> Stashed changes
 }

@@ -21,7 +21,10 @@ class ReminderApiService {
     return ReminderModel.fromJson(response.data);
   }
 
-  Future<ReminderModel> updateReminder(String id, Map<String, dynamic> data) async {
+  Future<ReminderModel> updateReminder(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     final response = await _dio.put('/reminders/$id', data: data);
     return ReminderModel.fromJson(response.data);
   }

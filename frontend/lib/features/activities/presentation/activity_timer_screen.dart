@@ -29,9 +29,9 @@ class ActivityTimerScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             if (timerState.elapsedSeconds > 0 && isRunning) {
-               ScaffoldMessenger.of(context).showSnackBar(
-                 const SnackBar(content: Text('Timer running in background')),
-               );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Timer running in background')),
+              );
             }
             context.pop();
           },
@@ -56,39 +56,52 @@ class ActivityTimerScreen extends ConsumerWidget {
                 if (!isRunning && timerState.elapsedSeconds == 0)
                   FloatingActionButton.large(
                     heroTag: 'start_timer',
-                    onPressed: () => ref.read(activityTimerProvider.notifier).start(taskId),
+                    onPressed: () =>
+                        ref.read(activityTimerProvider.notifier).start(taskId),
                     child: const Icon(Icons.play_arrow, size: 40),
                   )
                 else if (isRunning)
                   FloatingActionButton.large(
                     heroTag: 'pause_timer',
-                    onPressed: () => ref.read(activityTimerProvider.notifier).pause(),
+                    onPressed: () =>
+                        ref.read(activityTimerProvider.notifier).pause(),
                     child: const Icon(Icons.pause, size: 40),
                   )
                 else
                   FloatingActionButton.large(
                     heroTag: 'resume_timer',
-                    onPressed: () => ref.read(activityTimerProvider.notifier).start(taskId),
+                    onPressed: () =>
+                        ref.read(activityTimerProvider.notifier).start(taskId),
                     child: const Icon(Icons.play_arrow, size: 40),
                   ),
                 if (timerState.elapsedSeconds > 0) ...[
                   const SizedBox(width: 30),
                   FloatingActionButton.large(
                     heroTag: 'stop_timer',
-                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.errorContainer,
                     onPressed: () async {
-                      await ref.read(activityTimerProvider.notifier).stopAndSave(
-                        taskTitle ?? 'General Activity',
-                        description: 'Tracked via timer',
-                      );
+                      await ref
+                          .read(activityTimerProvider.notifier)
+                          .stopAndSave(
+                            taskTitle ?? 'General Activity',
+                            description: 'Tracked via timer',
+                          );
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Activity saved successfully!')),
+                          const SnackBar(
+                            content: Text('Activity saved successfully!'),
+                          ),
                         );
                         context.pop();
                       }
                     },
-                    child: Icon(Icons.stop, size: 40, color: Theme.of(context).colorScheme.onErrorContainer),
+                    child: Icon(
+                      Icons.stop,
+                      size: 40,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
                   ),
                 ],
               ],

@@ -11,10 +11,16 @@ class ReminderList extends _$ReminderList {
     return ref.watch(reminderRepositoryProvider).getReminders();
   }
 
-  Future<void> addReminder(String title, DateTime time, {String? message}) async {
+  Future<void> addReminder(
+    String title,
+    DateTime time, {
+    String? message,
+  }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ref.read(reminderRepositoryProvider).addReminder(title, time, message: message);
+      await ref
+          .read(reminderRepositoryProvider)
+          .addReminder(title, time, message: message);
       return ref.read(reminderRepositoryProvider).getReminders();
     });
   }

@@ -39,7 +39,10 @@ class ActivityTimerNotifier extends Notifier<TimerState> {
 
   void start(String? taskId) {
     if (state.isRunning) return;
-    state = state.copyWith(isRunning: true, currentTaskId: taskId ?? state.currentTaskId);
+    state = state.copyWith(
+      isRunning: true,
+      currentTaskId: taskId ?? state.currentTaskId,
+    );
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       state = state.copyWith(elapsedSeconds: state.elapsedSeconds + 1);
     });
@@ -55,12 +58,18 @@ class ActivityTimerNotifier extends Notifier<TimerState> {
     pause();
 
     final repo = ref.read(activityRepositoryProvider);
-    await repo.saveActivity(title, state.elapsedSeconds, description: description, taskId: state.currentTaskId);
+    await repo.saveActivity(
+      title,
+      state.elapsedSeconds,
+      description: description,
+      taskId: state.currentTaskId,
+    );
 
     state = const TimerState(); // Reset
   }
 }
 
-final activityTimerProvider = NotifierProvider<ActivityTimerNotifier, TimerState>(() {
-  return ActivityTimerNotifier();
-});
+final activityTimerProvider =
+    NotifierProvider<ActivityTimerNotifier, TimerState>(() {
+      return ActivityTimerNotifier();
+    });

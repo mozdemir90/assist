@@ -1,12 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-<<<<<<< Updated upstream
 import '../../data/activity_repository.dart';
 import '../../domain/activity_model.dart';
-=======
-import '../data/activity_repository.dart';
-import '../domain/activity_model.dart';
->>>>>>> Stashed changes
 
 final activityListProvider = StreamProvider<List<ActivityModel>>((ref) {
   final repo = ref.watch(activityRepositoryProvider);
@@ -19,7 +14,11 @@ class ActivityNotifierActions {
 
   ActivityNotifierActions(this.repo);
 
-  Future<void> addActivity(String title, {String description = '', int? duration}) async {
+  Future<void> addActivity(
+    String title, {
+    String description = '',
+    int? duration,
+  }) async {
     final activity = ActivityModel(
       id: const Uuid().v4(),
       title: title,
@@ -35,6 +34,8 @@ class ActivityNotifierActions {
   }
 }
 
-final activityNotifierActionsProvider = Provider<ActivityNotifierActions>((ref) {
+final activityNotifierActionsProvider = Provider<ActivityNotifierActions>((
+  ref,
+) {
   return ActivityNotifierActions(ref.watch(activityRepositoryProvider));
 });

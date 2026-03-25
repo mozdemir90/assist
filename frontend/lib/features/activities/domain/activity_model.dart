@@ -4,11 +4,7 @@ part 'activity_model.freezed.dart';
 part 'activity_model.g.dart';
 
 @freezed
-<<<<<<< Updated upstream
 abstract class ActivityModel with _$ActivityModel {
-=======
-class ActivityModel with _$ActivityModel {
->>>>>>> Stashed changes
   const factory ActivityModel({
     required String id,
     required String title,
@@ -21,5 +17,6 @@ class ActivityModel with _$ActivityModel {
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _ActivityModel;
 
-  factory ActivityModel.fromJson(Map<String, dynamic> json) => _$ActivityModelFromJson(json);
+  factory ActivityModel.fromJson(Map<String, dynamic> json) =>
+      _$ActivityModelFromJson(json);
 }

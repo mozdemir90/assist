@@ -14,7 +14,11 @@ class ReminderRepository {
     return _apiService.getReminders();
   }
 
-  Future<ReminderModel> addReminder(String title, DateTime triggerTime, {String? message}) {
+  Future<ReminderModel> addReminder(
+    String title,
+    DateTime triggerTime, {
+    String? message,
+  }) {
     return _apiService.createReminder({
       'title': title,
       'trigger_time': triggerTime.toUtc().toIso8601String(),

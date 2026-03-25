@@ -10,7 +10,9 @@ class AppColors {
   static const Color errorRed = Color(0xFFEF4444);
 
   // Light Theme Colors
-  static const Color backgroundLight = Color(0xFFFFFFFF); // Logoyla uyumlu olması için tam beyaz
+  static const Color backgroundLight = Color(
+    0xFFFFFFFF,
+  ); // Logoyla uyumlu olması için tam beyaz
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color textPrimaryLight = Color(0xFF1E293B);
   static const Color textSecondaryLight = Color(0xFF64748B);
