@@ -16,3 +16,4 @@ PyJWT
 SQLAlchemy
 typing_extensions
 Werkzeug
+Flask-Cors

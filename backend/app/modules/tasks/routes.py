@@ -26,7 +26,8 @@ def create_task(current_user):
         title=data.get('title'),
         description=data.get('description', ''),
         is_completed=data.get('is_completed', False),
-        user_id=current_user.id
+        user_id=current_user.id,
+        list_id=data.get('list_id')
     )
 
     # If the client (offline-first) provides its own UUID, use it to maintain sync parity.
@@ -58,6 +59,8 @@ def update_task(current_user, task_id):
         task.description = data['description']
     if 'is_completed' in data:
         task.is_completed = data['is_completed']
+    if 'list_id' in data:
+        task.list_id = data['list_id']
     if 'is_deleted' in data:
         task.is_deleted = data['is_deleted']
 

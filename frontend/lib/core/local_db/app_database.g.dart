@@ -3,6 +3,464 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
+class $ListsTable extends Lists with TableInfo<$ListsTable, ListEntity> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ListsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 255,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    color,
+    userId,
+    createdAt,
+    updatedAt,
+    isDeleted,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'lists';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ListEntity> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ListEntity map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ListEntity(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      ),
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
+    );
+  }
+
+  @override
+  $ListsTable createAlias(String alias) {
+    return $ListsTable(attachedDatabase, alias);
+  }
+}
+
+class ListEntity extends DataClass implements Insertable<ListEntity> {
+  final String id;
+  final String name;
+  final String? color;
+  final String userId;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final bool isDeleted;
+  const ListEntity({
+    required this.id,
+    required this.name,
+    this.color,
+    required this.userId,
+    this.createdAt,
+    this.updatedAt,
+    required this.isDeleted,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<String>(color);
+    }
+    map['user_id'] = Variable<String>(userId);
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    map['is_deleted'] = Variable<bool>(isDeleted);
+    return map;
+  }
+
+  ListsCompanion toCompanion(bool nullToAbsent) {
+    return ListsCompanion(
+      id: Value(id),
+      name: Value(name),
+      color: color == null && nullToAbsent
+          ? const Value.absent()
+          : Value(color),
+      userId: Value(userId),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      isDeleted: Value(isDeleted),
+    );
+  }
+
+  factory ListEntity.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ListEntity(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<String?>(json['color']),
+      userId: serializer.fromJson<String>(json['userId']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<String?>(color),
+      'userId': serializer.toJson<String>(userId),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
+    };
+  }
+
+  ListEntity copyWith({
+    String? id,
+    String? name,
+    Value<String?> color = const Value.absent(),
+    String? userId,
+    Value<DateTime?> createdAt = const Value.absent(),
+    Value<DateTime?> updatedAt = const Value.absent(),
+    bool? isDeleted,
+  }) => ListEntity(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    color: color.present ? color.value : this.color,
+    userId: userId ?? this.userId,
+    createdAt: createdAt.present ? createdAt.value : this.createdAt,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+    isDeleted: isDeleted ?? this.isDeleted,
+  );
+  ListEntity copyWithCompanion(ListsCompanion data) {
+    return ListEntity(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ListEntity(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('userId: $userId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isDeleted: $isDeleted')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, color, userId, createdAt, updatedAt, isDeleted);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ListEntity &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.color == this.color &&
+          other.userId == this.userId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.isDeleted == this.isDeleted);
+}
+
+class ListsCompanion extends UpdateCompanion<ListEntity> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String?> color;
+  final Value<String> userId;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
+  final Value<bool> isDeleted;
+  final Value<int> rowid;
+  const ListsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ListsCompanion.insert({
+    required String id,
+    required String name,
+    this.color = const Value.absent(),
+    required String userId,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       userId = Value(userId);
+  static Insertable<ListEntity> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? color,
+    Expression<String>? userId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<bool>? isDeleted,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (userId != null) 'user_id': userId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (isDeleted != null) 'is_deleted': isDeleted,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ListsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? name,
+    Value<String?>? color,
+    Value<String>? userId,
+    Value<DateTime?>? createdAt,
+    Value<DateTime?>? updatedAt,
+    Value<bool>? isDeleted,
+    Value<int>? rowid,
+  }) {
+    return ListsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      userId: userId ?? this.userId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isDeleted: isDeleted ?? this.isDeleted,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ListsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('userId: $userId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -65,6 +523,15 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _listIdMeta = const VerificationMeta('listId');
+  @override
+  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
+    'list_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -98,6 +565,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     description,
     isCompleted,
     userId,
+    listId,
     updatedAt,
     isDeleted,
   ];
@@ -152,6 +620,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
+    if (data.containsKey('list_id')) {
+      context.handle(
+        _listIdMeta,
+        listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta),
+      );
+    }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
@@ -193,6 +667,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskEntity> {
         DriftSqlType.string,
         data['${effectivePrefix}user_id'],
       )!,
+      listId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}list_id'],
+      ),
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
@@ -216,6 +694,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
   final String? description;
   final bool isCompleted;
   final String userId;
+  final String? listId;
   final DateTime? updatedAt;
   final bool isDeleted;
   const TaskEntity({
@@ -224,6 +703,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     this.description,
     required this.isCompleted,
     required this.userId,
+    this.listId,
     this.updatedAt,
     required this.isDeleted,
   });
@@ -237,6 +717,9 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     }
     map['is_completed'] = Variable<bool>(isCompleted);
     map['user_id'] = Variable<String>(userId);
+    if (!nullToAbsent || listId != null) {
+      map['list_id'] = Variable<String>(listId);
+    }
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
     }
@@ -253,6 +736,9 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           : Value(description),
       isCompleted: Value(isCompleted),
       userId: Value(userId),
+      listId: listId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(listId),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAt),
@@ -271,6 +757,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       description: serializer.fromJson<String?>(json['description']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       userId: serializer.fromJson<String>(json['userId']),
+      listId: serializer.fromJson<String?>(json['listId']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
     );
@@ -284,6 +771,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
       'description': serializer.toJson<String?>(description),
       'isCompleted': serializer.toJson<bool>(isCompleted),
       'userId': serializer.toJson<String>(userId),
+      'listId': serializer.toJson<String?>(listId),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'isDeleted': serializer.toJson<bool>(isDeleted),
     };
@@ -295,6 +783,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     Value<String?> description = const Value.absent(),
     bool? isCompleted,
     String? userId,
+    Value<String?> listId = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
     bool? isDeleted,
   }) => TaskEntity(
@@ -303,6 +792,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     description: description.present ? description.value : this.description,
     isCompleted: isCompleted ?? this.isCompleted,
     userId: userId ?? this.userId,
+    listId: listId.present ? listId.value : this.listId,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
     isDeleted: isDeleted ?? this.isDeleted,
   );
@@ -317,6 +807,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           ? data.isCompleted.value
           : this.isCompleted,
       userId: data.userId.present ? data.userId.value : this.userId,
+      listId: data.listId.present ? data.listId.value : this.listId,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
     );
@@ -330,6 +821,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           ..write('description: $description, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('userId: $userId, ')
+          ..write('listId: $listId, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted')
           ..write(')'))
@@ -343,6 +835,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
     description,
     isCompleted,
     userId,
+    listId,
     updatedAt,
     isDeleted,
   );
@@ -355,6 +848,7 @@ class TaskEntity extends DataClass implements Insertable<TaskEntity> {
           other.description == this.description &&
           other.isCompleted == this.isCompleted &&
           other.userId == this.userId &&
+          other.listId == this.listId &&
           other.updatedAt == this.updatedAt &&
           other.isDeleted == this.isDeleted);
 }
@@ -365,6 +859,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
   final Value<String?> description;
   final Value<bool> isCompleted;
   final Value<String> userId;
+  final Value<String?> listId;
   final Value<DateTime?> updatedAt;
   final Value<bool> isDeleted;
   final Value<int> rowid;
@@ -374,6 +869,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     this.description = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.userId = const Value.absent(),
+    this.listId = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -384,6 +880,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     this.description = const Value.absent(),
     this.isCompleted = const Value.absent(),
     required String userId,
+    this.listId = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.isDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -396,6 +893,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     Expression<String>? description,
     Expression<bool>? isCompleted,
     Expression<String>? userId,
+    Expression<String>? listId,
     Expression<DateTime>? updatedAt,
     Expression<bool>? isDeleted,
     Expression<int>? rowid,
@@ -406,6 +904,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
       if (description != null) 'description': description,
       if (isCompleted != null) 'is_completed': isCompleted,
       if (userId != null) 'user_id': userId,
+      if (listId != null) 'list_id': listId,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (isDeleted != null) 'is_deleted': isDeleted,
       if (rowid != null) 'rowid': rowid,
@@ -418,6 +917,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     Value<String?>? description,
     Value<bool>? isCompleted,
     Value<String>? userId,
+    Value<String?>? listId,
     Value<DateTime?>? updatedAt,
     Value<bool>? isDeleted,
     Value<int>? rowid,
@@ -428,6 +928,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
       description: description ?? this.description,
       isCompleted: isCompleted ?? this.isCompleted,
       userId: userId ?? this.userId,
+      listId: listId ?? this.listId,
       updatedAt: updatedAt ?? this.updatedAt,
       isDeleted: isDeleted ?? this.isDeleted,
       rowid: rowid ?? this.rowid,
@@ -452,6 +953,9 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (listId.present) {
+      map['list_id'] = Variable<String>(listId.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -472,6 +976,7 @@ class TasksCompanion extends UpdateCompanion<TaskEntity> {
           ..write('description: $description, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('userId: $userId, ')
+          ..write('listId: $listId, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('isDeleted: $isDeleted, ')
           ..write('rowid: $rowid')
@@ -1671,20 +2176,256 @@ class RemindersCompanion extends UpdateCompanion<ReminderEntity> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $ListsTable lists = $ListsTable(this);
   late final $TasksTable tasks = $TasksTable(this);
   late final $ActivitiesTable activities = $ActivitiesTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
+  late final ListsDao listsDao = ListsDao(this as AppDatabase);
+  late final TasksDao tasksDao = TasksDao(this as AppDatabase);
+  late final ActivitiesDao activitiesDao = ActivitiesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
+    lists,
     tasks,
     activities,
     reminders,
   ];
 }
 
+typedef $$ListsTableCreateCompanionBuilder =
+    ListsCompanion Function({
+      required String id,
+      required String name,
+      Value<String?> color,
+      required String userId,
+      Value<DateTime?> createdAt,
+      Value<DateTime?> updatedAt,
+      Value<bool> isDeleted,
+      Value<int> rowid,
+    });
+typedef $$ListsTableUpdateCompanionBuilder =
+    ListsCompanion Function({
+      Value<String> id,
+      Value<String> name,
+      Value<String?> color,
+      Value<String> userId,
+      Value<DateTime?> createdAt,
+      Value<DateTime?> updatedAt,
+      Value<bool> isDeleted,
+      Value<int> rowid,
+    });
+
+class $$ListsTableFilterComposer extends Composer<_$AppDatabase, $ListsTable> {
+  $$ListsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ListsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ListsTable> {
+  $$ListsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ListsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ListsTable> {
+  $$ListsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
+}
+
+class $$ListsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ListsTable,
+          ListEntity,
+          $$ListsTableFilterComposer,
+          $$ListsTableOrderingComposer,
+          $$ListsTableAnnotationComposer,
+          $$ListsTableCreateCompanionBuilder,
+          $$ListsTableUpdateCompanionBuilder,
+          (ListEntity, BaseReferences<_$AppDatabase, $ListsTable, ListEntity>),
+          ListEntity,
+          PrefetchHooks Function()
+        > {
+  $$ListsTableTableManager(_$AppDatabase db, $ListsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ListsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ListsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ListsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> color = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<DateTime?> createdAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ListsCompanion(
+                id: id,
+                name: name,
+                color: color,
+                userId: userId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isDeleted: isDeleted,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String name,
+                Value<String?> color = const Value.absent(),
+                required String userId,
+                Value<DateTime?> createdAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ListsCompanion.insert(
+                id: id,
+                name: name,
+                color: color,
+                userId: userId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                isDeleted: isDeleted,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ListsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ListsTable,
+      ListEntity,
+      $$ListsTableFilterComposer,
+      $$ListsTableOrderingComposer,
+      $$ListsTableAnnotationComposer,
+      $$ListsTableCreateCompanionBuilder,
+      $$ListsTableUpdateCompanionBuilder,
+      (ListEntity, BaseReferences<_$AppDatabase, $ListsTable, ListEntity>),
+      ListEntity,
+      PrefetchHooks Function()
+    >;
 typedef $$TasksTableCreateCompanionBuilder =
     TasksCompanion Function({
       required String id,
@@ -1692,6 +2433,7 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<String?> description,
       Value<bool> isCompleted,
       required String userId,
+      Value<String?> listId,
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
       Value<int> rowid,
@@ -1703,6 +2445,7 @@ typedef $$TasksTableUpdateCompanionBuilder =
       Value<String?> description,
       Value<bool> isCompleted,
       Value<String> userId,
+      Value<String?> listId,
       Value<DateTime?> updatedAt,
       Value<bool> isDeleted,
       Value<int> rowid,
@@ -1738,6 +2481,11 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
 
   ColumnFilters<String> get userId => $composableBuilder(
     column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get listId => $composableBuilder(
+    column: $table.listId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1786,6 +2534,11 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get listId => $composableBuilder(
+    column: $table.listId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -1824,6 +2577,9 @@ class $$TasksTableAnnotationComposer
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get listId =>
+      $composableBuilder(column: $table.listId, builder: (column) => column);
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -1865,6 +2621,7 @@ class $$TasksTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<bool> isCompleted = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+                Value<String?> listId = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -1874,6 +2631,7 @@ class $$TasksTableTableManager
                 description: description,
                 isCompleted: isCompleted,
                 userId: userId,
+                listId: listId,
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 rowid: rowid,
@@ -1885,6 +2643,7 @@ class $$TasksTableTableManager
                 Value<String?> description = const Value.absent(),
                 Value<bool> isCompleted = const Value.absent(),
                 required String userId,
+                Value<String?> listId = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -1894,6 +2653,7 @@ class $$TasksTableTableManager
                 description: description,
                 isCompleted: isCompleted,
                 userId: userId,
+                listId: listId,
                 updatedAt: updatedAt,
                 isDeleted: isDeleted,
                 rowid: rowid,
@@ -2501,6 +3261,8 @@ typedef $$RemindersTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
+  $$ListsTableTableManager get lists =>
+      $$ListsTableTableManager(_db, _db.lists);
   $$TasksTableTableManager get tasks =>
       $$TasksTableTableManager(_db, _db.tasks);
   $$ActivitiesTableTableManager get activities =>

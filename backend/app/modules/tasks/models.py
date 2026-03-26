@@ -14,6 +14,7 @@ class Task(db.Model):
     is_completed = db.Column(db.Boolean, default=False)
 
     user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    list_id = db.Column(db.String(36), db.ForeignKey('lists.id'), nullable=True)
 
     # Offline sync requirements
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -26,6 +27,7 @@ class Task(db.Model):
             'description': self.description,
             'is_completed': self.is_completed,
             'user_id': self.user_id,
+            'list_id': self.list_id,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_deleted': self.is_deleted
         }

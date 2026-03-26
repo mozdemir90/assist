@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_client.dart';
 
 final taskRemoteDataSourceProvider = Provider<TaskRemoteDataSource>((ref) {
-  return TaskRemoteDataSource(ref.watch(apiClientProvider));
+  return TaskRemoteDataSource(ref.watch(apiClientProvider).dio);
 });
 
 class TaskRemoteDataSource {
@@ -29,7 +29,10 @@ class TaskRemoteDataSource {
     }
   }
 
-  Future<Map<String, dynamic>> updateTask(String id, Map<String, dynamic> taskData) async {
+  Future<Map<String, dynamic>> updateTask(
+    String id,
+    Map<String, dynamic> taskData,
+  ) async {
     try {
       final response = await _dio.put('/tasks/$id', data: taskData);
       return response.data;
