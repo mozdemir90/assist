@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import '../providers/activity_notifier.dart';
 
@@ -13,7 +14,7 @@ class ActivityListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aktivitelerim'),
+        title: Text('my_activities'.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -33,7 +34,7 @@ class ActivityListScreen extends ConsumerWidget {
                   Icon(Icons.directions_run, size: 80, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
-                    'No activities logged yet.',
+                    'no_activities'.tr(),
                     style: TextStyle(color: Colors.grey[600], fontSize: 18),
                   ),
                 ],
@@ -57,10 +58,10 @@ class ActivityListScreen extends ConsumerWidget {
                 onDismissed: (_) {
                   actions.deleteActivity(activity.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Activity deleted'),
+                    SnackBar(
+                      content: Text('activity_deleted'.tr()),
                       behavior: SnackBarBehavior.floating,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
@@ -99,7 +100,7 @@ class ActivityListScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddActivityDialog(context, actions),
-        tooltip: 'Log Activity',
+        tooltip: 'log_activity'.tr(),
         child: const Icon(Icons.add),
       ),
     );
@@ -132,7 +133,7 @@ class ActivityListScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Log Activity',
+                'log_activity'.tr(),
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -141,7 +142,7 @@ class ActivityListScreen extends ConsumerWidget {
               TextField(
                 controller: titleController,
                 decoration: const InputDecoration(
-                  labelText: 'Activity Name (e.g. Running, Reading)',
+                  labelText: 'Activity Name',
                   border: OutlineInputBorder(),
                 ),
                 autofocus: true,
@@ -184,10 +185,7 @@ class ActivityListScreen extends ConsumerWidget {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text(
-                  'Log Activity',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: Text('add'.tr(), style: const TextStyle(fontSize: 16)),
               ),
               const SizedBox(height: 24),
             ],

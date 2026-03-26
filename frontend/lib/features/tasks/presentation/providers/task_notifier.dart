@@ -3,7 +3,10 @@ import 'package:uuid/uuid.dart';
 import '../../data/task_repository.dart';
 import '../../domain/task_model.dart';
 
-final taskListProvider = StreamProvider.family<List<TaskModel>, String?>((ref, listId) {
+final taskListProvider = StreamProvider.family<List<TaskModel>, String?>((
+  ref,
+  listId,
+) {
   final repo = ref.watch(taskRepositoryProvider);
   Future.microtask(() => repo.fetchAndSyncTasks());
   return repo.watchTasks().map((tasks) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../providers/list_provider.dart';
 import '../../data/repository/list_repository.dart';
 
@@ -12,11 +13,11 @@ class ListsScreen extends ConsumerWidget {
     final listsAsync = ref.watch(listsStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Listelerim')),
+      appBar: AppBar(title: Text('my_lists'.tr())),
       body: listsAsync.when(
         data: (lists) {
           if (lists.isEmpty) {
-            return const Center(child: Text('No lists yet. Create one!'));
+            return Center(child: Text('no_lists'.tr()));
           }
           return ListView.builder(
             itemCount: lists.length,
@@ -24,10 +25,10 @@ class ListsScreen extends ConsumerWidget {
               final list = lists[index];
               return ListTile(
                 onTap: () {
-                  context.pushNamed('tasks', queryParameters: {
-                    'listId': list.id,
-                    'listName': list.name,
-                  });
+                  context.pushNamed(
+                    'tasks',
+                    queryParameters: {'listId': list.id, 'listName': list.name},
+                  );
                 },
                 leading: CircleAvatar(
                   backgroundColor: _colorFromHex(list.color ?? '#CCCCCC'),
@@ -72,15 +73,15 @@ class ListsScreen extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('New List'),
+          title: Text('new_list'.tr()),
           content: TextField(
             controller: nameController,
-            decoration: const InputDecoration(labelText: 'List Name'),
+            decoration: InputDecoration(labelText: 'list_name_hint'.tr()),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text('cancel'.tr()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -90,7 +91,7 @@ class ListsScreen extends ConsumerWidget {
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: Text('add'.tr()),
             ),
           ],
         );
