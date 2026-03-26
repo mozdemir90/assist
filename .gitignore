@@ -7,3 +7,18 @@ __pycache__/
 *.pyc
 .env
 backend/instance/
+
+# Ignore generated flutter files in source control
+**/*.g.dart
+**/*.freezed.dart
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/ios/Pods/
+frontend/macos/Pods/
+frontend/macos/Flutter/ephemeral/
+frontend/ios/Flutter/.last_build_id
+frontend/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+frontend/macos/Flutter/GeneratedPluginRegistrant.swift
