@@ -13,7 +13,7 @@ class ActivityListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ODAK Activities'),
+        title: const Text('Aktivitelerim'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

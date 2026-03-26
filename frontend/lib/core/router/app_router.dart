@@ -102,7 +102,11 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: '/',
                 name: 'tasks',
-                builder: (context, state) => const TaskListScreen(),
+                builder: (context, state) {
+                  final listId = state.uri.queryParameters['listId'];
+                  final listName = state.uri.queryParameters['listName'];
+                  return TaskListScreen(listId: listId, listName: listName);
+                },
               ),
             ],
           ),

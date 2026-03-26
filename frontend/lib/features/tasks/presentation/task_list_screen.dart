@@ -3,18 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import 'providers/task_notifier.dart';
+import 'package:intl/intl.dart';
 
 class TaskListScreen extends ConsumerWidget {
-  const TaskListScreen({super.key});
+  final String? listId;
+  final String? listName;
+
+  const TaskListScreen({super.key, this.listId, this.listName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasksAsyncValue = ref.watch(taskListProvider);
+    final tasksAsyncValue = ref.watch(taskListProvider(listId));
     final actions = ref.watch(taskNotifierActionsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ODAK Tasks'),
+        title: Text(listName ?? 'Görevlerim'),
         actions: [
           IconButton(
             icon: const Icon(Icons.person_outline),
@@ -85,9 +89,26 @@ class TaskListScreen extends ConsumerWidget {
                         color: task.isCompleted ? Colors.grey : null,
                       ),
                     ),
-                    subtitle: task.description.isNotEmpty
-                        ? Text(task.description)
-                        : null,
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (task.description.isNotEmpty) Text(task.description),
+                        if (task.deadline != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                                const SizedBox(width: 4),
+                                Text(
+                                  DateFormat('dd MMM yyyy, HH:mm').format(DateTime.parse(task.deadline!).toLocal()),
+                                  style: const TextStyle(fontSize: 12, color: Colors.blueGrey),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                     secondary: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -122,7 +143,7 @@ class TaskListScreen extends ConsumerWidget {
         error: (e, st) => Center(child: Text('Error: $e')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTaskDialog(context, ref, actions),
+        onPressed: () => _showAddTaskDialog(context, ref, actions, listId),
         child: const Icon(Icons.add),
         tooltip: 'Add Task',
       ),
@@ -133,9 +154,11 @@ class TaskListScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     TaskNotifierActions actions,
+    String? currentListId,
   ) {
     final titleController = TextEditingController();
     final descriptionController = TextEditingController();
+    DateTime? selectedDeadline;
 
     showModalBottomSheet(
       context: context,
@@ -144,61 +167,108 @@ class TaskListScreen extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 24,
-            right: 24,
-            top: 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'New Task',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 24,
+                right: 24,
+                top: 24,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'What needs to be done?',
-                  border: OutlineInputBorder(),
-                ),
-                autofocus: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'New Task',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'What needs to be done?',
+                      border: OutlineInputBorder(),
+                    ),
+                    autofocus: true,
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description (optional)',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 16),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(selectedDeadline == null
+                        ? 'Set Deadline (Optional)'
+                        : DateFormat('dd MMM yyyy, HH:mm').format(selectedDeadline!)),
+                    leading: const Icon(Icons.calendar_today),
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 3650)),
+                      );
+                      if (date != null && context.mounted) {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (time != null) {
+                          setState(() {
+                            selectedDeadline = DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              time.hour,
+                              time.minute,
+                            );
+                          });
+                        }
+                      }
+                    },
+                    trailing: selectedDeadline != null
+                        ? IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              setState(() {
+                                selectedDeadline = null;
+                              });
+                            },
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      final title = titleController.text.trim();
+                      if (title.isNotEmpty) {
+                        actions.addTask(
+                          title,
+                          description: descriptionController.text.trim(),
+                          listId: currentListId,
+                          deadline: selectedDeadline?.toUtc().toIso8601String(),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text('Add Task', style: TextStyle(fontSize: 16)),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  final title = titleController.text.trim();
-                  if (title.isNotEmpty) {
-                    actions.addTask(
-                      title,
-                      description: descriptionController.text.trim(),
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('Add Task', style: TextStyle(fontSize: 16)),
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            );
+          },
         );
       },
     );
