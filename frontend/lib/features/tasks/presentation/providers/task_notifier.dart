@@ -3,10 +3,13 @@ import 'package:uuid/uuid.dart';
 import '../../data/task_repository.dart';
 import '../../domain/task_model.dart';
 
-final taskListProvider = StreamProvider<List<TaskModel>>((ref) {
+final taskListProvider = StreamProvider.family<List<TaskModel>, String?>((ref, listId) {
   final repo = ref.watch(taskRepositoryProvider);
   Future.microtask(() => repo.fetchAndSyncTasks());
-  return repo.watchTasks();
+  return repo.watchTasks().map((tasks) {
+    if (listId == null) return tasks;
+    return tasks.where((t) => t.listId == listId).toList();
+  });
 });
 
 class TaskNotifierActions {
@@ -18,12 +21,14 @@ class TaskNotifierActions {
     String title, {
     String description = '',
     String? listId,
+    String? deadline,
   }) async {
     final task = TaskModel(
       id: const Uuid().v4(),
       title: title,
       description: description,
       listId: listId,
+      deadline: deadline,
     );
     await repo.createTask(task);
   }

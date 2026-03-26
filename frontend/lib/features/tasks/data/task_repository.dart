@@ -26,6 +26,8 @@ class TaskRepository {
               isCompleted: e.isCompleted,
               userId: e.userId,
               listId: e.listId,
+              deadline: e.deadline?.toIso8601String(),
+              remindViaEmail: e.remindViaEmail,
               updatedAt: e.updatedAt?.toIso8601String(),
               isDeleted: e.isDeleted,
             ),
@@ -47,6 +49,9 @@ class TaskRepository {
             isCompleted: task.isCompleted,
             userId: task.userId ?? '',
             listId: task.listId,
+            deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+            remindViaEmail: task.remindViaEmail,
+            syncStatus: 'synced',
             updatedAt: task.updatedAt != null
                 ? DateTime.parse(task.updatedAt!)
                 : null,
@@ -70,6 +75,9 @@ class TaskRepository {
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
+      deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+      remindViaEmail: task.remindViaEmail,
+      syncStatus: 'pending_insert',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: false,
     );
@@ -87,6 +95,9 @@ class TaskRepository {
           isCompleted: createdRemote.isCompleted,
           userId: createdRemote.userId ?? '',
           listId: createdRemote.listId,
+          deadline: createdRemote.deadline != null ? DateTime.parse(createdRemote.deadline!) : null,
+          remindViaEmail: createdRemote.remindViaEmail,
+          syncStatus: 'synced',
           updatedAt: createdRemote.updatedAt != null
               ? DateTime.parse(createdRemote.updatedAt!)
               : null,
@@ -107,6 +118,9 @@ class TaskRepository {
       isCompleted: task.isCompleted,
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
+      deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+      remindViaEmail: task.remindViaEmail,
+      syncStatus: 'pending_update',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: task.isDeleted,
     );
@@ -114,6 +128,7 @@ class TaskRepository {
 
     try {
       await _apiService.updateTask(task);
+      await _localDb.updateTask(localTask.copyWith(syncStatus: 'synced'));
     } on DioException catch (_) {}
   }
 

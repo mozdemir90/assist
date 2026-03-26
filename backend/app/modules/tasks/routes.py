@@ -22,12 +22,25 @@ def create_task(current_user):
     if not data:
         return jsonify({'message': 'Missing JSON body'}), 400
 
+    from datetime import datetime
+
+    deadline_val = data.get('deadline')
+    if deadline_val:
+        try:
+            if deadline_val.endswith('Z'):
+                deadline_val = deadline_val[:-1] + '+00:00'
+            deadline_val = datetime.fromisoformat(deadline_val)
+        except:
+            deadline_val = None
+
     new_task = Task(
         title=data.get('title'),
         description=data.get('description', ''),
         is_completed=data.get('is_completed', False),
         user_id=current_user.id,
-        list_id=data.get('list_id')
+        list_id=data.get('list_id'),
+        deadline=deadline_val,
+        remind_via_email=data.get('remind_via_email', False)
     )
 
     # If the client (offline-first) provides its own UUID, use it to maintain sync parity.
@@ -61,6 +74,20 @@ def update_task(current_user, task_id):
         task.is_completed = data['is_completed']
     if 'list_id' in data:
         task.list_id = data['list_id']
+    if 'deadline' in data:
+        from datetime import datetime
+        val = data['deadline']
+        if val:
+            try:
+                if val.endswith('Z'):
+                    val = val[:-1] + '+00:00'
+                task.deadline = datetime.fromisoformat(val)
+            except:
+                task.deadline = None
+        else:
+            task.deadline = None
+    if 'remind_via_email' in data:
+        task.remind_via_email = data['remind_via_email']
     if 'is_deleted' in data:
         task.is_deleted = data['is_deleted']
 
