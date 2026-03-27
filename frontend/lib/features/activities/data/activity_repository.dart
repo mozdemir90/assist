@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/local_db/app_database.dart';
 import '../../../core/local_db/daos/activities_dao.dart';
 import '../domain/activity_model.dart';
@@ -50,6 +52,7 @@ class ActivityRepository {
                 : null,
             duration: activity.duration,
             userId: activity.userId ?? '',
+            syncStatus: 'synced',
             updatedAt: activity.updatedAt != null
                 ? DateTime.parse(activity.updatedAt!)
                 : null,
@@ -75,6 +78,7 @@ class ActivityRepository {
           : null,
       duration: activity.duration,
       userId: activity.userId ?? 'offline_placeholder',
+      syncStatus: 'pending_insert',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: false,
     );
@@ -95,6 +99,7 @@ class ActivityRepository {
               : null,
           duration: createdRemote.duration,
           userId: createdRemote.userId ?? '',
+          syncStatus: 'synced',
           updatedAt: createdRemote.updatedAt != null
               ? DateTime.parse(createdRemote.updatedAt!)
               : null,
@@ -117,6 +122,7 @@ class ActivityRepository {
           : null,
       duration: activity.duration,
       userId: activity.userId ?? 'offline_placeholder',
+      syncStatus: 'pending_update',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: activity.isDeleted,
     );
@@ -125,6 +131,30 @@ class ActivityRepository {
     try {
       await _apiService.updateActivity(activity);
     } on DioException catch (_) {}
+  }
+
+  Future<void> saveActivity(
+    String title,
+    int durationInSeconds, {
+    String? description,
+    String? taskId,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final companion = ActivitiesCompanion(
+      id: Value(const Uuid().v4()),
+      title: Value(title),
+      description: Value.absentIfNull(description),
+      duration: Value(durationInSeconds),
+      startTime: Value(
+        now.subtract(Duration(seconds: durationInSeconds)),
+      ),
+      endTime: Value(now),
+      userId: const Value('local_user'), // TODO: Replace with actual auth user
+      taskId: Value.absentIfNull(taskId),
+      syncStatus: const Value('pending_insert'),
+      updatedAt: Value(now),
+    );
+    await _localDb.insertActivity(companion);
   }
 
   Future<void> deleteActivity(String id) async {

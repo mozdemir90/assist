@@ -5,6 +5,8 @@ import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart
 import 'providers/task_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../lists/presentation/providers/list_provider.dart';
+import '../../../core/theme/app_colors.dart';
 
 class TaskListScreen extends ConsumerWidget {
   final String? listId;
@@ -14,6 +16,7 @@ class TaskListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    context.locale; // Ensure rebuild on language change
     final tasksAsyncValue = ref.watch(taskListProvider(listId));
     final actions = ref.watch(taskNotifierActionsProvider);
 
@@ -77,52 +80,23 @@ class TaskListScreen extends ConsumerWidget {
                 child: Card(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
-                    vertical: 4,
+                    vertical: 8,
                   ),
-                  elevation: 1,
-                  child: CheckboxListTile(
-                    title: Text(
-                      task.title,
-                      style: TextStyle(
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
-                        color: task.isCompleted ? Colors.grey : null,
-                      ),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: AppColors.textSecondaryLight.withOpacity(0.1),
+                      width: 1,
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (task.description.isNotEmpty) Text(task.description),
-                        if (task.deadline != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.calendar_today,
-                                  size: 14,
-                                  color: Colors.blueGrey,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  DateFormat('dd MMM yyyy, HH:mm').format(
-                                    DateTime.parse(task.deadline!).toLocal(),
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                    secondary: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
+                  ),
+                  child: InkWell(
+                    onTap: () => context.push('/task-detail/${task.id}'),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        leading: IconButton(
                           icon: const Icon(
                             Icons.play_circle_outline,
                             color: Colors.blue,
@@ -137,12 +111,110 @@ class TaskListScreen extends ConsumerWidget {
                             );
                           },
                         ),
-                      ],
+                        title: Text(
+                          task.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            decoration: task.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: task.isCompleted ? Colors.grey : null,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (task.description.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Consumer(
+                                  builder: (context, ref, _) {
+                                    Color? textColor;
+                                    if (task.listId != null) {
+                                      final list = ref.watch(listByIdProvider(task.listId!));
+                                      if (list != null && list.color != null) {
+                                        textColor = Color(int.parse(list.color!.replaceFirst('#', '0xFF')));
+                                      }
+                                    }
+                                    return Text(
+                                      task.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: task.isCompleted
+                                            ? Colors.grey
+                                            : (textColor ?? AppColors.textSecondaryLight),
+                                        fontWeight: textColor != null ? FontWeight.w500 : null,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 4,
+                              children: [
+                                if (task.deadline != null)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.calendar_today,
+                                        size: 14,
+                                        color: Colors.blueGrey,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        DateFormat('dd MMM yyyy, HH:mm').format(
+                                          DateTime.parse(task.deadline!).toLocal(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                if (listId == null && task.listId != null)
+                                  Consumer(
+                                    builder: (context, ref, _) {
+                                      final list = ref.watch(
+                                        listByIdProvider(task.listId!),
+                                      );
+                                      if (list == null) return const SizedBox.shrink();
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.folder_outlined,
+                                            size: 14,
+                                            color: AppColors.primaryBlue,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'in_list'.tr(args: [list.name]),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: AppColors.primaryBlue,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        trailing: Checkbox(
+                          activeColor: AppColors.primaryBlue,
+                          value: task.isCompleted,
+                          onChanged: (_) => actions.toggleTaskCompletion(task),
+                        ),
+                      ),
                     ),
-                    value: task.isCompleted,
-                    onChanged: (_) {
-                      actions.toggleTaskCompletion(task);
-                    },
                   ),
                 ),
               );
@@ -166,6 +238,7 @@ class TaskListScreen extends ConsumerWidget {
     TaskNotifierActions actions,
     String? currentListId,
   ) {
+    final formKey = GlobalKey<FormState>();
     final titleController = TextEditingController();
     final descriptionController = TextEditingController();
     DateTime? selectedDeadline;
@@ -186,34 +259,42 @@ class TaskListScreen extends ConsumerWidget {
                 right: 24,
                 top: 24,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'new_task'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'new_task'.tr(),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: titleController,
-                    decoration: InputDecoration(
-                      labelText: 'task_title_hint'.tr(),
-                      border: const OutlineInputBorder(),
+                    TextFormField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: 'task_title_hint'.tr(),
+                        border: const OutlineInputBorder(),
+                      ),
+                      autofocus: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'please_enter_title'.tr();
+                        }
+                        return null;
+                      },
                     ),
-                    autofocus: true,
-                  ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'task_desc_hint'.tr(),
-                      border: const OutlineInputBorder(),
+                    TextFormField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        labelText: 'task_desc_hint'.tr(),
+                        border: const OutlineInputBorder(),
+                      ),
+                      maxLines: 3,
                     ),
-                    maxLines: 3,
-                  ),
                   const SizedBox(height: 16),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
@@ -266,8 +347,8 @@ class TaskListScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      final title = titleController.text.trim();
-                      if (title.isNotEmpty) {
+                      if (formKey.currentState!.validate()) {
+                        final title = titleController.text.trim();
                         actions.addTask(
                           title,
                           description: descriptionController.text.trim(),
@@ -288,7 +369,8 @@ class TaskListScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                 ],
               ),
-            );
+            ),
+          );
           },
         );
       },

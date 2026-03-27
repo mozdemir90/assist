@@ -58,6 +58,7 @@ class Activities extends Table {
   DateTimeColumn get startTime => dateTime().nullable()();
   DateTimeColumn get endTime => dateTime().nullable()();
   IntColumn get duration => integer().nullable()(); // Seconds
+  TextColumn get taskId => text().nullable()();
   TextColumn get userId => text()();
   TextColumn get syncStatus =>
       text().withDefault(const Constant('pending_insert'))();
@@ -93,15 +94,29 @@ class Reminders extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+// TaskAttachments Table
+@DataClassName('TaskAttachmentEntity')
+class TaskAttachments extends Table {
+  TextColumn get id => text()(); // UUID
+  TextColumn get taskId => text()();
+  TextColumn get fileName => text()();
+  TextColumn get filePath => text()(); // Local path or URL
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 @DriftDatabase(
-  tables: [Lists, Tasks, Activities, Reminders],
+  tables: [Lists, Tasks, Activities, Reminders, TaskAttachments],
   daos: [ListsDao, TasksDao, ActivitiesDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -132,6 +147,14 @@ class AppDatabase extends _$AppDatabase {
           } catch (e) {}
           try {
             await m.addColumn(reminders, reminders.syncStatus);
+          } catch (e) {}
+        }
+        if (from < 5) {
+          await m.createTable(taskAttachments);
+        }
+        if (from < 6) {
+          try {
+            await m.addColumn(activities, activities.taskId);
           } catch (e) {}
         }
       },

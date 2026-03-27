@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/repository/activity_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../data/activity_repository.dart';
+
+part 'activity_provider.g.dart';
 
 class TimerState {
   final bool isRunning;
@@ -26,7 +29,8 @@ class TimerState {
   }
 }
 
-class ActivityTimerNotifier extends Notifier<TimerState> {
+@riverpod
+class ActivityTimer extends _$ActivityTimer {
   Timer? _timer;
 
   @override
@@ -53,8 +57,11 @@ class ActivityTimerNotifier extends Notifier<TimerState> {
     state = state.copyWith(isRunning: false);
   }
 
-  Future<void> stopAndSave(String title, {String? description}) async {
-    if (state.elapsedSeconds == 0) return;
+  Future<void> stopAndSave(String title, {String? description, String? taskId}) async {
+    final effectiveTaskId = taskId ?? state.currentTaskId;
+    final hasDescription = description != null && description.trim().isNotEmpty;
+
+    if (state.elapsedSeconds == 0 && !hasDescription) return;
     pause();
 
     final repo = ref.read(activityRepositoryProvider);
@@ -62,14 +69,9 @@ class ActivityTimerNotifier extends Notifier<TimerState> {
       title,
       state.elapsedSeconds,
       description: description,
-      taskId: state.currentTaskId,
+      taskId: effectiveTaskId,
     );
 
     state = const TimerState(); // Reset
   }
 }
-
-final activityTimerProvider =
-    NotifierProvider<ActivityTimerNotifier, TimerState>(() {
-      return ActivityTimerNotifier();
-    });

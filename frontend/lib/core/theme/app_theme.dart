@@ -33,10 +33,11 @@ class AppTheme {
         displayColor: AppColors.textPrimaryLight,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.surfaceLight,
+        backgroundColor: Color(0xFFF8FAFC), // Subtle off-white/blue tint
         foregroundColor: AppColors.textPrimaryLight,
-        elevation: 0,
+        elevation: 0.5,
         centerTitle: true,
+        surfaceTintColor: Colors.transparent,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -91,8 +92,9 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.surfaceDark,
         foregroundColor: AppColors.textPrimaryDark,
-        elevation: 0,
+        elevation: 0.5,
         centerTitle: true,
+        surfaceTintColor: Colors.transparent,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

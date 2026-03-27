@@ -16,6 +16,9 @@ class MainShellScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Explicitly watch for locale changes to ensure the bottom shell rebuilds
+    context.locale;
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(

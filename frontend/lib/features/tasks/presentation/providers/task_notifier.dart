@@ -10,8 +10,30 @@ final taskListProvider = StreamProvider.family<List<TaskModel>, String?>((
   final repo = ref.watch(taskRepositoryProvider);
   Future.microtask(() => repo.fetchAndSyncTasks());
   return repo.watchTasks().map((tasks) {
-    if (listId == null) return tasks;
-    return tasks.where((t) => t.listId == listId).toList();
+    if (listId != null) {
+      return tasks.where((t) => t.listId == listId).toList();
+    }
+    // Smart Focus Logic for the main page (listId == null):
+    // 1. Show all tasks with a deadline (regardless of list)
+    // 2. Show tasks with NO list and NO deadline (Inbox)
+    final filtered = tasks.where((t) {
+      final hasDeadline = t.deadline != null;
+      final hasNoList = t.listId == null;
+      return hasDeadline || hasNoList;
+    }).toList();
+
+    // Sorting:
+    // 1. Tasks with deadlines first (earliest first)
+    // 2. Tasks without deadlines after
+    filtered.sort((a, b) {
+      if (a.deadline != null && b.deadline != null) {
+        return a.deadline!.compareTo(b.deadline!);
+      }
+      if (a.deadline != null) return -1;
+      if (b.deadline != null) return 1;
+      return 0; // Same (inbox)
+    });
+    return filtered;
   });
 });
 

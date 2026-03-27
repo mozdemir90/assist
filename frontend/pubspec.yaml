@@ -53,6 +53,7 @@ dependencies:
   google_fonts: ^6.1.0
   intl: ^0.20.2
   easy_localization: ^3.0.8
+  file_picker: ^10.3.10
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,13 @@ dev_dependencies:
   riverpod_generator: any
   freezed: any
   json_serializable: any
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/odak_logo.png"
+  min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

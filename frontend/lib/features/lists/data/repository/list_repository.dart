@@ -33,6 +33,7 @@ class ListRepository {
               name: listModel.name,
               color: listModel.color,
               userId: '', // Ideally retrieved from auth or backend
+              syncStatus: 'synced',
               isDeleted: false,
             ),
           );
@@ -50,6 +51,7 @@ class ListRepository {
       name: name,
       color: color,
       userId: 'offline_placeholder',
+      syncStatus: 'pending_insert',
       isDeleted: false,
     );
     await _db.listsDao.insertList(companion);

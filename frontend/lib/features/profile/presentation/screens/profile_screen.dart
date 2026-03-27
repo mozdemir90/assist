@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/theme_provider.dart';
 import '../../../auth/presentation/providers/auth_state.dart';
@@ -26,7 +27,7 @@ class ProfileScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil & Ayarlar'), centerTitle: true),
+      appBar: AppBar(title: Text('profile_settings'.tr()), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -51,8 +52,42 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 32),
 
+            // Language settings
+            _buildSectionHeader(context, 'language_settings'.tr()),
+            Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: AppColors.textSecondaryLight.withOpacity(0.2),
+                ),
+              ),
+              child: Column(
+                children: [
+                  RadioListTile<Locale>(
+                    title: Text('turkish'.tr()),
+                    value: const Locale('tr', 'TR'),
+                    groupValue: context.locale,
+                    onChanged: (val) {
+                      if (val != null) context.setLocale(val);
+                    },
+                  ),
+                  RadioListTile<Locale>(
+                    title: Text('english'.tr()),
+                    value: const Locale('en', 'US'),
+                    groupValue: context.locale,
+                    onChanged: (val) {
+                      if (val != null) context.setLocale(val);
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
             // Theme settings
-            _buildSectionHeader(context, 'Tasarım Ayarları'),
+            _buildSectionHeader(context, 'design_settings'.tr()),
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -64,21 +99,21 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   RadioListTile<ThemeMode>(
-                    title: const Text('Sistem Teması'),
+                    title: Text('system_theme'.tr()),
                     value: ThemeMode.system,
                     groupValue: themeMode,
                     onChanged: (val) =>
                         ref.read(themeModeProvider.notifier).setTheme(val!),
                   ),
                   RadioListTile<ThemeMode>(
-                    title: const Text('Açık Tema (Light Mode)'),
+                    title: Text('light_theme'.tr()),
                     value: ThemeMode.light,
                     groupValue: themeMode,
                     onChanged: (val) =>
                         ref.read(themeModeProvider.notifier).setTheme(val!),
                   ),
                   RadioListTile<ThemeMode>(
-                    title: const Text('Koyu Tema (Dark Mode)'),
+                    title: Text('dark_theme'.tr()),
                     value: ThemeMode.dark,
                     groupValue: themeMode,
                     onChanged: (val) =>
@@ -89,7 +124,7 @@ class ProfileScreen extends ConsumerWidget {
             ),
 
             const SizedBox(height: 24),
-            _buildSectionHeader(context, 'Hesap Yönetimi'),
+            _buildSectionHeader(context, 'account_management'.tr()),
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -100,12 +135,12 @@ class ProfileScreen extends ConsumerWidget {
               ),
               child: ListTile(
                 leading: const Icon(Icons.lock_outline),
-                title: const Text('Şifre Değiştir'),
+                title: Text('change_password'.tr()),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Şifre değiştirme özelliği yakında!'),
+                    SnackBar(
+                      content: Text('change_password_soon'.tr()),
                     ),
                   );
                 },
@@ -118,9 +153,9 @@ class ProfileScreen extends ConsumerWidget {
                 ref.read(authProvider.notifier).logout();
               },
               icon: const Icon(Icons.logout, color: AppColors.errorRed),
-              label: const Text(
-                'Oturumu Kapat',
-                style: TextStyle(color: AppColors.errorRed),
+              label: Text(
+                'logout'.tr(),
+                style: const TextStyle(color: AppColors.errorRed),
               ),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppColors.errorRed),

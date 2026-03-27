@@ -13,6 +13,7 @@ abstract class ActivityModel with _$ActivityModel {
     @JsonKey(name: 'end_time') String? endTime,
     int? duration, // in seconds
     @JsonKey(name: 'user_id') String? userId,
+    @JsonKey(name: 'task_id') String? taskId,
     @JsonKey(name: 'updated_at') String? updatedAt,
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _ActivityModel;

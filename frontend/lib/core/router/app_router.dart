@@ -10,6 +10,7 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
 import '../../features/lists/presentation/screens/lists_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/tasks/presentation/task_detail_screen.dart';
 import 'main_shell_screen.dart';
 
 part 'app_router.g.dart';
@@ -85,6 +86,14 @@ GoRouter appRouter(Ref ref) {
             taskId: extra?['taskId'],
             taskTitle: extra?['taskTitle'],
           );
+        },
+      ),
+      GoRoute(
+        path: '/task-detail/:taskId',
+        name: 'task-detail',
+        builder: (context, state) {
+          final taskId = state.pathParameters['taskId']!;
+          return TaskDetailScreen(taskId: taskId);
         },
       ),
       GoRoute(

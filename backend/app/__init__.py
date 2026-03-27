@@ -13,7 +13,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
 
     from flask_cors import CORS
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 
     # Import models so SQLAlchemy creates tables
     with app.app_context():

@@ -23,6 +23,16 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
+  Stream<List<ActivityEntity>> watchActivitiesByTaskId(String taskId) {
+    return (select(activities)
+          ..where((a) => a.taskId.equals(taskId) & a.isDeleted.equals(false))
+          ..orderBy([
+            (a) =>
+                OrderingTerm(expression: a.startTime, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
   Future<int> insertActivity(ActivityEntity activity) =>
       into(activities).insert(activity, mode: InsertMode.insertOrReplace);
 

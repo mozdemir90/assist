@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import '../providers/list_provider.dart';
 import '../../data/repository/list_repository.dart';
 
@@ -10,10 +11,25 @@ class ListsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    context.locale; // Ensure rebuild on language change
     final listsAsync = ref.watch(listsStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text('my_lists'.tr())),
+      appBar: AppBar(
+        title: Text('my_lists'.tr()),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => context.push('/profile'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              ref.read(authProvider.notifier).logout();
+            },
+          ),
+        ],
+      ),
       body: listsAsync.when(
         data: (lists) {
           if (lists.isEmpty) {
@@ -31,7 +47,8 @@ class ListsScreen extends ConsumerWidget {
                   );
                 },
                 leading: CircleAvatar(
-                  backgroundColor: _colorFromHex(list.color ?? '#CCCCCC'),
+                  backgroundColor: _colorFromHex(list.color ?? '#1E82CB').withOpacity(0.1),
+                  child: Icon(Icons.list, color: _colorFromHex(list.color ?? '#1E82CB')),
                 ),
                 title: Text(list.name),
                 trailing: IconButton(
@@ -67,33 +84,90 @@ class ListsScreen extends ConsumerWidget {
   }
 
   void _showAddListDialog(BuildContext context, WidgetRef ref) {
+    final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController();
+    String selectedColor = '#1E82CB'; // Default blue
+
+    final List<String> colors = [
+      '#1E82CB', // Blue
+      '#38A169', // Green
+      '#E53E3E', // Red
+      '#805AD5', // Purple
+      '#DD6B20', // Orange
+      '#319795', // Teal
+    ];
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('new_list'.tr()),
-          content: TextField(
-            controller: nameController,
-            decoration: InputDecoration(labelText: 'list_name_hint'.tr()),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('cancel'.tr()),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final name = nameController.text.trim();
-                if (name.isNotEmpty) {
-                  ref.read(listRepositoryProvider).createList(name, '#3498db');
-                }
-                Navigator.pop(context);
-              },
-              child: Text('add'.tr()),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('new_list'.tr()),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(labelText: 'list_name_hint'.tr()),
+                      autofocus: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'please_enter_title'.tr();
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text('choose_color'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: colors.map((color) {
+                      final isSelected = selectedColor == color;
+                      return GestureDetector(
+                        onTap: () => setState(() => selectedColor = color),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: _colorFromHex(color),
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(color: Colors.black, width: 2)
+                                : null,
+                          ),
+                          child: isSelected
+                              ? const Icon(Icons.check, color: Colors.white, size: 16)
+                              : null,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('cancel'.tr()),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      final name = nameController.text.trim();
+                      ref.read(listRepositoryProvider).createList(name, selectedColor);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text('add'.tr()),
+                ),
+              ],
+            );
+          },
         );
       },
     );

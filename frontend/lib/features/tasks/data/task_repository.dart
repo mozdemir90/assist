@@ -40,26 +40,38 @@ class TaskRepository {
   Future<void> fetchAndSyncTasks() async {
     try {
       final remoteTasks = await _apiService.getTasks();
-      for (final task in remoteTasks) {
-        await _localDb.insertTask(
-          TaskEntity(
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            isCompleted: task.isCompleted,
-            userId: task.userId ?? '',
-            listId: task.listId,
-            deadline: task.deadline != null
-                ? DateTime.parse(task.deadline!)
-                : null,
-            remindViaEmail: task.remindViaEmail,
-            syncStatus: 'synced',
-            updatedAt: task.updatedAt != null
-                ? DateTime.parse(task.updatedAt!)
-                : null,
-            isDeleted: task.isDeleted,
-          ),
+      final localTasks = await _localDb.getAllTasks();
+      
+      for (final remoteTask in remoteTasks) {
+        // Find existing local task
+        final localTask = localTasks.cast<TaskEntity?>().firstWhere(
+          (t) => t?.id == remoteTask.id,
+          orElse: () => null,
         );
+
+        // ONLY update if it doesn't exist locally OR if local is already 'synced'
+        // This avoids overwriting 'pending_insert' or 'pending_update' changes.
+        if (localTask == null || localTask.syncStatus == 'synced') {
+          await _localDb.insertTask(
+            TaskEntity(
+              id: remoteTask.id,
+              title: remoteTask.title,
+              description: remoteTask.description,
+              isCompleted: remoteTask.isCompleted,
+              userId: remoteTask.userId ?? '',
+              listId: remoteTask.listId,
+              deadline: remoteTask.deadline != null
+                  ? DateTime.parse(remoteTask.deadline!)
+                  : null,
+              remindViaEmail: remoteTask.remindViaEmail,
+              syncStatus: 'synced',
+              updatedAt: remoteTask.updatedAt != null
+                  ? DateTime.parse(remoteTask.updatedAt!)
+                  : null,
+              isDeleted: remoteTask.isDeleted,
+            ),
+          );
+        }
       }
     } on DioException catch (e) {
       // Ignore network errors, allow app to function offline
