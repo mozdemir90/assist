@@ -33,7 +33,7 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
         .watch();
   }
 
-  Future<int> insertActivity(ActivityEntity activity) =>
+  Future<int> insertActivity(Insertable<ActivityEntity> activity) =>
       into(activities).insert(activity, mode: InsertMode.insertOrReplace);
 
   Future<bool> updateActivity(ActivityEntity activity) =>
