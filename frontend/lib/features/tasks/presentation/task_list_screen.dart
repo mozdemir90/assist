@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import 'providers/task_notifier.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TaskListScreen extends ConsumerWidget {
   final String? listId;
@@ -18,7 +19,7 @@ class TaskListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(listName ?? 'Görevlerim'),
+        title: Text(listName ?? 'my_tasks'.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.person_outline),
@@ -42,7 +43,7 @@ class TaskListScreen extends ConsumerWidget {
                   Icon(Icons.task_alt, size: 80, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
-                    'No tasks yet. Stay focused!',
+                    'no_tasks'.tr(),
                     style: TextStyle(color: Colors.grey[600], fontSize: 18),
                   ),
                 ],
@@ -66,10 +67,10 @@ class TaskListScreen extends ConsumerWidget {
                 onDismissed: (_) {
                   actions.deleteTask(task.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Task deleted'),
+                    SnackBar(
+                      content: Text('delete_task'.tr()),
                       behavior: SnackBarBehavior.floating,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
@@ -98,11 +99,20 @@ class TaskListScreen extends ConsumerWidget {
                             padding: const EdgeInsets.only(top: 4.0),
                             child: Row(
                               children: [
-                                const Icon(Icons.calendar_today, size: 14, color: Colors.blueGrey),
+                                const Icon(
+                                  Icons.calendar_today,
+                                  size: 14,
+                                  color: Colors.blueGrey,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  DateFormat('dd MMM yyyy, HH:mm').format(DateTime.parse(task.deadline!).toLocal()),
-                                  style: const TextStyle(fontSize: 12, color: Colors.blueGrey),
+                                  DateFormat('dd MMM yyyy, HH:mm').format(
+                                    DateTime.parse(task.deadline!).toLocal(),
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.blueGrey,
+                                  ),
                                 ),
                               ],
                             ),
@@ -144,8 +154,8 @@ class TaskListScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTaskDialog(context, ref, actions, listId),
+        tooltip: 'add_task'.tr(),
         child: const Icon(Icons.add),
-        tooltip: 'Add Task',
       ),
     );
   }
@@ -181,40 +191,48 @@ class TaskListScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'New Task',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    'new_task'.tr(),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'What needs to be done?',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'task_title_hint'.tr(),
+                      border: const OutlineInputBorder(),
                     ),
                     autofocus: true,
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(
-                      labelText: 'Description (optional)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'task_desc_hint'.tr(),
+                      border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
                   ),
                   const SizedBox(height: 16),
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(selectedDeadline == null
-                        ? 'Set Deadline (Optional)'
-                        : DateFormat('dd MMM yyyy, HH:mm').format(selectedDeadline!)),
+                    title: Text(
+                      selectedDeadline == null
+                          ? 'set_deadline'.tr()
+                          : DateFormat(
+                              'dd MMM yyyy, HH:mm',
+                            ).format(selectedDeadline!),
+                    ),
                     leading: const Icon(Icons.calendar_today),
                     onTap: () async {
                       final date = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 3650)),
+                        lastDate: DateTime.now().add(
+                          const Duration(days: 3650),
+                        ),
                       );
                       if (date != null && context.mounted) {
                         final time = await showTimePicker(
@@ -262,7 +280,10 @@ class TaskListScreen extends ConsumerWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Add Task', style: TextStyle(fontSize: 16)),
+                    child: Text(
+                      'add_task'.tr(),
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   ),
                   const SizedBox(height: 24),
                 ],

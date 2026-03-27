@@ -14,7 +14,8 @@ class Lists extends Table {
   TextColumn get name => text().withLength(min: 1, max: 255)();
   TextColumn get color => text().nullable()();
   TextColumn get userId => text()();
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('pending_insert'))();
 
   // Sync
   DateTimeColumn get createdAt => dateTime().nullable()();
@@ -35,8 +36,10 @@ class Tasks extends Table {
   TextColumn get userId => text()();
   TextColumn get listId => text().nullable()();
   DateTimeColumn get deadline => dateTime().nullable()();
-  BoolColumn get remindViaEmail => boolean().withDefault(const Constant(false))();
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
+  BoolColumn get remindViaEmail =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('pending_insert'))();
 
   // Sync
   DateTimeColumn get updatedAt => dateTime().nullable()();
@@ -56,7 +59,8 @@ class Activities extends Table {
   DateTimeColumn get endTime => dateTime().nullable()();
   IntColumn get duration => integer().nullable()(); // Seconds
   TextColumn get userId => text()();
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('pending_insert'))();
 
   // Sync
   DateTimeColumn get updatedAt => dateTime().nullable()();
@@ -78,7 +82,8 @@ class Reminders extends Table {
   TextColumn get taskId => text().nullable()();
   TextColumn get activityId => text().nullable()();
   TextColumn get userId => text()();
-  TextColumn get syncStatus => text().withDefault(const Constant('pending_insert'))();
+  TextColumn get syncStatus =>
+      text().withDefault(const Constant('pending_insert'))();
 
   // Sync
   DateTimeColumn get updatedAt => dateTime().nullable()();
@@ -110,12 +115,24 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(tasks, tasks.listId);
         }
         if (from < 4) {
-          try { await m.addColumn(tasks, tasks.deadline); } catch (e) {}
-          try { await m.addColumn(tasks, tasks.remindViaEmail); } catch (e) {}
-          try { await m.addColumn(tasks, tasks.syncStatus); } catch (e) {}
-          try { await m.addColumn(lists, lists.syncStatus); } catch (e) {}
-          try { await m.addColumn(activities, activities.syncStatus); } catch (e) {}
-          try { await m.addColumn(reminders, reminders.syncStatus); } catch (e) {}
+          try {
+            await m.addColumn(tasks, tasks.deadline);
+          } catch (e) {}
+          try {
+            await m.addColumn(tasks, tasks.remindViaEmail);
+          } catch (e) {}
+          try {
+            await m.addColumn(tasks, tasks.syncStatus);
+          } catch (e) {}
+          try {
+            await m.addColumn(lists, lists.syncStatus);
+          } catch (e) {}
+          try {
+            await m.addColumn(activities, activities.syncStatus);
+          } catch (e) {}
+          try {
+            await m.addColumn(reminders, reminders.syncStatus);
+          } catch (e) {}
         }
       },
       beforeOpen: (details) async {

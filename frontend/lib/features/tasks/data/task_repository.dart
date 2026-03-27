@@ -49,7 +49,9 @@ class TaskRepository {
             isCompleted: task.isCompleted,
             userId: task.userId ?? '',
             listId: task.listId,
-            deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
+            deadline: task.deadline != null
+                ? DateTime.parse(task.deadline!)
+                : null,
             remindViaEmail: task.remindViaEmail,
             syncStatus: 'synced',
             updatedAt: task.updatedAt != null
@@ -95,7 +97,9 @@ class TaskRepository {
           isCompleted: createdRemote.isCompleted,
           userId: createdRemote.userId ?? '',
           listId: createdRemote.listId,
-          deadline: createdRemote.deadline != null ? DateTime.parse(createdRemote.deadline!) : null,
+          deadline: createdRemote.deadline != null
+              ? DateTime.parse(createdRemote.deadline!)
+              : null,
           remindViaEmail: createdRemote.remindViaEmail,
           syncStatus: 'synced',
           updatedAt: createdRemote.updatedAt != null
