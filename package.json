@@ -1,0 +1,6 @@
+{
+  "name": "odak-monorepo",
+  "scripts": {
+    "build": "./vercel_build.sh"
+  }
+}
