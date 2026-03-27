@@ -17,6 +17,6 @@ echo "-> Adım 3: Bağımlılıklar indiriliyor (flutter pub get)..."
 flutter pub get
 
 echo "-> Adım 4: Flutter Web uygulaması derleniyor (release mode)..."
-flutter build web --release
+flutter build web --release --web-renderer html
 
 echo "-> Başarılı: Derleme tamamlandı!"
