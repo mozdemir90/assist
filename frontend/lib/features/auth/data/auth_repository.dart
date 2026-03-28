@@ -95,9 +95,68 @@ class AuthRepository {
     await _storage.delete(key: 'jwt_token');
   }
 
+  Future<void> updateFcmToken(String? fcmToken) async {
+    try {
+      await _apiClient.dio.post(
+        '/auth/fcm-token',
+        data: {'fcm_token': fcmToken},
+      );
+      print('FCM Token updated successfully to backend.');
+    } catch (e) {
+      print('Failed to update FCM Token to backend: $e');
+      // Non-critical, so we catch and log rather than throw
+    }
+  }
+
   Future<bool> isAuthenticated() async {
     final token = await _storage.read(key: 'jwt_token');
     return token != null && token.isNotEmpty;
+  }
+
+  Future<void> forgotPassword(String email) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '/auth/forgot-password',
+        data: {'email': email},
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Şifre sıfırlama talebi başarısız oldu.');
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout) {
+        throw Exception('İnternet bağlantısı yok.');
+      }
+      throw Exception(
+        e.response?.data['message'] ?? 'Şifre sıfırlama talebi başarısız oldu.',
+      );
+    } catch (e) {
+      throw Exception('Beklenmedik bir hata oluştu.');
+    }
+  }
+
+  Future<void> resetPassword(String token, String newPassword) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '/auth/reset-password',
+        data: {'token': token, 'new_password': newPassword},
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Şifre sıfırlama işlemi başarısız oldu.');
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout) {
+        throw Exception('İnternet bağlantısı yok.');
+      }
+      throw Exception(
+        e.response?.data['message'] ?? 'Şifre sıfırlama işlemi başarısız oldu.',
+      );
+    } catch (e) {
+      throw Exception('Beklenmedik bir hata oluştu.');
+    }
   }
 }
 

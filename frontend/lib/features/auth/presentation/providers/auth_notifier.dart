@@ -3,6 +3,8 @@ import '../../data/auth_repository.dart';
 import '../../domain/user_model.dart';
 import 'auth_state.dart';
 import '../../../sync/presentation/providers/sync_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 part 'auth_notifier.g.dart';
 
@@ -27,6 +29,9 @@ class AuthNotifier extends _$AuthNotifier {
         );
         // Trigger background sync
         ref.read(syncProvider).syncAll();
+
+        // Push Notification Setup
+        _setupPushNotifications(repo);
       } else {
         state = AuthState.unauthenticated();
       }
@@ -35,17 +40,44 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
+  Future<void> _setupPushNotifications(AuthRepository repo) async {
+    try {
+      // For real usage, request permissions and get token.
+      // This will fail cleanly in local web without config.
+      if (!kIsWeb) {
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        NotificationSettings settings = await messaging.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+          String? token = await messaging.getToken();
+          print('FCM Token generated: $token');
+          if (token != null) {
+            await repo.updateFcmToken(token);
+          }
+        }
+      }
+    } catch (e) {
+      print('Failed to setup push notifications: $e');
+    }
+  }
+
   Future<void> login(String username, String password) async {
-    print('AuthNotifier.login: attempting for username=\$username');
+    print('AuthNotifier.login: attempting for username=$username');
     state = AuthState.loading();
     try {
       final repo = ref.read(authRepositoryProvider);
       final user = await repo.login(username, password);
-      print('AuthNotifier.login: Success with user \${user?.username}');
+      print('AuthNotifier.login: Success with user ${user?.username}');
       if (user != null) {
         state = AuthState.authenticated(user);
         // Trigger background sync
         ref.read(syncProvider).syncAll();
+        // Set up push notifications
+        _setupPushNotifications(repo);
       } else {
         print('AuthNotifier.login: User is null');
         state = AuthState.error('Bilinmeyen bir hata oluştu.');
@@ -65,6 +97,8 @@ class AuthNotifier extends _$AuthNotifier {
         state = AuthState.authenticated(user);
         // Trigger background sync
         ref.read(syncProvider).syncAll();
+        // Setup push notifications
+        _setupPushNotifications(repo);
       } else {
         state = AuthState.error('Bilinmeyen bir hata oluştu.');
       }
@@ -78,5 +112,27 @@ class AuthNotifier extends _$AuthNotifier {
     final repo = ref.read(authRepositoryProvider);
     await repo.logout();
     state = AuthState.unauthenticated();
+  }
+
+  Future<void> forgotPassword(String email) async {
+    state = AuthState.loading();
+    try {
+      final repo = ref.read(authRepositoryProvider);
+      await repo.forgotPassword(email);
+      state = AuthState.unauthenticated(); // Return to unauthenticated to show the form again, ideally show a success message via a different mechanism
+    } catch (e) {
+      state = AuthState.error(e.toString().replaceAll('Exception: ', ''));
+    }
+  }
+
+  Future<void> resetPassword(String token, String newPassword) async {
+    state = AuthState.loading();
+    try {
+      final repo = ref.read(authRepositoryProvider);
+      await repo.resetPassword(token, newPassword);
+      state = AuthState.unauthenticated();
+    } catch (e) {
+      state = AuthState.error(e.toString().replaceAll('Exception: ', ''));
+    }
   }
 }

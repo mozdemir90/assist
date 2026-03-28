@@ -7,6 +7,8 @@ import '../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../features/auth/presentation/providers/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../../features/auth/presentation/screens/reset_password_screen.dart';
 import '../../features/activities/presentation/screens/activity_list_screen.dart';
 import '../../features/lists/presentation/screens/lists_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -52,19 +54,25 @@ GoRouter appRouter(Ref ref) {
         unauthenticated: () {
           final isLogin = state.matchedLocation == '/login';
           final isRegister = state.matchedLocation == '/register';
-          if (isLogin || isRegister) return null;
+          final isForgotPassword = state.matchedLocation == '/forgot-password';
+          final isResetPassword = state.matchedLocation.startsWith('/reset-password');
+          if (isLogin || isRegister || isForgotPassword || isResetPassword) return null;
           return '/login';
         },
         authenticated: (_) {
           final isLogin = state.matchedLocation == '/login';
           final isRegister = state.matchedLocation == '/register';
+          final isForgotPassword = state.matchedLocation == '/forgot-password';
+          final isResetPassword = state.matchedLocation.startsWith('/reset-password');
           final isSplash = state.matchedLocation == '/splash';
-          if (isLogin || isRegister || isSplash) return '/';
+          if (isLogin || isRegister || isForgotPassword || isResetPassword || isSplash) return '/';
           return null;
         },
         error: (_) {
           if (state.matchedLocation == '/login' ||
-              state.matchedLocation == '/register')
+              state.matchedLocation == '/register' ||
+              state.matchedLocation == '/forgot-password' ||
+              state.matchedLocation.startsWith('/reset-password'))
             return null;
           return '/login';
         },
@@ -148,6 +156,19 @@ GoRouter appRouter(Ref ref) {
         path: '/register',
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        name: 'forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        name: 'reset-password',
+        builder: (context, state) {
+          final token = state.uri.queryParameters['token'] ?? '';
+          return ResetPasswordScreen(token: token);
+        },
       ),
     ],
   );
