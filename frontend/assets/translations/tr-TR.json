@@ -60,5 +60,17 @@
   "duration": "Süre",
   "no_sessions": "Bu görev için henüz çalışma kaydedilmedi.",
   "start_timer": "Zamanlayıcıyı Başlat",
-  "activity_saved": "Aktivite başarıyla kaydedildi!"
+  "activity_saved": "Aktivite başarıyla kaydedildi!",
+  "forgot_password": "Şifremi Unuttum",
+  "password_reset_sent": "Hesabınız varsa, şifre sıfırlama bağlantısı gönderildi.",
+  "forgot_password_desc": "E-posta adresinizi girin, size şifrenizi sıfırlamanız için bir bağlantı gönderelim.",
+  "invalid_email": "Geçerli bir e-posta adresi girin",
+  "send_reset_link": "Sıfırlama Bağlantısı Gönder",
+  "password_reset_success": "Şifreniz başarıyla sıfırlandı. Lütfen giriş yapın.",
+  "reset_password": "Şifreyi Sıfırla",
+  "enter_new_password": "Lütfen aşağıya yeni şifrenizi girin.",
+  "new_password": "Yeni Şifre",
+  "email_required": "E-posta gerekli",
+  "main_tasks": "Asıl Görevler",
+  "list_tasks": "Listelere Ait Görevler"
 }

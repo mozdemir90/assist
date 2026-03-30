@@ -60,5 +60,17 @@
   "duration": "Duration",
   "no_sessions": "No sessions recorded for this task yet.",
   "start_timer": "Start Timer",
-  "activity_saved": "Activity saved successfully!"
+  "activity_saved": "Activity saved successfully!",
+  "forgot_password": "Forgot Password",
+  "password_reset_sent": "If an account exists, a reset link has been sent.",
+  "forgot_password_desc": "Enter your email address and we will send you a link to reset your password.",
+  "invalid_email": "Enter a valid email address",
+  "send_reset_link": "Send Reset Link",
+  "password_reset_success": "Your password has been successfully reset. Please login.",
+  "reset_password": "Reset Password",
+  "enter_new_password": "Please enter your new password below.",
+  "new_password": "New Password",
+  "email_required": "Email is required",
+  "main_tasks": "Main Tasks",
+  "list_tasks": "List Tasks"
 }

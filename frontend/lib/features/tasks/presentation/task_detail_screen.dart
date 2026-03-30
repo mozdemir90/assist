@@ -114,7 +114,9 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   leading: const Icon(Icons.notifications_active_outlined, color: Colors.blue),
                   title: Text('remind_me'.tr()),
-                  subtitle: Text('remind_me_desc'.tr()),
+                  subtitle: Text(task.deadline != null 
+                    ? DateFormat('dd MMM yyyy, HH:mm').format(DateTime.parse(task.deadline!).toLocal())
+                    : 'remind_me_desc'.tr()),
                   onTap: () async {
                     // Logic for reminder
                     final date = await showDatePicker(
@@ -127,12 +129,27 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                       final time = await showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),
+                        builder: (context, child) {
+                          return MediaQuery(
+                            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                            child: child!,
+                          );
+                        },
                       );
                       if (time != null) {
-                        // In a real app, save to Reminders table
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(DateTime(date.year, date.month, date.day, time.hour, time.minute))]))),
+                        final selectedDateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                        final updatedTask = task.copyWith(
+                          deadline: selectedDateTime.toUtc().toIso8601String(),
+                          remindViaPush: true,
+                          reminderSent: false,
                         );
+                        await actions.repo.updateTask(updatedTask);
+                        
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(selectedDateTime)]))),
+                          );
+                        }
                       }
                     }
                   },
