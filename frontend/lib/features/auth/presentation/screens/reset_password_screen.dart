@@ -34,7 +34,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('password_reset_success'.tr()),
+            content: Text('password_reset_success'.tr(defaultValue: 'Your password has been successfully reset. Please login.')),
             backgroundColor: Colors.green,
           ),
         );
@@ -68,7 +68,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('reset_password'.tr()),
+        title: Text('reset_password'.tr(defaultValue: 'Reset Password')),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -80,7 +80,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'enter_new_password'.tr(),
+                  'enter_new_password'.tr(defaultValue: 'Please enter your new password below.'),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
@@ -89,7 +89,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: 'new_password'.tr(),
+                    labelText: 'new_password'.tr(defaultValue: 'New Password'),
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
@@ -148,7 +148,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text('reset_password'.tr()),
+                      : Text('reset_password'.tr(defaultValue: 'Reset Password')),
                 ),
               ],
             ),

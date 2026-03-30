@@ -140,20 +140,21 @@ class ActivityRepository {
     String? taskId,
   }) async {
     final now = DateTime.now().toUtc();
-    final entity = ActivityEntity(
-      id: const Uuid().v4(),
-      title: title,
-      description: description,
-      duration: durationInSeconds,
-      startTime: now.subtract(Duration(seconds: durationInSeconds)),
-      endTime: now,
-      userId: 'local_user', // TODO: Replace with actual auth user
-      taskId: taskId,
-      syncStatus: 'pending_insert',
-      updatedAt: now,
-      isDeleted: false,
+    final companion = ActivitiesCompanion(
+      id: Value(const Uuid().v4()),
+      title: Value(title),
+      description: Value.absentIfNull(description),
+      duration: Value(durationInSeconds),
+      startTime: Value(
+        now.subtract(Duration(seconds: durationInSeconds)),
+      ),
+      endTime: Value(now),
+      userId: const Value('local_user'), // TODO: Replace with actual auth user
+      taskId: Value.absentIfNull(taskId),
+      syncStatus: const Value('pending_insert'),
+      updatedAt: Value(now),
     );
-    await _localDb.insertActivity(entity);
+    await _localDb.insertActivity(companion);
   }
 
   Future<void> deleteActivity(String id) async {

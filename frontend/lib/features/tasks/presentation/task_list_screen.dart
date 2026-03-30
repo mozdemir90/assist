@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
-import '../domain/task_model.dart';
 import 'providers/task_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../lists/presentation/providers/list_provider.dart';
 import '../../../core/theme/app_colors.dart';
+
 class TaskListScreen extends ConsumerWidget {
   final String? listId;
   final String? listName;
@@ -53,218 +53,172 @@ class TaskListScreen extends ConsumerWidget {
               ),
             );
           }
-
-          Widget buildTaskItem(TaskModel task) {
-            return Dismissible(
-              key: Key(task.id),
-              direction: DismissDirection.endToStart,
-              background: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Icon(Icons.delete, color: Colors.white),
-              ),
-              onDismissed: (_) {
-                actions.deleteTask(task.id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('delete_task'.tr()),
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              child: Card(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+          return ListView.builder(
+            itemCount: tasks.length,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            itemBuilder: (context, index) {
+              final task = tasks[index];
+              return Dismissible(
+                key: Key(task.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(
-                    color: AppColors.textSecondaryLight.withOpacity(0.1),
-                    width: 1,
+                onDismissed: (_) {
+                  actions.deleteTask(task.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('delete_task'.tr()),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ),
-                child: InkWell(
-                  onTap: () => context.push('/task-detail/${task.id}'),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: IconButton(
-                        icon: const Icon(
-                          Icons.play_circle_outline,
-                          color: Colors.blue,
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: AppColors.textSecondaryLight.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: () => context.push('/task-detail/${task.id}'),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        leading: IconButton(
+                          icon: const Icon(
+                            Icons.play_circle_outline,
+                            color: Colors.blue,
+                          ),
+                          onPressed: () {
+                            context.push(
+                              '/timer',
+                              extra: {
+                                'taskId': task.id,
+                                'taskTitle': task.title,
+                              },
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          context.push(
-                            '/timer',
-                            extra: {
-                              'taskId': task.id,
-                              'taskTitle': task.title,
-                            },
-                          );
-                        },
-                      ),
-                      title: Text(
-                        task.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          decoration: task.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          color: task.isCompleted ? Colors.grey : null,
+                        title: Text(
+                          task.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            decoration: task.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: task.isCompleted ? Colors.grey : null,
+                          ),
                         ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (task.description.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Consumer(
-                                builder: (context, consumerRef, _) {
-                                  Color? textColor;
-                                  if (task.listId != null) {
-                                    final list = consumerRef.watch(listByIdProvider(task.listId!));
-                                    if (list != null && list.color != null) {
-                                      textColor = Color(int.parse(list.color!.replaceFirst('#', '0xFF')));
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (task.description.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Consumer(
+                                  builder: (context, ref, _) {
+                                    Color? textColor;
+                                    if (task.listId != null) {
+                                      final list = ref.watch(listByIdProvider(task.listId!));
+                                      if (list != null && list.color != null) {
+                                        textColor = Color(int.parse(list.color!.replaceFirst('#', '0xFF')));
+                                      }
                                     }
-                                  }
-                                  return Text(
-                                    task.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: task.isCompleted
-                                          ? Colors.grey
-                                          : (textColor ?? AppColors.textSecondaryLight),
-                                      fontWeight: textColor != null ? FontWeight.w500 : null,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 12,
-                            runSpacing: 4,
-                            children: [
-                              if (task.deadline != null)
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.calendar_today,
-                                      size: 14,
-                                      color: Colors.blueGrey,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      DateFormat('dd MMM yyyy, HH:mm').format(
-                                        DateTime.parse(task.deadline!).toLocal(),
+                                    return Text(
+                                      task.description,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: task.isCompleted
+                                            ? Colors.grey
+                                            : (textColor ?? AppColors.textSecondaryLight),
+                                        fontWeight: textColor != null ? FontWeight.w500 : null,
                                       ),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.blueGrey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              if (listId == null && task.listId != null)
-                                Consumer(
-                                  builder: (context, consumerRef, _) {
-                                    final list = consumerRef.watch(
-                                      listByIdProvider(task.listId!),
-                                    );
-                                    if (list == null) return const SizedBox.shrink();
-                                    return Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.folder_outlined,
-                                          size: 14,
-                                          color: AppColors.primaryBlue,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'in_list'.tr(args: [list.name]),
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: AppColors.primaryBlue,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
                                     );
                                   },
                                 ),
-                            ],
-                          ),
-                        ],
+                              ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 4,
+                              children: [
+                                if (task.deadline != null)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.calendar_today,
+                                        size: 14,
+                                        color: Colors.blueGrey,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        DateFormat('dd MMM yyyy, HH:mm').format(
+                                          DateTime.parse(task.deadline!).toLocal(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.blueGrey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                if (listId == null && task.listId != null)
+                                  Consumer(
+                                    builder: (context, ref, _) {
+                                      final list = ref.watch(
+                                        listByIdProvider(task.listId!),
+                                      );
+                                      if (list == null) return const SizedBox.shrink();
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.folder_outlined,
+                                            size: 14,
+                                            color: AppColors.primaryBlue,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            'in_list'.tr(args: [list.name]),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: AppColors.primaryBlue,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        trailing: Checkbox(
+                          activeColor: AppColors.primaryBlue,
+                          value: task.isCompleted,
+                          onChanged: (_) => actions.toggleTaskCompletion(task),
+                        ),
                       ),
-                      trailing: Checkbox(
-                        activeColor: AppColors.primaryBlue,
-                        value: task.isCompleted,
-                        onChanged: (_) => actions.toggleTaskCompletion(task),
-                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }
-
-          if (listId != null) {
-            return ListView.builder(
-              itemCount: tasks.length,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemBuilder: (context, index) => buildTaskItem(tasks[index]),
-            );
-          }
-
-          final mainTasks = tasks.where((t) => t.listId == null).toList();
-          final listTasks = tasks.where((t) => t.listId != null).toList();
-
-          return ListView(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            children: [
-              if (mainTasks.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Text(
-                    'main_tasks'.tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryBlue,
-                    ),
-                  ),
-                ),
-                ...mainTasks.map((t) => buildTaskItem(t)),
-              ],
-              if (mainTasks.isNotEmpty && listTasks.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Divider(),
-                ),
-              if (listTasks.isNotEmpty) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Text(
-                    'list_tasks'.tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                ),
-                ...listTasks.map((t) => buildTaskItem(t)),
-              ],
-            ],
+              );
+            },
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -365,12 +319,6 @@ class TaskListScreen extends ConsumerWidget {
                         final time = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.now(),
-                          builder: (context, child) {
-                            return MediaQuery(
-                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-                              child: child!,
-                            );
-                          },
                         );
                         if (time != null) {
                           setState(() {
