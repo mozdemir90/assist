@@ -8,6 +8,8 @@
   "no_tasks": "No tasks yet. Stay focused!",
   "add_task": "Add Task",
   "new_task": "New Task",
+  "main_tasks": "Main Tasks",
+  "list_tasks": "List Tasks",
   "task_title_hint": "What needs to be done?",
   "task_desc_hint": "Description (optional)",
   "set_deadline": "Set Deadline",

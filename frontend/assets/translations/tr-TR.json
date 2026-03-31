@@ -8,6 +8,8 @@
   "no_tasks": "Henüz görev yok. Odaklanmaya devam!",
   "add_task": "Görev Ekle",
   "new_task": "Yeni Görev",
+  "main_tasks": "Asıl Görevler",
+  "list_tasks": "Liste Görevleri",
   "task_title_hint": "Ne yapılması gerekiyor?",
   "task_desc_hint": "Açıklama (isteğe bağlı)",
   "set_deadline": "Tarih Belirle (İsteğe bağlı)",
