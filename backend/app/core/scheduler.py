@@ -105,7 +105,7 @@ def init_scheduler(app):
         func=check_upcoming_tasks,
         args=[app],
         trigger='interval',
-        minutes=15
+        minutes=1
     )
 
     scheduler.start()

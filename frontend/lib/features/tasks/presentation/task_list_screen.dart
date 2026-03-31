@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_notifier.dart';
 import 'providers/task_notifier.dart';
+import '../domain/task_model.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../lists/presentation/providers/list_provider.dart';
@@ -242,17 +243,8 @@ class TaskListScreen extends ConsumerWidget {
         ),
       ),
     );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Error: $e')),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTaskDialog(context, ref, actions, listId),
-        tooltip: 'add_task'.tr(),
-        child: const Icon(Icons.add),
-      ),
-    );
   }
+
 
   void _showAddTaskDialog(
     BuildContext context,

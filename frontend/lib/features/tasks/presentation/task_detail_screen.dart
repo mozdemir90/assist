@@ -11,6 +11,7 @@ import 'package:frontend/features/activities/presentation/activity_provider.dart
 import 'package:frontend/features/activities/presentation/task_activities_provider.dart';
 import 'package:frontend/features/activities/presentation/activity_timer_screen.dart';
 import 'package:frontend/features/reminders/data/repository/reminder_repository.dart';
+import 'package:frontend/features/reminders/presentation/reminder_provider.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -350,7 +351,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 dense: true,
                 leading: const Icon(Icons.alarm, size: 20, color: Colors.blue),
                 title: Text(
-                  DateFormat('dd MMM, HH:mm').format(DateTime.parse(reminder.triggerTime).toLocal()),
+                  DateFormat('dd MMM, HH:mm').format(reminder.triggerTime.toLocal()),
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
                 ),
                 trailing: IconButton(
