@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "465439700286",
+    "project_id": "odak-3610a",
+    "storage_bucket": "odak-3610a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465439700286:android:30464a4f59c7f8d496686f",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpSfsZ_Q8vkC5zOU8jM966xr5vKsJgCzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,12 +17,19 @@ def init_firebase():
         try:
             # We attempt to use default credentials or a path from env
             cred_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+            
+            # Fallback to local file if env variable is not set
+            if not cred_path:
+                default_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'firebase-service-account.json')
+                if os.path.exists(default_path):
+                    cred_path = default_path
+
             if cred_path and os.path.exists(cred_path):
                 cred = credentials.Certificate(cred_path)
                 firebase_admin.initialize_app(cred)
             else:
                 # Provide dummy init for dev environments without keys
-                print("No GOOGLE_APPLICATION_CREDENTIALS found. Firebase mock initialized.")
+                print("No firebase credentials found (ENV or default file). Firebase mock initialized.")
         except Exception as e:
             print(f"Failed to initialize firebase: {e}")
 
