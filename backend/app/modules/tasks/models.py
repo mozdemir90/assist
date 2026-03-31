@@ -17,7 +17,8 @@ class Task(db.Model):
     list_id = db.Column(db.String(36), db.ForeignKey('lists.id'), nullable=True)
 
     deadline = db.Column(db.DateTime, nullable=True)
-    remind_via_email = db.Column(db.Boolean, default=False)
+    remind_via_push = db.Column(db.Boolean, default=False)
+    reminder_sent = db.Column(db.Boolean, default=False)
 
     # Offline sync requirements
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -32,7 +33,8 @@ class Task(db.Model):
             'user_id': self.user_id,
             'list_id': self.list_id,
             'deadline': self.deadline.isoformat() if self.deadline else None,
-            'remind_via_email': self.remind_via_email,
+            'remind_via_push': self.remind_via_push,
+            'reminder_sent': self.reminder_sent,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_deleted': self.is_deleted
         }

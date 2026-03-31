@@ -18,3 +18,5 @@ typing_extensions
 Werkzeug
 Flask-Cors
 gunicorn
+firebase-admin
+Flask-APScheduler

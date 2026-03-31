@@ -32,12 +32,8 @@ class ApiClient {
   }
 
   String _getBaseUrl() {
-    // For local development on emulator/simulator
-    if (kIsWeb) return 'http://localhost:5001/api';
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.0.2.2:5001/api'; // Android Emulator alias for localhost
-    }
-    return 'http://127.0.0.1:5001/api'; // iOS Simulator / Desktop
+    // Point to Render deployed backend
+    return 'https://assist-ps2h.onrender.com/api';
   }
 
   Dio get dio => _dio;

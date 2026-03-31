@@ -13,7 +13,8 @@ abstract class TaskModel with _$TaskModel {
     @JsonKey(name: 'user_id') String? userId,
     @JsonKey(name: 'list_id') String? listId,
     String? deadline,
-    @JsonKey(name: 'remind_via_email') @Default(false) bool remindViaEmail,
+    @JsonKey(name: 'remind_via_push') @Default(false) bool remindViaPush,
+    @JsonKey(name: 'reminder_sent') @Default(false) bool reminderSent,
     @JsonKey(name: 'updated_at') String? updatedAt,
     @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
   }) = _TaskModel;

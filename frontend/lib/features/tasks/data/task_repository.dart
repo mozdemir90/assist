@@ -27,7 +27,8 @@ class TaskRepository {
               userId: e.userId,
               listId: e.listId,
               deadline: e.deadline?.toIso8601String(),
-              remindViaEmail: e.remindViaEmail,
+              remindViaPush: e.remindViaPush,
+              reminderSent: e.reminderSent,
               updatedAt: e.updatedAt?.toIso8601String(),
               isDeleted: e.isDeleted,
             ),
@@ -63,7 +64,8 @@ class TaskRepository {
               deadline: remoteTask.deadline != null
                   ? DateTime.parse(remoteTask.deadline!)
                   : null,
-              remindViaEmail: remoteTask.remindViaEmail,
+              remindViaPush: remoteTask.remindViaPush,
+              reminderSent: remoteTask.reminderSent,
               syncStatus: 'synced',
               updatedAt: remoteTask.updatedAt != null
                   ? DateTime.parse(remoteTask.updatedAt!)
@@ -90,7 +92,8 @@ class TaskRepository {
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
       deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
-      remindViaEmail: task.remindViaEmail,
+      remindViaPush: task.remindViaPush,
+      reminderSent: task.reminderSent,
       syncStatus: 'pending_insert',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: false,
@@ -112,7 +115,8 @@ class TaskRepository {
           deadline: createdRemote.deadline != null
               ? DateTime.parse(createdRemote.deadline!)
               : null,
-          remindViaEmail: createdRemote.remindViaEmail,
+          remindViaPush: createdRemote.remindViaPush,
+          reminderSent: createdRemote.reminderSent,
           syncStatus: 'synced',
           updatedAt: createdRemote.updatedAt != null
               ? DateTime.parse(createdRemote.updatedAt!)
@@ -135,7 +139,8 @@ class TaskRepository {
       userId: task.userId ?? 'offline_placeholder',
       listId: task.listId,
       deadline: task.deadline != null ? DateTime.parse(task.deadline!) : null,
-      remindViaEmail: task.remindViaEmail,
+      remindViaPush: task.remindViaPush,
+      reminderSent: task.reminderSent,
       syncStatus: 'pending_update',
       updatedAt: DateTime.now().toUtc(),
       isDeleted: task.isDeleted,

@@ -15,6 +15,9 @@ def create_app(config_class=Config):
     from flask_cors import CORS
     CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 
+    from .core.scheduler import init_scheduler
+    init_scheduler(app)
+
     # Import models so SQLAlchemy creates tables
     with app.app_context():
         from .modules.auth import models as auth_models

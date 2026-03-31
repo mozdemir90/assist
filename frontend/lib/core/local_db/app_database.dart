@@ -36,7 +36,9 @@ class Tasks extends Table {
   TextColumn get userId => text()();
   TextColumn get listId => text().nullable()();
   DateTimeColumn get deadline => dateTime().nullable()();
-  BoolColumn get remindViaEmail =>
+  BoolColumn get remindViaPush =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get reminderSent =>
       boolean().withDefault(const Constant(false))();
   TextColumn get syncStatus =>
       text().withDefault(const Constant('pending_insert'))();
@@ -116,7 +118,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration {
@@ -134,7 +136,10 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(tasks, tasks.deadline);
           } catch (e) {}
           try {
-            await m.addColumn(tasks, tasks.remindViaEmail);
+            await m.addColumn(tasks, tasks.remindViaPush);
+          } catch (e) {}
+          try {
+            await m.addColumn(tasks, tasks.reminderSent);
           } catch (e) {}
           try {
             await m.addColumn(tasks, tasks.syncStatus);
@@ -155,6 +160,14 @@ class AppDatabase extends _$AppDatabase {
         if (from < 6) {
           try {
             await m.addColumn(activities, activities.taskId);
+          } catch (e) {}
+        }
+        if (from < 7) {
+          try {
+            await m.addColumn(tasks, tasks.remindViaPush);
+          } catch (e) {}
+          try {
+            await m.addColumn(tasks, tasks.reminderSent);
           } catch (e) {}
         }
       },
