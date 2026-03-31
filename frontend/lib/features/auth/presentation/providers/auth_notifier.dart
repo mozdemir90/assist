@@ -22,11 +22,13 @@ class AuthNotifier extends _$AuthNotifier {
     try {
       final isAuth = await repo.isAuthenticated();
       if (isAuth) {
-        // Ideally we would fetch the user profile here with the token
-        // For now, we mock an authenticated state if token exists
-        state = AuthState.authenticated(
-          User(id: 'local', username: 'User', email: '...', isActive: true),
-        );
+        final user = await repo.getProfile();
+        if (user != null) {
+          state = AuthState.authenticated(user);
+        } else {
+          // If token exists but profile fetch fails, consider as unauthenticated
+          state = AuthState.unauthenticated();
+        }
         // Trigger background sync
         ref.read(syncProvider).syncAll();
 

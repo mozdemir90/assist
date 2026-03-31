@@ -113,6 +113,19 @@ class AuthRepository {
     return token != null && token.isNotEmpty;
   }
 
+  Future<User?> getProfile() async {
+    try {
+      final response = await _apiClient.dio.get('/auth/me');
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('Failed to get profile: $e');
+      return null;
+    }
+  }
+
   Future<void> forgotPassword(String email) async {
     try {
       final response = await _apiClient.dio.post(

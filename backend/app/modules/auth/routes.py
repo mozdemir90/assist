@@ -167,3 +167,8 @@ def reset_password():
     db.session.commit()
 
     return jsonify({'message': 'Password has been reset successfully'}), 200
+
+@auth_bp.route('/me', methods=['GET'])
+@token_required
+def get_me(current_user):
+    return jsonify(current_user.to_dict()), 200

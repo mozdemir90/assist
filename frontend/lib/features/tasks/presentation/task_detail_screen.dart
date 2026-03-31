@@ -10,6 +10,7 @@ import 'package:frontend/features/tasks/presentation/providers/task_notifier.dar
 import 'package:frontend/features/activities/presentation/activity_provider.dart';
 import 'package:frontend/features/activities/presentation/task_activities_provider.dart';
 import 'package:frontend/features/activities/presentation/activity_timer_screen.dart';
+import 'package:frontend/features/reminders/data/repository/reminder_repository.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -126,10 +127,31 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         initialTime: TimeOfDay.now(),
                       );
                       if (time != null) {
-                        // In a real app, save to Reminders table
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(DateTime(date.year, date.month, date.day, time.hour, time.minute))]))),
-                        );
+                        final triggerTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                        try {
+                          await ref.read(reminderRepositoryProvider).addReminder(
+                                'Reminder: ${task.title}',
+                                triggerTime,
+                                message: 'Your task "${task.title}" reminder.',
+                              );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(triggerTime)])),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error setting reminder: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
                       }
                     }
                   },

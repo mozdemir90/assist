@@ -6,6 +6,7 @@ from app.core.database import db
 import datetime
 import firebase_admin
 from firebase_admin import credentials, messaging
+from app.modules.reminders.models import Reminder
 
 scheduler = APScheduler()
 
@@ -73,6 +74,25 @@ def check_upcoming_tasks(app):
                 )
                 if success:
                     task.reminder_sent = True
+                    db.session.commit()
+
+        # Check dedicated reminders
+        reminders_to_send = Reminder.query.filter(
+            Reminder.is_sent == False,
+            Reminder.is_deleted == False,
+            Reminder.trigger_time <= now
+        ).all()
+
+        for rem in reminders_to_send:
+            user = User.query.get(rem.user_id)
+            if user and user.fcm_token:
+                success = send_push_notification(
+                    user.fcm_token,
+                    rem.title,
+                    rem.message or "Task reminder"
+                )
+                if success:
+                    rem.is_sent = True
                     db.session.commit()
 
 def init_scheduler(app):
