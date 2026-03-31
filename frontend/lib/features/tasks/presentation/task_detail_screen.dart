@@ -38,20 +38,17 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tasksAsync = ref.watch(taskListProvider(null));
+    final taskAsync = ref.watch(taskByIdProvider(widget.taskId));
     final actions = ref.watch(taskNotifierActionsProvider);
 
-    return tasksAsync.when(
-      data: (tasks) {
-        final task = tasks.firstWhere((t) => t.id == widget.taskId,
-            orElse: () => throw Exception('Task not found'));
-        
+    return taskAsync.when(
+      data: (task) {
         if (!_isEditing) {
           _descriptionController.text = task.description;
         }
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF8FAFC),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             title: Text('task_details'.tr()),
             actions: [
@@ -110,7 +107,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 _buildSectionHeader('reminders'.tr()),
                 const SizedBox(height: 12),
                 ListTile(
-                  tileColor: Colors.white,
+                  tileColor: Theme.of(context).cardColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   leading: const Icon(Icons.notifications_active_outlined, color: Colors.blue),
                   title: Text('remind_me'.tr()),
@@ -178,7 +175,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
   Widget _buildFilePickerArea() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.blue.withOpacity(0.1)),
       ),
@@ -217,7 +214,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         if (activities.isEmpty) {
           return Card(
             elevation: 0,
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side: BorderSide(color: Colors.blue.withOpacity(0.05)),
@@ -247,7 +244,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             return Card(
               margin: const EdgeInsets.only(bottom: 12),
               elevation: 0,
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
                 side: BorderSide(color: Colors.blue.withOpacity(0.1)),
