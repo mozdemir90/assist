@@ -31,7 +31,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('password_reset_sent'.tr(defaultValue: 'If an account exists, a reset link has been sent.')),
+            content: Text('password_reset_sent'.tr()),
             backgroundColor: Colors.green,
           ),
         );
@@ -64,7 +64,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('forgot_password'.tr(defaultValue: 'Forgot Password')),
+        title: Text('forgot_password'.tr()),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -76,7 +76,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'forgot_password_desc'.tr(defaultValue: 'Enter your email address and we will send you a link to reset your password.'),
+                  'forgot_password_desc'.tr(),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
@@ -94,7 +94,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       return 'email_required'.tr();
                     }
                     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                      return 'invalid_email'.tr(defaultValue: 'Enter a valid email address');
+                      return 'invalid_email'.tr();
                     }
                     return null;
                   },
@@ -111,7 +111,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text('send_reset_link'.tr(defaultValue: 'Send Reset Link')),
+                      : Text('send_reset_link'.tr()),
                 ),
               ],
             ),
