@@ -44,6 +44,7 @@
   "username_required": "Lütfen kullanıcı adınızı girin",
   "password_required": "Lütfen şifrenizi girin",
   "dont_have_account": "Hesabınız yok mu? Kayıt Olun",
+  "forgot_password": "Şifremi Unuttum",
   "timer_notes_hint": "Bu çalışma hakkında notlar ekleyin...",
   "save_session": "Oturumu Kaydet",
   "choose_color": "Renk Seç",

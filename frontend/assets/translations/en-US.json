@@ -44,6 +44,7 @@
   "username_required": "Please enter your username",
   "password_required": "Please enter your password",
   "dont_have_account": "Don't have an account? Register",
+  "forgot_password": "Forgot Password",
   "timer_notes_hint": "Add notes about this session...",
   "save_session": "Save Session",
   "choose_color": "Choose Color",
