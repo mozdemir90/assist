@@ -10,6 +10,8 @@ import 'package:frontend/features/tasks/presentation/providers/task_notifier.dar
 import 'package:frontend/features/activities/presentation/activity_provider.dart';
 import 'package:frontend/features/activities/presentation/task_activities_provider.dart';
 import 'package:frontend/features/activities/presentation/activity_timer_screen.dart';
+import 'package:frontend/features/reminders/data/repository/reminder_repository.dart';
+import 'package:frontend/features/reminders/presentation/reminder_provider.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -126,14 +128,37 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                         initialTime: TimeOfDay.now(),
                       );
                       if (time != null) {
-                        // In a real app, save to Reminders table
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(DateTime(date.year, date.month, date.day, time.hour, time.minute))]))),
-                        );
+                        final triggerTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+                        try {
+                          await ref.read(reminderListProvider.notifier).addReminder(
+                                'Reminder: ${task.title}',
+                                triggerTime,
+                                message: 'Your task "${task.title}" reminder.',
+                              );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('reminder_set'.tr(args: [DateFormat.yMMMd().add_jm().format(triggerTime)])),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error setting reminder: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
                       }
                     }
                   },
                 ),
+                const SizedBox(height: 12),
+                _buildActiveReminders(task.id),
                 const SizedBox(height: 32),
                 _buildSectionHeader('attachments'.tr()),
                 const SizedBox(height: 12),
@@ -305,5 +330,41 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     if (m > 0) parts.add('${m}m');
     if (s > 0 || parts.isEmpty) parts.add('${s}s');
     return parts.join(' ');
+  }
+
+  Widget _buildActiveReminders(String taskId) {
+    final remindersAsync = ref.watch(reminderListProvider);
+
+    return remindersAsync.when(
+      data: (reminders) {
+        final taskReminders = reminders.where((r) => r.taskId == taskId).toList();
+        if (taskReminders.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          children: taskReminders.map((reminder) {
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              elevation: 0,
+              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                dense: true,
+                leading: const Icon(Icons.alarm, size: 20, color: Colors.blue),
+                title: Text(
+                  DateFormat('dd MMM, HH:mm').format(reminder.triggerTime.toLocal()),
+                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
+                  onPressed: () => ref.read(reminderListProvider.notifier).deleteReminder(reminder.id),
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
+      loading: () => const Center(child: Padding(padding: EdgeInsets.all(8.0), child: CircularProgressIndicator(strokeWidth: 2))),
+      error: (e, st) => Text('Error loading reminders: $e', style: const TextStyle(color: Colors.red, fontSize: 12)),
+    );
   }
 }
