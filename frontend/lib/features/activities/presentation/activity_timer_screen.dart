@@ -38,7 +38,7 @@ class _ActivityTimerScreenState extends ConsumerState<ActivityTimerScreen> {
     final isRunning = timerState.isRunning;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(widget.taskTitle ?? 'General Activity'),
         backgroundColor: Colors.transparent,
@@ -103,7 +103,7 @@ class _ActivityTimerScreenState extends ConsumerState<ActivityTimerScreen> {
               const SizedBox(height: 60),
               Card(
                 elevation: 0,
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(color: Colors.blue.withOpacity(0.1)),

@@ -6,6 +6,10 @@ from app.core.database import db
 import datetime
 import firebase_admin
 from firebase_admin import credentials, messaging
+<<<<<<< HEAD
+from app.modules.reminders.models import Reminder
+=======
+>>>>>>> feature/push-notifications-auth
 
 scheduler = APScheduler()
 
@@ -28,7 +32,11 @@ def init_firebase():
 def send_push_notification(fcm_token, title, body):
     if not fcm_token:
         return False
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> feature/push-notifications-auth
     if not firebase_admin._apps:
         print(f"Mock push notification to {fcm_token}: {title} - {body}")
         return True
@@ -51,7 +59,11 @@ def check_upcoming_tasks(app):
     with app.app_context():
         now = datetime.datetime.now(datetime.timezone.utc)
         one_hour_later = now + datetime.timedelta(hours=1)
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> feature/push-notifications-auth
         # Query tasks that are incomplete, not deleted, want a push, haven't been sent,
         # and have a deadline within the next hour.
         tasks_to_remind = Task.query.filter(
@@ -67,25 +79,62 @@ def check_upcoming_tasks(app):
             user = User.query.get(task.user_id)
             if user and user.fcm_token:
                 success = send_push_notification(
+<<<<<<< HEAD
                     user.fcm_token,
                     "Task Reminder",
+=======
+                    user.fcm_token,
+                    "Task Reminder",
+>>>>>>> feature/push-notifications-auth
                     f"Your task '{task.title}' is due soon!"
                 )
                 if success:
                     task.reminder_sent = True
                     db.session.commit()
 
+<<<<<<< HEAD
+        # Check dedicated reminders
+        reminders_to_send = Reminder.query.filter(
+            Reminder.is_sent == False,
+            Reminder.is_deleted == False,
+            Reminder.trigger_time <= now
+        ).all()
+
+        for rem in reminders_to_send:
+            user = User.query.get(rem.user_id)
+            if user and user.fcm_token:
+                success = send_push_notification(
+                    user.fcm_token,
+                    rem.title,
+                    rem.message or "Task reminder"
+                )
+                if success:
+                    rem.is_sent = True
+                    db.session.commit()
+
 def init_scheduler(app):
     init_firebase()
     scheduler.init_app(app)
 
+=======
+def init_scheduler(app):
+    init_firebase()
+    scheduler.init_app(app)
+
+>>>>>>> feature/push-notifications-auth
     # Run the job every 15 minutes
     scheduler.add_job(
         id='check_upcoming_tasks_job',
         func=check_upcoming_tasks,
         args=[app],
         trigger='interval',
+<<<<<<< HEAD
+        minutes=1
+    )
+
+=======
         minutes=15
     )
 
+>>>>>>> feature/push-notifications-auth
     scheduler.start()

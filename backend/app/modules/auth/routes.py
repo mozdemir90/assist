@@ -115,10 +115,17 @@ def token_required(f):
             parts = request.headers['Authorization'].split()
             if len(parts) == 2 and parts[0] == 'Bearer':
                 token = parts[1]
+<<<<<<< HEAD
 
         if not token:
             return jsonify({'message': 'Token is missing'}), 401
 
+=======
+
+        if not token:
+            return jsonify({'message': 'Token is missing'}), 401
+
+>>>>>>> feature/push-notifications-auth
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query.get(data['user_id'])
@@ -167,3 +174,11 @@ def reset_password():
     db.session.commit()
 
     return jsonify({'message': 'Password has been reset successfully'}), 200
+
+<<<<<<< HEAD
+@auth_bp.route('/me', methods=['GET'])
+@token_required
+def get_me(current_user):
+    return jsonify(current_user.to_dict()), 200
+=======
+>>>>>>> feature/push-notifications-auth

@@ -22,14 +22,20 @@ class AuthNotifier extends _$AuthNotifier {
     try {
       final isAuth = await repo.isAuthenticated();
       if (isAuth) {
-        // Ideally we would fetch the user profile here with the token
-        // For now, we mock an authenticated state if token exists
-        state = AuthState.authenticated(
-          User(id: 'local', username: 'User', email: '...', isActive: true),
-        );
+        final user = await repo.getProfile();
+        if (user != null) {
+          state = AuthState.authenticated(user);
+        } else {
+          // If token exists but profile fetch fails, consider as unauthenticated
+          state = AuthState.unauthenticated();
+        }
         // Trigger background sync
         ref.read(syncProvider).syncAll();
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> feature/push-notifications-auth
         // Push Notification Setup
         _setupPushNotifications(repo);
       } else {
@@ -42,7 +48,11 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> _setupPushNotifications(AuthRepository repo) async {
     try {
+<<<<<<< HEAD
       // For real usage, request permissions and get token.
+=======
+      // For real usage, request permissions and get token.
+>>>>>>> feature/push-notifications-auth
       // This will fail cleanly in local web without config.
       if (!kIsWeb) {
         FirebaseMessaging messaging = FirebaseMessaging.instance;

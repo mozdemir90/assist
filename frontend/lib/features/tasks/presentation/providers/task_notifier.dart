@@ -3,6 +3,11 @@ import 'package:uuid/uuid.dart';
 import '../../data/task_repository.dart';
 import '../../domain/task_model.dart';
 
+final taskByIdProvider = StreamProvider.autoDispose.family<TaskModel, String>((ref, id) {
+  final repo = ref.watch(taskRepositoryProvider);
+  return repo.watchTasks().map((tasks) => tasks.firstWhere((t) => t.id == id, orElse: () => throw Exception('Task not found')));
+});
+
 final taskListProvider = StreamProvider.family<List<TaskModel>, String?>((
   ref,
   listId,

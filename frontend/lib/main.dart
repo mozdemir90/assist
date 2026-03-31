@@ -26,7 +26,11 @@ void main() async {
        await Firebase.initializeApp();
        FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     } else if (kIsWeb) {
+<<<<<<< HEAD
       // For web, you would typically need a config object here.
+=======
+      // For web, you would typically need a config object here.
+>>>>>>> feature/push-notifications-auth
       // We will skip real initialization for pure web dev to avoid crash if no firebase-config exists.
       // await Firebase.initializeApp(options: const FirebaseOptions(...));
       print("Firebase initialization skipped for web in this demo.");

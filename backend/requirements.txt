@@ -17,5 +17,9 @@ SQLAlchemy
 typing_extensions
 Werkzeug
 Flask-Cors
+<<<<<<< HEAD
+gunicorn
+=======
+>>>>>>> feature/push-notifications-auth
 firebase-admin
 Flask-APScheduler
