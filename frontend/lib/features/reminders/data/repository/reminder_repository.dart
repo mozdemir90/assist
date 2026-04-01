@@ -18,11 +18,15 @@ class ReminderRepository {
     String title,
     DateTime triggerTime, {
     String? message,
+    String? taskId,
+    String? activityId,
   }) {
     return _apiService.createReminder({
       'title': title,
       'trigger_time': triggerTime.toUtc().toIso8601String(),
       'message': message,
+      if (taskId != null) 'task_id': taskId,
+      if (activityId != null) 'activity_id': activityId,
     });
   }
 

@@ -103,7 +103,9 @@ def forgot_password():
     frontend_url = current_app.config.get('FRONTEND_URL', 'http://localhost:5001')
     reset_link = f"{frontend_url}/reset-password?token={token}"
 
-    send_reset_email(user.email, reset_link)
+    success = send_reset_email(user.email, reset_link)
+    if not success:
+        return jsonify({'message': 'Failed to send email. Please check server configuration.'}), 500
 
     return jsonify({'message': 'If an account exists with that email, a password reset link has been sent.'}), 200
 
@@ -115,17 +117,10 @@ def token_required(f):
             parts = request.headers['Authorization'].split()
             if len(parts) == 2 and parts[0] == 'Bearer':
                 token = parts[1]
-<<<<<<< HEAD
 
         if not token:
             return jsonify({'message': 'Token is missing'}), 401
 
-=======
-
-        if not token:
-            return jsonify({'message': 'Token is missing'}), 401
-
->>>>>>> feature/push-notifications-auth
         try:
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query.get(data['user_id'])
@@ -175,10 +170,7 @@ def reset_password():
 
     return jsonify({'message': 'Password has been reset successfully'}), 200
 
-<<<<<<< HEAD
 @auth_bp.route('/me', methods=['GET'])
 @token_required
 def get_me(current_user):
     return jsonify(current_user.to_dict()), 200
-=======
->>>>>>> feature/push-notifications-auth

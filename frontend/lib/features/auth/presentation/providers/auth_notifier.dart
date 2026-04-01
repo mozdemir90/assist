@@ -31,11 +31,7 @@ class AuthNotifier extends _$AuthNotifier {
         }
         // Trigger background sync
         ref.read(syncProvider).syncAll();
-<<<<<<< HEAD
 
-=======
-
->>>>>>> feature/push-notifications-auth
         // Push Notification Setup
         _setupPushNotifications(repo);
       } else {
@@ -48,11 +44,7 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> _setupPushNotifications(AuthRepository repo) async {
     try {
-<<<<<<< HEAD
       // For real usage, request permissions and get token.
-=======
-      // For real usage, request permissions and get token.
->>>>>>> feature/push-notifications-auth
       // This will fail cleanly in local web without config.
       if (!kIsWeb) {
         FirebaseMessaging messaging = FirebaseMessaging.instance;

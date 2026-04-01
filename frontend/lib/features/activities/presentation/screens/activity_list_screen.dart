@@ -30,6 +30,7 @@ class ActivityListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    context.locale; // Ensure rebuild on language change
     final activitiesAsyncValue = ref.watch(activityListProvider);
     final actions = ref.watch(activityNotifierActionsProvider);
 
@@ -97,6 +98,12 @@ class ActivityListScreen extends ConsumerWidget {
                   ),
                   elevation: 1,
                   child: ListTile(
+                    onTap: () {
+                      context.push('/timer', extra: {
+                        'taskId': 'activity_${activity.id}',
+                        'taskTitle': activity.title,
+                      });
+                    },
                     leading: CircleAvatar(
                       backgroundColor: Colors.blue.withOpacity(0.1),
                       child: Icon(
@@ -122,6 +129,7 @@ class ActivityListScreen extends ConsumerWidget {
               );
             },
           );
+
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(child: Text('Error: $e')),

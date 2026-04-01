@@ -113,7 +113,6 @@ class AuthRepository {
     return token != null && token.isNotEmpty;
   }
 
-<<<<<<< HEAD
   Future<User?> getProfile() async {
     try {
       final response = await _apiClient.dio.get('/auth/me');
@@ -127,8 +126,6 @@ class AuthRepository {
     }
   }
 
-=======
->>>>>>> feature/push-notifications-auth
   Future<void> forgotPassword(String email) async {
     try {
       final response = await _apiClient.dio.post(

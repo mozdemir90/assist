@@ -25,28 +25,16 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       setState(() {
         _isLoading = true;
       });
-<<<<<<< HEAD
 
-=======
-
->>>>>>> feature/push-notifications-auth
       try {
         await ref
             .read(authProvider.notifier)
             .resetPassword(widget.token, _passwordController.text);
-<<<<<<< HEAD
 
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('password_reset_success'.tr()),
-=======
-
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('password_reset_success'.tr(defaultValue: 'Your password has been successfully reset. Please login.')),
->>>>>>> feature/push-notifications-auth
             backgroundColor: Colors.green,
           ),
         );
@@ -80,11 +68,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< HEAD
         title: Text('reset_password'.tr()),
-=======
-        title: Text('reset_password'.tr(defaultValue: 'Reset Password')),
->>>>>>> feature/push-notifications-auth
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -96,11 +80,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-<<<<<<< HEAD
                   'enter_new_password'.tr(),
-=======
-                  'enter_new_password'.tr(defaultValue: 'Please enter your new password below.'),
->>>>>>> feature/push-notifications-auth
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
@@ -109,11 +89,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
-<<<<<<< HEAD
                     labelText: 'new_password'.tr(),
-=======
-                    labelText: 'new_password'.tr(defaultValue: 'New Password'),
->>>>>>> feature/push-notifications-auth
                     prefixIcon: const Icon(Icons.lock_outline),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
@@ -172,11 +148,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-<<<<<<< HEAD
                       : Text('reset_password'.tr()),
-=======
-                      : Text('reset_password'.tr(defaultValue: 'Reset Password')),
->>>>>>> feature/push-notifications-auth
                 ),
               ],
             ),
