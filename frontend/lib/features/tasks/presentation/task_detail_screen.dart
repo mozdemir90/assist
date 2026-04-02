@@ -134,6 +134,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                                 'Reminder: ${task.title}',
                                 triggerTime,
                                 message: 'Your task "${task.title}" reminder.',
+                                taskId: task.id,
                               );
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

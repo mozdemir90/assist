@@ -44,9 +44,8 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> _setupPushNotifications(AuthRepository repo) async {
     try {
-      // For real usage, request permissions and get token.
-      // This will fail cleanly in local web without config.
       if (!kIsWeb) {
+        print('DEBUG [FCM]: Requesting push notification permissions...');
         FirebaseMessaging messaging = FirebaseMessaging.instance;
         NotificationSettings settings = await messaging.requestPermission(
           alert: true,
@@ -54,16 +53,25 @@ class AuthNotifier extends _$AuthNotifier {
           sound: true,
         );
 
+        print('DEBUG [FCM]: Permission status: ${settings.authorizationStatus}');
+
         if (settings.authorizationStatus == AuthorizationStatus.authorized) {
           String? token = await messaging.getToken();
-          print('FCM Token generated: $token');
           if (token != null) {
+            print('DEBUG [FCM]: Token generated successfully: ${token.substring(0, 10)}...');
             await repo.updateFcmToken(token);
+            print('DEBUG [FCM]: Token successfully updated on backend.');
+          } else {
+            print('DEBUG [FCM]: Token is null - ensure google-services.json is correct.');
           }
+        } else {
+          print('DEBUG [FCM]: Notification permissions were NOT granted.');
         }
+      } else {
+        print('DEBUG [FCM]: Skipping setup because platform is Web.');
       }
     } catch (e) {
-      print('Failed to setup push notifications: $e');
+      print('ERROR [FCM]: Failed to setup push notifications: $e');
     }
   }
 
