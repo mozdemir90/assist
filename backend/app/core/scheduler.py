@@ -7,6 +7,7 @@ import datetime
 import firebase_admin
 from firebase_admin import credentials, messaging
 from app.modules.reminders.models import Reminder
+import traceback
 
 scheduler = APScheduler()
 
@@ -26,8 +27,12 @@ def init_firebase():
                     firebase_admin.initialize_app(cred)
                     print("Firebase initialized successfully via JSON environment variable.")
                     return
-                except json.JSONDecodeError:
-                    print("Failed to parse FIREBASE_SERVICE_ACCOUNT_JSON as JSON.")
+                except json.JSONDecodeError as e:
+                    print("Failed to parse FIREBASE_SERVICE_ACCOUNT_JSON as JSON. Please check syntax.")
+                    traceback.print_exc()
+                except Exception as e:
+                    print("Unexpected error initializing Firebase via JSON string:")
+                    traceback.print_exc()
 
             # We attempt to use default credentials or a path from env
             cred_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
@@ -46,7 +51,8 @@ def init_firebase():
                 # Provide dummy init for dev environments without keys
                 print("No firebase credentials found (ENV or default file). Firebase mock initialized.")
         except Exception as e:
-            print(f"Failed to initialize firebase: {e}")
+            print("Failed to initialize firebase completely:")
+            traceback.print_exc()
 
 def send_push_notification(fcm_token, title, body):
     if not fcm_token:
@@ -64,10 +70,21 @@ def send_push_notification(fcm_token, title, body):
             ),
             token=fcm_token,
         )
+        print(f"FCM: Attempting to send message to token: {fcm_token[:10]}... Title: '{title}'")
         response = messaging.send(message)
+        print(f"FCM: Successfully sent message. Message ID: {response}")
         return True
+    except firebase_admin.exceptions.FirebaseError as e:
+        print("FCM FirebaseError: Failed to send notification (Check token validity or project config).")
+        traceback.print_exc()
+        return False
+    except ValueError as e:
+        print("FCM ValueError: Invalid argument passed to messaging.send().")
+        traceback.print_exc()
+        return False
     except Exception as e:
-        print(f"Failed to send FCM message: {e}")
+        print("FCM Unexpected Error:")
+        traceback.print_exc()
         return False
 
 def check_upcoming_tasks(app):
