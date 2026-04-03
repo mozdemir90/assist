@@ -31,4 +31,9 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@odak.com'
 
     # Frontend URL for links
-    FRONTEND_URL = os.environ.get('FRONTEND_URL') or 'http://localhost:5001' # Web port or local default
+    FRONTEND_URL = os.environ.get('FRONTEND_URL')
+    if not FRONTEND_URL:
+        # Default to a generic message to remind the admin to configure it
+        FRONTEND_URL = 'http://localhost:5001'
+        if FLASK_ENV == 'production':
+            print("WARNING: FRONTEND_URL is not set. Password reset links will point to localhost.")
