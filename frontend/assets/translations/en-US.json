@@ -63,5 +63,18 @@
   "duration": "Duration",
   "no_sessions": "No sessions recorded for this task yet.",
   "start_timer": "Start Timer",
-  "activity_saved": "Activity saved successfully!"
+  "activity_saved": "Activity saved successfully!",
+  "password_reset_sent": "A password reset link has been sent to your email address.",
+  "forgot_password_desc": "Enter your email address and we will send you a link to reset your password.",
+  "reset_password": "Reset Password",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "password_reset_success": "Your password has been successfully reset. Please login.",
+  "enter_new_password": "Please enter your new password below.",
+  "email_required": "Please enter your email address",
+  "invalid_email": "Enter a valid email address",
+  "send_reset_link": "Send Reset Link",
+  "password_validation_error": "Password must be at least 8 characters, include an uppercase letter and a number",
+  "confirm_password_required": "Please confirm your password",
+  "passwords_do_not_match": "Passwords do not match"
 }

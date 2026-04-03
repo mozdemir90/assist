@@ -15,12 +15,16 @@ class ReminderList extends _$ReminderList {
     String title,
     DateTime time, {
     String? message,
+    String? taskId,
   }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ref
-          .read(reminderRepositoryProvider)
-          .addReminder(title, time, message: message);
+      await ref.read(reminderRepositoryProvider).addReminder(
+            title,
+            time,
+            message: message,
+            taskId: taskId,
+          );
       return ref.read(reminderRepositoryProvider).getReminders();
     });
   }

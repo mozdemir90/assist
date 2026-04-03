@@ -63,5 +63,18 @@
   "duration": "Süre",
   "no_sessions": "Bu görev için henüz çalışma kaydedilmedi.",
   "start_timer": "Zamanlayıcıyı Başlat",
-  "activity_saved": "Aktivite başarıyla kaydedildi!"
+  "activity_saved": "Aktivite başarıyla kaydedildi!",
+  "password_reset_sent": "E-posta adresinize şifre sıfırlama bağlantısı gönderildi.",
+  "forgot_password_desc": "E-posta adresinizi girin, size şifrenizi sıfırlamanız için bir bağlantı gönderelim.",
+  "reset_password": "Şifreyi Sıfırla",
+  "new_password": "Yeni Şifre",
+  "confirm_password": "Şifreyi Onayla",
+  "password_reset_success": "Şifreniz başarıyla sıfırlandı. Lütfen giriş yapın.",
+  "enter_new_password": "Lütfen yeni şifrenizi aşağıya girin.",
+  "email_required": "Lütfen e-posta adresinizi girin",
+  "invalid_email": "Geçerli bir e-posta adresi girin",
+  "send_reset_link": "Sıfırlama Bağlantısı Gönder",
+  "password_validation_error": "Şifre en az 8 karakter olmalı, bir büyük harf ve bir rakam içermelidir",
+  "confirm_password_required": "Lütfen şifreyi onaylayın",
+  "passwords_do_not_match": "Şifreler eşleşmiyor"
 }

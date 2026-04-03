@@ -25,3 +25,4 @@ frontend/macos/Flutter/ephemeral/
 frontend/ios/Flutter/.last_build_id
 frontend/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 frontend/macos/Flutter/GeneratedPluginRegistrant.swift
+backend/firebase-service-account.json
