@@ -72,9 +72,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 // App Logo
                 Center(
-                  child: Image.asset(
-                    'assets/images/odak_logo.png',
-                    height: 120,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent, // Ensures no solid background
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/images/odak_logo.png',
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),

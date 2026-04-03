@@ -122,6 +122,9 @@ def check_upcoming_tasks(app):
             Reminder.trigger_time <= now
         ).all()
 
+        if reminders_to_send:
+            print(f"Scheduler found {len(reminders_to_send)} reminders due (<= {now.isoformat()}). Sending FCM...")
+
         for rem in reminders_to_send:
             user = User.query.get(rem.user_id)
             if user and user.fcm_token:
