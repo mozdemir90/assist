@@ -10,44 +10,57 @@ reminders_bp = Blueprint('reminders', __name__)
 def ping():
     return jsonify({"message": "reminders module is working"})
 
+import traceback
+
 @reminders_bp.route('/', methods=['GET'])
 @token_required
 def get_reminders(current_user):
-    reminders = Reminder.query.filter_by(user_id=current_user.id, is_deleted=False).all()
-    return jsonify([reminder.to_dict() for reminder in reminders])
+    try:
+        reminders = Reminder.query.filter_by(user_id=current_user.id, is_deleted=False).all()
+        return jsonify([reminder.to_dict() for reminder in reminders])
+    except Exception as e:
+        print("Error fetching reminders:")
+        traceback.print_exc()
+        return jsonify({'message': 'Failed to fetch reminders'}), 500
 
 @reminders_bp.route('/', methods=['POST'])
 @token_required
 def create_reminder(current_user):
-    data = request.get_json()
-
-    if not data or not data.get('title') or not data.get('trigger_time'):
-        return jsonify({'message': 'Missing required fields: title, trigger_time'}), 400
-
     try:
-        trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
-    except ValueError:
-        return jsonify({'message': 'Invalid trigger_time format'}), 400
+        data = request.get_json()
 
-    new_reminder = Reminder(
-        title=data['title'],
-        message=data.get('message', ''),
-        trigger_time=trigger_time,
-        is_sent=data.get('is_sent', False),
-        task_id=data.get('task_id'),
-        activity_id=data.get('activity_id'),
-        user_id=current_user.id
-    )
+        if not data or not data.get('title') or not data.get('trigger_time'):
+            return jsonify({'message': 'Missing required fields: title, trigger_time'}), 400
 
-    if 'id' in data and data['id']:
-        existing_reminder = Reminder.query.filter_by(id=data['id'], user_id=current_user.id).first()
-        if existing_reminder:
-            return jsonify(existing_reminder.to_dict()), 200
-        new_reminder.id = data['id']
+        try:
+            trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
+        except ValueError:
+            return jsonify({'message': 'Invalid trigger_time format'}), 400
 
-    db.session.add(new_reminder)
-    db.session.commit()
-    return jsonify(new_reminder.to_dict()), 201
+        new_reminder = Reminder(
+            title=data['title'],
+            message=data.get('message', ''),
+            trigger_time=trigger_time,
+            is_sent=data.get('is_sent', False),
+            task_id=data.get('task_id'),
+            activity_id=data.get('activity_id'),
+            user_id=current_user.id
+        )
+
+        if 'id' in data and data['id']:
+            existing_reminder = Reminder.query.filter_by(id=data['id'], user_id=current_user.id).first()
+            if existing_reminder:
+                return jsonify(existing_reminder.to_dict()), 200
+            new_reminder.id = data['id']
+
+        db.session.add(new_reminder)
+        db.session.commit()
+        return jsonify(new_reminder.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        print("Error creating reminder:")
+        traceback.print_exc()
+        return jsonify({'message': 'Failed to create reminder'}), 500
 
 @reminders_bp.route('/<reminder_id>', methods=['PUT'])
 @token_required

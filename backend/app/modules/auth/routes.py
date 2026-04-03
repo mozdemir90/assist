@@ -7,6 +7,7 @@ import datetime
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import traceback
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -31,14 +32,26 @@ def send_reset_email(to_email, reset_link):
     msg.attach(MIMEText(text, "plain"))
 
     try:
-        with smtplib.SMTP(server, port) as smtp:
+        print(f"Attempting to send email via SMTP {server}:{port} (TLS: {current_app.config.get('MAIL_USE_TLS')})")
+        with smtplib.SMTP(server, port, timeout=10) as smtp:
+            smtp.set_debuglevel(1) # Enables verbose SMTP logging in the console
             if current_app.config.get('MAIL_USE_TLS'):
                 smtp.starttls()
             smtp.login(sender, password)
             smtp.sendmail(default_sender, to_email, msg.as_string())
+        print(f"Successfully sent reset email to {to_email}")
         return True
+    except smtplib.SMTPAuthenticationError as e:
+        print("SMTP Authentication Error! Check MAIL_USERNAME and MAIL_PASSWORD (did you use an App Password for Gmail?).")
+        traceback.print_exc()
+        return False
+    except smtplib.SMTPConnectError as e:
+        print(f"SMTP Connection Error! Failed to connect to {server}:{port}.")
+        traceback.print_exc()
+        return False
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"Unexpected error sending email:")
+        traceback.print_exc()
         return False
 
 @auth_bp.route('/ping')
@@ -103,7 +116,9 @@ def forgot_password():
     frontend_url = current_app.config.get('FRONTEND_URL', 'http://localhost:5001')
     reset_link = f"{frontend_url}/reset-password?token={token}"
 
-    send_reset_email(user.email, reset_link)
+    success = send_reset_email(user.email, reset_link)
+    if not success:
+        return jsonify({'message': 'Failed to send email. Please check server configuration.'}), 500
 
     return jsonify({'message': 'If an account exists with that email, a password reset link has been sent.'}), 200
 
