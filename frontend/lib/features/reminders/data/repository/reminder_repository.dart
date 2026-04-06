@@ -18,6 +18,7 @@ class ReminderRepository {
     String title,
     DateTime triggerTime, {
     String? message,
+    String? taskId,
     String? activityId,
 
   }) {

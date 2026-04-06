@@ -21,7 +21,7 @@ def get_reminders(current_user):
     except Exception as e:
         print("Error fetching reminders:")
         traceback.print_exc()
-        return jsonify({'message': 'Failed to fetch reminders'}), 500
+        return jsonify({'message': 'Failed to fetch reminders', 'error': str(e)}), 500
 
 @reminders_bp.route('/', methods=['POST'])
 @token_required
@@ -60,55 +60,67 @@ def create_reminder(current_user):
         db.session.rollback()
         print("Error creating reminder:")
         traceback.print_exc()
-        return jsonify({'message': 'Failed to create reminder'}), 500
+        return jsonify({'message': 'Failed to create reminder', 'error': str(e)}), 500
 
 @reminders_bp.route('/<reminder_id>', methods=['PUT'])
 @token_required
 def update_reminder(current_user, reminder_id):
-    reminder = Reminder.query.filter_by(id=reminder_id, user_id=current_user.id).first()
-    if not reminder:
-        return jsonify({'message': 'Reminder not found'}), 404
+    try:
+        reminder = Reminder.query.filter_by(id=reminder_id, user_id=current_user.id).first()
+        if not reminder:
+            return jsonify({'message': 'Reminder not found'}), 404
 
-    data = request.get_json()
-    if not data:
-        return jsonify({'message': 'Missing JSON body'}), 400
+        data = request.get_json()
+        if not data:
+            return jsonify({'message': 'Missing JSON body'}), 400
 
-    if 'title' in data:
-        reminder.title = data['title']
-    if 'message' in data:
-        reminder.message = data['message']
+        if 'title' in data:
+            reminder.title = data['title']
+        if 'message' in data:
+            reminder.message = data['message']
 
-    if 'trigger_time' in data:
-        if data['trigger_time']:
-            try:
-                reminder.trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
-            except ValueError:
-                return jsonify({'message': 'Invalid trigger_time format'}), 400
-        else:
-             return jsonify({'message': 'trigger_time is required'}), 400
+        if 'trigger_time' in data:
+            if data['trigger_time']:
+                try:
+                    reminder.trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
+                except ValueError:
+                    return jsonify({'message': 'Invalid trigger_time format'}), 400
+            else:
+                 return jsonify({'message': 'trigger_time is required'}), 400
 
-    if 'is_sent' in data:
-         reminder.is_sent = data['is_sent']
+        if 'is_sent' in data:
+             reminder.is_sent = data['is_sent']
 
-    if 'task_id' in data:
-         reminder.task_id = data['task_id']
+        if 'task_id' in data:
+             reminder.task_id = data['task_id']
 
-    if 'activity_id' in data:
-         reminder.activity_id = data['activity_id']
+        if 'activity_id' in data:
+             reminder.activity_id = data['activity_id']
 
-    if 'is_deleted' in data:
-        reminder.is_deleted = data['is_deleted']
+        if 'is_deleted' in data:
+            reminder.is_deleted = data['is_deleted']
 
-    db.session.commit()
-    return jsonify(reminder.to_dict())
+        db.session.commit()
+        return jsonify(reminder.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating reminder {reminder_id}:")
+        traceback.print_exc()
+        return jsonify({'message': 'Failed to update reminder', 'error': str(e)}), 500
 
 @reminders_bp.route('/<reminder_id>', methods=['DELETE'])
 @token_required
 def delete_reminder(current_user, reminder_id):
-    reminder = Reminder.query.filter_by(id=reminder_id, user_id=current_user.id).first()
-    if not reminder:
-        return jsonify({'message': 'Reminder not found'}), 404
+    try:
+        reminder = Reminder.query.filter_by(id=reminder_id, user_id=current_user.id).first()
+        if not reminder:
+            return jsonify({'message': 'Reminder not found'}), 404
 
-    reminder.is_deleted = True
-    db.session.commit()
-    return jsonify({"message": "Reminder marked as deleted"}), 200
+        reminder.is_deleted = True
+        db.session.commit()
+        return jsonify({"message": "Reminder marked as deleted"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting reminder {reminder_id}:")
+        traceback.print_exc()
+        return jsonify({'message': 'Failed to delete reminder', 'error': str(e)}), 500
