@@ -34,16 +34,38 @@ def create_reminder(current_user):
 
         try:
             trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
+            if trigger_time.tzinfo is None:
+                # If no timezone is provided, assume it's UTC since frontend sends ISO 8601 in UTC
+                from datetime import timezone
+                trigger_time = trigger_time.replace(tzinfo=timezone.utc)
         except ValueError:
             return jsonify({'message': 'Invalid trigger_time format'}), 400
+
+        # Check if task_id exists to prevent foreign key constraint violations
+        task_id = data.get('task_id')
+        if task_id:
+            from app.modules.tasks.models import Task
+            task_exists = Task.query.filter_by(id=task_id).first()
+            if not task_exists:
+                # If the task doesn't exist on the backend yet, we clear the task_id
+                # so the reminder can still be created without crashing
+                task_id = None
+
+        # Check if activity_id exists to prevent foreign key constraint violations
+        activity_id = data.get('activity_id')
+        if activity_id:
+            from app.modules.activities.models import Activity
+            activity_exists = Activity.query.filter_by(id=activity_id).first()
+            if not activity_exists:
+                activity_id = None
 
         new_reminder = Reminder(
             title=data['title'],
             message=data.get('message', ''),
             trigger_time=trigger_time,
             is_sent=data.get('is_sent', False),
-            task_id=data.get('task_id'),
-            activity_id=data.get('activity_id'),
+            task_id=task_id,
+            activity_id=activity_id,
             user_id=current_user.id
         )
 
@@ -82,7 +104,11 @@ def update_reminder(current_user, reminder_id):
         if 'trigger_time' in data:
             if data['trigger_time']:
                 try:
-                    reminder.trigger_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
+                    t_time = datetime.fromisoformat(data['trigger_time'].replace('Z', '+00:00'))
+                    if t_time.tzinfo is None:
+                        from datetime import timezone
+                        t_time = t_time.replace(tzinfo=timezone.utc)
+                    reminder.trigger_time = t_time
                 except ValueError:
                     return jsonify({'message': 'Invalid trigger_time format'}), 400
             else:
@@ -92,10 +118,22 @@ def update_reminder(current_user, reminder_id):
              reminder.is_sent = data['is_sent']
 
         if 'task_id' in data:
-             reminder.task_id = data['task_id']
+            task_id = data['task_id']
+            if task_id:
+                from app.modules.tasks.models import Task
+                task_exists = Task.query.filter_by(id=task_id).first()
+                if not task_exists:
+                    task_id = None
+            reminder.task_id = task_id
 
         if 'activity_id' in data:
-             reminder.activity_id = data['activity_id']
+            activity_id = data['activity_id']
+            if activity_id:
+                from app.modules.activities.models import Activity
+                activity_exists = Activity.query.filter_by(id=activity_id).first()
+                if not activity_exists:
+                    activity_id = None
+            reminder.activity_id = activity_id
 
         if 'is_deleted' in data:
             reminder.is_deleted = data['is_deleted']

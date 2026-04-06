@@ -113,15 +113,18 @@ def forgot_password():
         'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     }, current_app.config['SECRET_KEY'], algorithm="HS256")
 
+    # Determine the fallback mechanism for deep linking on mobile or fallback web
     import os
     frontend_url = os.getenv('FRONTEND_URL')
 
-    if not frontend_url:
-        error_msg = "FRONTEND_URL environment variable is missing"
-        print(error_msg)
-        return jsonify({'message': error_msg}), 500
-
-    reset_link = f"{frontend_url}/reset-password?token={token}"
+    if frontend_url:
+        reset_link = f"{frontend_url}/reset-password?token={token}"
+    else:
+        # Fallback to local address if running locally, or a deeplink if configured
+        # Note: In a pure Flutter mobile application environment, we typically use a deeplink (e.g., odak://)
+        # or the API host itself if we serve a web page. Since we lack FRONTEND_URL, fallback to request.host_url
+        reset_link = f"{request.host_url}reset-password?token={token}"
+        print(f"Warning: FRONTEND_URL is missing. Falling back to {reset_link}")
 
     success = send_reset_email(user.email, reset_link)
     if not success:
