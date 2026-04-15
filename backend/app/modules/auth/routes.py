@@ -25,7 +25,8 @@ def send_reset_email(to_email, reset_link):
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "ODAK - Password Reset"
-    msg["From"] = default_sender
+    # Use sender as From to prevent Gmail/SMTP from rejecting due to mismatched sender
+    msg["From"] = f"ODAK <{sender}>"
     msg["To"] = to_email
 
     text = f"Hello,\n\nTo reset your ODAK password, please click the following link:\n{reset_link}\n\nIf you didn't request this, you can safely ignore this email.\n"
@@ -33,12 +34,19 @@ def send_reset_email(to_email, reset_link):
 
     try:
         print(f"Attempting to send email via SMTP {server}:{port} (TLS: {current_app.config.get('MAIL_USE_TLS')})")
-        with smtplib.SMTP(server, port, timeout=10) as smtp:
-            smtp.set_debuglevel(1) # Enables verbose SMTP logging in the console
-            if current_app.config.get('MAIL_USE_TLS'):
-                smtp.starttls()
-            smtp.login(sender, password)
-            smtp.sendmail(default_sender, to_email, msg.as_string())
+        port_int = int(port)
+        if port_int == 465:
+            with smtplib.SMTP_SSL(server, port_int, timeout=10) as smtp:
+                smtp.set_debuglevel(1) # Enables verbose SMTP logging in the console
+                smtp.login(sender, password)
+                smtp.sendmail(sender, to_email, msg.as_string())
+        else:
+            with smtplib.SMTP(server, port_int, timeout=10) as smtp:
+                smtp.set_debuglevel(1) # Enables verbose SMTP logging in the console
+                if current_app.config.get('MAIL_USE_TLS'):
+                    smtp.starttls()
+                smtp.login(sender, password)
+                smtp.sendmail(sender, to_email, msg.as_string())
         print(f"Successfully sent reset email to {to_email}")
         return True
     except smtplib.SMTPAuthenticationError as e:
