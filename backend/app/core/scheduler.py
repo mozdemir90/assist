@@ -91,7 +91,8 @@ def send_push_notification(fcm_token, title, body):
 
 def check_upcoming_tasks(app):
     with app.app_context():
-        now = datetime.datetime.now(datetime.timezone.utc)
+        # Use naive utcnow() to safely compare against SQLAlchemy DateTime columns
+        now = datetime.datetime.utcnow()
         one_hour_later = now + datetime.timedelta(hours=1)
 
         # Query tasks that are incomplete, not deleted, want a push, haven't been sent,
