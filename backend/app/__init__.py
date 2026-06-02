@@ -41,8 +41,9 @@ def create_app(config_class=Config):
     app.register_blueprint(sync_bp, url_prefix='/api/sync')
     app.register_blueprint(lists_bp, url_prefix='/api/lists')
 
+    @app.route('/')
     @app.route('/health')
     def health_check():
-        return {'status': 'healthy'}
+        return {'status': 'healthy', 'message': 'ODAK Backend API is running'}
 
     return app
