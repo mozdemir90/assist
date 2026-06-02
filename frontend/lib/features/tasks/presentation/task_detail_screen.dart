@@ -10,8 +10,11 @@ import 'package:frontend/features/tasks/presentation/providers/task_notifier.dar
 import 'package:frontend/features/activities/presentation/activity_provider.dart';
 import 'package:frontend/features/activities/presentation/task_activities_provider.dart';
 import 'package:frontend/features/activities/presentation/activity_timer_screen.dart';
+import 'dart:io';
 import 'package:frontend/features/reminders/data/repository/reminder_repository.dart';
 import 'package:frontend/features/reminders/presentation/reminder_provider.dart';
+import 'package:frontend/features/tasks/data/attachment_repository.dart';
+import 'package:frontend/features/tasks/presentation/providers/attachment_provider.dart';
 
 class TaskDetailScreen extends ConsumerStatefulWidget {
   final String taskId;
@@ -163,6 +166,8 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
                 const SizedBox(height: 32),
                 _buildSectionHeader('attachments'.tr()),
                 const SizedBox(height: 12),
+                _buildAttachmentsList(),
+                const SizedBox(height: 12),
                 _buildFilePickerArea(),
                 const SizedBox(height: 32),
                 _buildSectionHeader('session_history'.tr()),
@@ -198,6 +203,36 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     );
   }
 
+  Widget _buildAttachmentsList() {
+    final attachmentsAsync = ref.watch(taskAttachmentsProvider(widget.taskId));
+
+    return attachmentsAsync.when(
+      data: (attachments) {
+        if (attachments.isEmpty) return const SizedBox.shrink();
+        return Column(
+          children: attachments.map((att) {
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: ListTile(
+                leading: const Icon(Icons.insert_drive_file, color: Colors.blue),
+                title: Text(att.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  onPressed: () {
+                    ref.read(attachmentRepositoryProvider).deleteAttachment(att.id);
+                  },
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
   Widget _buildFilePickerArea() {
     return Container(
       decoration: BoxDecoration(
@@ -210,10 +245,17 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         child: InkWell(
           onTap: () async {
             final result = await FilePicker.platform.pickFiles();
-            if (result != null) {
+            if (result != null && result.files.single.path != null) {
+              final file = File(result.files.single.path!);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('File selected: ${result.files.first.name}')),
+                SnackBar(content: Text('Uploading: ${result.files.single.name}...')),
               );
+              await ref.read(attachmentRepositoryProvider).uploadAttachment(widget.taskId, file);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Upload complete')),
+                );
+              }
             }
           },
           borderRadius: BorderRadius.circular(16),

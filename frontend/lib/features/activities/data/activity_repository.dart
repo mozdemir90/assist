@@ -37,28 +37,66 @@ class ActivityRepository {
 
   Future<void> fetchAndSyncActivities() async {
     try {
+      final localActivities = await _localDb.getAllActivitiesForSync();
+
+      // 1. Push pending local changes
+      for (final localActivity in localActivities) {
+        if (localActivity.syncStatus == 'pending_insert' || localActivity.syncStatus == 'pending_update') {
+          try {
+            final activityModel = ActivityModel(
+              id: localActivity.id,
+              title: localActivity.title,
+              description: localActivity.description ?? '',
+              startTime: localActivity.startTime?.toIso8601String(),
+              endTime: localActivity.endTime?.toIso8601String(),
+              duration: localActivity.duration,
+              userId: localActivity.userId,
+              updatedAt: localActivity.updatedAt?.toIso8601String(),
+              isDeleted: localActivity.isDeleted,
+            );
+
+            if (localActivity.syncStatus == 'pending_insert') {
+              await _apiService.createActivity(activityModel);
+            } else {
+              await _apiService.updateActivity(activityModel);
+            }
+            await _localDb.updateActivity(localActivity.copyWith(syncStatus: 'synced'));
+          } catch (e) {
+            print('Failed to push pending activity \${localActivity.id}: \$e');
+          }
+        }
+      }
+
+      // 2. Fetch remote changes
       final remoteActivities = await _apiService.getActivities();
       for (final activity in remoteActivities) {
-        await _localDb.insertActivity(
-          ActivityEntity(
-            id: activity.id,
-            title: activity.title,
-            description: activity.description,
-            startTime: activity.startTime != null
-                ? DateTime.parse(activity.startTime!)
-                : null,
-            endTime: activity.endTime != null
-                ? DateTime.parse(activity.endTime!)
-                : null,
-            duration: activity.duration,
-            userId: activity.userId ?? '',
-            syncStatus: 'synced',
-            updatedAt: activity.updatedAt != null
-                ? DateTime.parse(activity.updatedAt!)
-                : null,
-            isDeleted: activity.isDeleted,
-          ),
+        final localActivity = localActivities.cast<ActivityEntity?>().firstWhere(
+          (a) => a?.id == activity.id,
+          orElse: () => null,
         );
+
+        if (localActivity == null || localActivity.syncStatus == 'synced') {
+          await _localDb.insertActivity(
+            ActivityEntity(
+              id: activity.id,
+              title: activity.title,
+              description: activity.description,
+              startTime: activity.startTime != null
+                  ? DateTime.parse(activity.startTime!)
+                  : null,
+              endTime: activity.endTime != null
+                  ? DateTime.parse(activity.endTime!)
+                  : null,
+              duration: activity.duration,
+              userId: activity.userId ?? '',
+              syncStatus: 'synced',
+              updatedAt: activity.updatedAt != null
+                  ? DateTime.parse(activity.updatedAt!)
+                  : null,
+              isDeleted: activity.isDeleted,
+            ),
+          );
+        }
       }
     } on DioException catch (e) {
       print('Activity Network sync failed: \${e.message}');

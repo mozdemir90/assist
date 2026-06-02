@@ -40,8 +40,42 @@ class TaskRepository {
   // Sync: Fetch from API and update local DB
   Future<void> fetchAndSyncTasks() async {
     try {
+      final localTasks = await _localDb.getAllTasksForSync();
+
+      // 1. Push pending local changes to the server
+      for (final localTask in localTasks) {
+        if (localTask.syncStatus == 'pending_insert' || localTask.syncStatus == 'pending_update') {
+          try {
+            final taskModel = TaskModel(
+              id: localTask.id,
+              title: localTask.title,
+              description: localTask.description ?? '',
+              isCompleted: localTask.isCompleted,
+              userId: localTask.userId,
+              listId: localTask.listId,
+              deadline: localTask.deadline?.toIso8601String(),
+              remindViaPush: localTask.remindViaPush,
+              reminderSent: localTask.reminderSent,
+              updatedAt: localTask.updatedAt?.toIso8601String(),
+              isDeleted: localTask.isDeleted,
+            );
+
+            if (localTask.syncStatus == 'pending_insert') {
+              await _apiService.createTask(taskModel);
+            } else {
+              await _apiService.updateTask(taskModel);
+            }
+
+            // Mark as synced locally
+            await _localDb.updateTask(localTask.copyWith(syncStatus: 'synced'));
+          } catch (e) {
+            print('Failed to push pending task \${localTask.id}: \$e');
+          }
+        }
+      }
+
+      // 2. Fetch remote changes and update local DB
       final remoteTasks = await _apiService.getTasks();
-      final localTasks = await _localDb.getAllTasks();
       
       for (final remoteTask in remoteTasks) {
         // Find existing local task

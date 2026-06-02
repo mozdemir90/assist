@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'daos/tasks_dao.dart';
 import 'daos/activities_dao.dart';
 import 'daos/lists_dao.dart';
+import 'daos/reminders_dao.dart';
+import 'daos/task_attachments_dao.dart';
 
 part 'app_database.g.dart';
 
@@ -112,7 +114,7 @@ class TaskAttachments extends Table {
 
 @DriftDatabase(
   tables: [Lists, Tasks, Activities, Reminders, TaskAttachments],
-  daos: [ListsDao, TasksDao, ActivitiesDao],
+  daos: [ListsDao, TasksDao, ActivitiesDao, RemindersDao, TaskAttachmentsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

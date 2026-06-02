@@ -13,6 +13,8 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
   Future<List<ActivityEntity>> getAllActivities() =>
       (select(activities)..where((a) => a.isDeleted.equals(false))).get();
 
+  Future<List<ActivityEntity>> getAllActivitiesForSync() => select(activities).get();
+
   Stream<List<ActivityEntity>> watchAllActivities() {
     return (select(activities)
           ..where((a) => a.isDeleted.equals(false))
@@ -44,6 +46,7 @@ class ActivitiesDao extends DatabaseAccessor<AppDatabase>
     return (update(activities)..where((a) => a.id.equals(id))).write(
       ActivitiesCompanion(
         isDeleted: const Value(true),
+        syncStatus: const Value('pending_update'),
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );
