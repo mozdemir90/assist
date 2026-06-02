@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/local_db/app_database.dart';
-import '../../../core/local_db/daos/reminders_dao.dart';
+import 'package:frontend/core/local_db/app_database.dart';
+import 'package:frontend/core/local_db/daos/reminders_dao.dart';
 import '../remote/reminder_api_service.dart';
 import '../../domain/reminder_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -131,6 +131,7 @@ class ReminderRepository {
         isSent: false,
         taskId: taskId,
         activityId: activityId,
+        userId: 'offline_placeholder',
       );
     }
   }

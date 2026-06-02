@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/network/api_client.dart';
-import '../../../core/local_db/app_database.dart';
-import '../../../core/local_db/daos/task_attachments_dao.dart';
+import 'package:frontend/core/network/api_client.dart';
+import 'package:frontend/core/local_db/app_database.dart';
+import 'package:frontend/core/local_db/daos/task_attachments_dao.dart';
 
 part 'attachment_repository.g.dart';
 
