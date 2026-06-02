@@ -121,7 +121,14 @@ def forgot_password():
         'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     }, current_app.config['SECRET_KEY'], algorithm="HS256")
 
-    frontend_url = current_app.config.get('FRONTEND_URL', 'http://localhost:5001')
+    import os
+    frontend_url = os.getenv('FRONTEND_URL')
+
+    if not frontend_url:
+        error_msg = "FRONTEND_URL environment variable is missing"
+        print(error_msg)
+        return jsonify({'message': error_msg}), 500
+
     reset_link = f"{frontend_url}/reset-password?token={token}"
 
     success = send_reset_email(user.email, reset_link)
