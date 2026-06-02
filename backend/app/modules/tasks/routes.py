@@ -105,3 +105,72 @@ def delete_task(current_user, task_id):
     task.is_deleted = True
     db.session.commit()
     return jsonify({"message": "Task marked as deleted"}), 200
+
+import os
+from werkzeug.utils import secure_filename
+from flask import current_app
+from .models import TaskAttachment
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads', 'attachments')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@tasks_bp.route('/<task_id>/attachments', methods=['GET'])
+@token_required
+def get_task_attachments(current_user, task_id):
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
+    if not task:
+        return jsonify({'message': 'Task not found'}), 404
+
+    attachments = TaskAttachment.query.filter_by(task_id=task_id).all()
+    return jsonify([att.to_dict() for att in attachments])
+
+@tasks_bp.route('/<task_id>/attachments', methods=['POST'])
+@token_required
+def upload_task_attachment(current_user, task_id):
+    task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
+    if not task:
+        return jsonify({'message': 'Task not found'}), 404
+
+    if 'file' not in request.files:
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    if file:
+        filename = secure_filename(file.filename)
+        # Unique filename to avoid collisions
+        unique_filename = f"{task_id}_{filename}"
+        filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
+        file.save(filepath)
+
+        attachment = TaskAttachment(
+            task_id=task_id,
+            file_name=filename,
+            file_path=unique_filename
+        )
+        db.session.add(attachment)
+        db.session.commit()
+
+        return jsonify(attachment.to_dict()), 201
+
+@tasks_bp.route('/attachments/<attachment_id>', methods=['DELETE'])
+@token_required
+def delete_task_attachment(current_user, attachment_id):
+    attachment = TaskAttachment.query.get(attachment_id)
+    if not attachment:
+        return jsonify({'message': 'Attachment not found'}), 404
+
+    # Ensure the task belongs to the user
+    task = Task.query.filter_by(id=attachment.task_id, user_id=current_user.id).first()
+    if not task:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    filepath = os.path.join(UPLOAD_FOLDER, attachment.file_path)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
+    db.session.delete(attachment)
+    db.session.commit()
+    return jsonify({'message': 'Attachment deleted'}), 200

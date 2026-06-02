@@ -12,6 +12,8 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
   Future<List<TaskEntity>> getAllTasks() =>
       (select(tasks)..where((t) => t.isDeleted.equals(false))).get();
 
+  Future<List<TaskEntity>> getAllTasksForSync() => select(tasks).get();
+
   Stream<List<TaskEntity>> watchAllTasks() =>
       (select(tasks)..where((t) => t.isDeleted.equals(false))).watch();
 
@@ -25,6 +27,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     return (update(tasks)..where((t) => t.id.equals(id))).write(
       TasksCompanion(
         isDeleted: const Value(true),
+        syncStatus: const Value('pending_update'),
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );

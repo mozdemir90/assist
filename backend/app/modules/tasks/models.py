@@ -38,3 +38,21 @@ class Task(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_deleted': self.is_deleted
         }
+
+class TaskAttachment(db.Model):
+    __tablename__ = 'task_attachments'
+
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    task_id = db.Column(db.String(36), db.ForeignKey('tasks.id'), nullable=False)
+    file_name = db.Column(db.String(255), nullable=False)
+    file_path = db.Column(db.String(512), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'task_id': self.task_id,
+            'file_name': self.file_name,
+            'file_path': self.file_path,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }

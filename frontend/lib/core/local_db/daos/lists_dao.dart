@@ -12,6 +12,8 @@ class ListsDao extends DatabaseAccessor<AppDatabase> with _$ListsDaoMixin {
   Future<List<ListEntity>> getAllLists() =>
       (select(lists)..where((l) => l.isDeleted.equals(false))).get();
 
+  Future<List<ListEntity>> getAllListsForSync() => select(lists).get();
+
   Stream<List<ListEntity>> watchAllLists() =>
       (select(lists)..where((l) => l.isDeleted.equals(false))).watch();
 
@@ -24,6 +26,7 @@ class ListsDao extends DatabaseAccessor<AppDatabase> with _$ListsDaoMixin {
     return (update(lists)..where((l) => l.id.equals(id))).write(
       ListsCompanion(
         isDeleted: const Value(true),
+        syncStatus: const Value('pending_update'),
         updatedAt: Value(DateTime.now().toUtc()),
       ),
     );
